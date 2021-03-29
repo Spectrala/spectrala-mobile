@@ -8,6 +8,8 @@ export type HomeStackParamList = {
 
   SettingsScreen: undefined;
 
+  CameraScreen: undefined;
+  CalibrationScreen: undefined;
   CaptureScreen: undefined;
   ReviewScreen: undefined;
 };

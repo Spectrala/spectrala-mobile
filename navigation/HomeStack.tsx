@@ -6,11 +6,34 @@ import { Button } from 'react-native';
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 import CaptureScreen from '../screens/CaptureScreen';
+import CameraScreen from '../screens/CameraScreen';
+import CalibrationScreen from '../screens/CalibrationScreen';
 import HomeScreen from '../screens/HomeScreen';
 import ReviewScreen from '../screens/ReviewScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 
 import { HomeStackParamList, SettingsParamList, ReviewParamList } from '../types';
+
+import {
+  HeaderButtons,
+  HeaderButton,
+  Item,
+  HiddenItem,
+  OverflowMenu,
+} from 'react-navigation-header-buttons';
+
+
+const NextPageButton = ({ onPress } : any) => <Item title="Next" onPress={onPress} />;
+
+const HelpButton = ({ onPress } : any) => <Item title="search" iconName="ios-help" onPress={onPress} />;
+
+const ReusableHiddenItem = ({ onPress } : any) => <HiddenItem title="hidden2" onPress={onPress} />;
+
+const IoniconsHeaderButton = (props : any) => (
+  // the `props` here come from <Item ... />
+  // you may access them and pass something else to `HeaderButton` if you like
+  <HeaderButton IconComponent={Ionicons} iconSize={23} {...props} />
+);
 
 const HomeStack = createStackNavigator<HomeStackParamList>();
 
@@ -43,15 +66,32 @@ export default function HomeNavigator({ navigation } : Props) {
         }}
       />
       <HomeStack.Screen
+        name="CameraScreen"
+        component={ CameraScreen }
+        options={{
+          title: "Camera",
+          headerRight: () => (
+            <NextPageButton onPress={() => navigation.navigate("CalibrationScreen")}/>
+          ),
+        }}
+      />
+      <HomeStack.Screen
+        name="CalibrationScreen"
+        component={ CalibrationScreen }
+        options={{
+          title: "Calibration",
+          headerRight: () => (
+            <NextPageButton onPress={() => navigation.navigate("CaptureScreen")}/>
+          ),
+        }}
+      />
+      <HomeStack.Screen
         name="CaptureScreen"
         component={ CaptureScreen }
         options={{
           title: "Capture",
           headerRight: () => (
-            <Button
-              onPress={() => navigation.navigate("ReviewScreen")}
-              title="Info"
-            />
+            <NextPageButton onPress={() => navigation.navigate("ReviewScreen")}/>
           ),
         }}
       />
@@ -60,6 +100,14 @@ export default function HomeNavigator({ navigation } : Props) {
         component={ ReviewScreen }
         options={{
           title: "Review",
+          headerRight: () => (
+            <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
+              <Item title="Save" onPress={() => {
+                alert("Save")
+                navigation.popToTop()
+              }} />
+            </HeaderButtons>
+          ),
         }}
       />
     </HomeStack.Navigator>

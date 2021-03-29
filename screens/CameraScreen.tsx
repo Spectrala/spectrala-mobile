@@ -5,26 +5,19 @@ import { Text, View } from '../components/Themed';
 import { HomeStackParamList } from '../types';
 import { StackNavigationProp } from '@react-navigation/stack';
 
-type HomeScreenNavigationProp = StackNavigationProp<
+type CameraScreenNavigationProp = StackNavigationProp<
   HomeStackParamList,
-  'HomeScreen'
+  'CameraScreen'
 >;
 
 type Props = {
-  navigation: HomeScreenNavigationProp;
+  navigation: CameraScreenNavigationProp;
 };
 
-export default function HomeScreen({ navigation } : Props) {
+export default function CameraScreen({ navigation } : Props) {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Bro this is the home screen</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <Button title={"Create New"} onPress={()=>{
-        navigation.navigate("CameraScreen")
-      }}/>
-      <Button title={"Settings"} onPress={()=>{
-        navigation.navigate("SettingsScreen")
-      }}/>
+      <Text style={styles.title}>Let's configure this camera dude</Text>
     </View>
   );
 }

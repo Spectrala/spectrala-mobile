@@ -6,16 +6,12 @@ export default {
     screens: {
       Root: {
         screens: {
-          TabOne: {
-            screens: {
-              TabOneScreen: 'one',
-            },
-          },
-          TabTwo: {
-            screens: {
-              TabTwoScreen: 'two',
-            },
-          },
+          HomeScreen: 'home',
+          SettingsScreen: 'settings',
+          CameraScreen: 'camera',
+          CalibrationScreen: 'calibration',
+          CaptureScreen: 'capture',
+          ReviewScreen: 'review',
         },
       },
       NotFound: '*',
