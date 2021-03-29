@@ -16,7 +16,6 @@ export type SettingsParamList = {
   SettingsScreen: undefined;
 };
 
-
 export type ReviewParamList = {
   ReviewScreen: undefined;
 };

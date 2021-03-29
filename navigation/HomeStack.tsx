@@ -16,10 +16,14 @@ const HomeStack = createStackNavigator<HomeStackParamList>();
 
 type HomeProp = StackNavigationProp<
   HomeStackParamList,
-  'ReviewScreen'
+  'HomeScreen'
 >;
 
-export default function HomeNavigator() {
+type Props = {
+  navigation: HomeProp
+}
+
+export default function HomeNavigator({ navigation } : Props) {
   const colorScheme = useColorScheme();
 
   return (
