@@ -56,6 +56,16 @@ export default function HomeNavigator({ navigation } : Props) {
         component={HomeScreen}
         options={{
           title: "Home",
+          headerStyle: {
+            backgroundColor: '#f4511e', // Use color scheme
+          },
+          headerLeft: () => (
+            <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
+              <Item title="Settings" iconName="settings" onPress={() => {
+                navigation.navigate('SettingsScreen')
+              }}/>
+            </HeaderButtons>
+          ),
         }}
       />
       <HomeStack.Screen
@@ -71,7 +81,9 @@ export default function HomeNavigator({ navigation } : Props) {
         options={{
           title: "Camera",
           headerRight: () => (
-            <NextPageButton onPress={() => navigation.navigate("CalibrationScreen")}/>
+            <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
+              <NextPageButton onPress={() => navigation.navigate("CalibrationScreen")}/>
+            </HeaderButtons>
           ),
         }}
       />
@@ -81,8 +93,10 @@ export default function HomeNavigator({ navigation } : Props) {
         options={{
           title: "Calibration",
           headerRight: () => (
-            <NextPageButton onPress={() => navigation.navigate("CaptureScreen")}/>
-          ),
+            <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
+              <NextPageButton onPress={() => navigation.navigate("CaptureScreen")}/>
+            </HeaderButtons>
+           ),
         }}
       />
       <HomeStack.Screen
@@ -91,7 +105,9 @@ export default function HomeNavigator({ navigation } : Props) {
         options={{
           title: "Capture",
           headerRight: () => (
-            <NextPageButton onPress={() => navigation.navigate("ReviewScreen")}/>
+            <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
+              <NextPageButton onPress={() => navigation.navigate("ReviewScreen")}/>
+            </HeaderButtons>
           ),
         }}
       />
