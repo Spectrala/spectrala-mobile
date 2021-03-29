@@ -1,23 +1,29 @@
 import { Ionicons } from '@expo/vector-icons';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator, StackNavigationProp } from '@react-navigation/stack';
 import * as React from 'react';
 import { Button } from 'react-native';
 
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
+import CaptureScreen from '../screens/CaptureScreen';
 import HomeScreen from '../screens/HomeScreen';
-import TabOneScreen from '../screens/TabOneScreen';
-import TabTwoScreen from '../screens/TabTwoScreen';
-import { HomeStackParamList, SettingsParamList, ReviewParamList, CaptureStackParamList } from '../types';
+import ReviewScreen from '../screens/ReviewScreen';
+import SettingsScreen from '../screens/SettingsScreen';
+
+import { HomeStackParamList, SettingsParamList, ReviewParamList } from '../types';
 
 const HomeStack = createStackNavigator<HomeStackParamList>();
+
+type HomeProp = StackNavigationProp<
+  HomeStackParamList,
+  'ReviewScreen'
+>;
 
 export default function HomeNavigator() {
   const colorScheme = useColorScheme();
 
   return (
-    <HomeStack.Navigator>
+    <HomeStack.Navigator initialRouteName="HomeScreen">
       <HomeStack.Screen
         name="HomeScreen"
         component={HomeScreen}
@@ -27,21 +33,27 @@ export default function HomeNavigator() {
       />
       <HomeStack.Screen
         name="SettingsScreen"
-        component={TabTwoScreen}
+        component={SettingsScreen}
         options={{
           title: "Settings",
         }}
       />
       <HomeStack.Screen
         name="CaptureScreen"
-        component={CaptureNavigator}
+        component={ CaptureScreen }
         options={{
           title: "Capture",
+          headerRight: () => (
+            <Button
+              onPress={() => navigation.navigate("ReviewScreen")}
+              title="Info"
+            />
+          ),
         }}
       />
       <HomeStack.Screen
         name="ReviewScreen"
-        component={TabOneScreen}
+        component={ ReviewScreen }
         options={{
           title: "Review",
         }}
@@ -55,21 +67,4 @@ export default function HomeNavigator() {
   function TabBarIcon(props: { name: React.ComponentProps<typeof Ionicons>['name']; color: string }) {
   return <Ionicons size={30} style={{ marginBottom: -3 }} {...props} />;
 }
-
-// Each tab has its own navigation stack, you can read more about this pattern here:
-// https://reactnavigation.org/docs/tab-based-navigation#a-stack-navigator-for-each-tab
-const CaptureStack = createStackNavigator<CaptureStackParamList>();
-
-function CaptureNavigator() {
-  return (
-    <CaptureStack.Navigator>
-      <CaptureStack.Screen
-        name="CaptureScreen"
-        component={TabOneScreen}
-        options={{ headerTitle: 'CaptureE' }}
-      />
-    </CaptureStack.Navigator>
-  );
-}
-
 

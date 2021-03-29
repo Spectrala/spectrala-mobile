@@ -5,26 +5,19 @@ import { Text, View } from '../components/Themed';
 import { HomeStackParamList } from '../types';
 import { StackNavigationProp } from '@react-navigation/stack';
 
-type HomeScreenNavigationProp = StackNavigationProp<
+type CaptureScreenNavigationProp = StackNavigationProp<
   HomeStackParamList,
-  'HomeScreen'
+  'CaptureScreen'
 >;
 
 type Props = {
-  navigation: HomeScreenNavigationProp;
+  navigation: CaptureScreenNavigationProp;
 };
 
-export default function HomeScreen({ navigation } : Props) {
+export default function CaptureScreen({ navigation } : Props) {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Bro this is the home screen</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <Button title={"Create New"} onPress={()=>{
-        navigation.navigate("CaptureScreen")
-      }}/>
-      <Button title={"Settings"} onPress={()=>{
-        navigation.navigate("SettingsScreen")
-      }}/>
+      <Text style={styles.title}>Oh yeah capture spectra time oh yeah oh yeah</Text>
     </View>
   );
 }
