@@ -8,7 +8,7 @@ import useColorScheme from '../hooks/useColorScheme';
 import CaptureScreen from '../screens/CaptureScreen';
 import CameraScreen from '../screens/CameraScreen';
 import CalibrationScreen from '../screens/CalibrationScreen';
-import HomeScreen from '../screens/HomeScreen';
+import HomeScreen from '../screens/Home/HomeScreen';
 import ReviewScreen from '../screens/ReviewScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 
@@ -55,14 +55,18 @@ export default function HomeNavigator({ navigation } : Props) {
         name="HomeScreen"
         component={HomeScreen}
         options={{
-          title: "Home",
-          headerStyle: {
-            backgroundColor: '#f4511e', // Use color scheme
-          },
+          title: "Sessions",
           headerLeft: () => (
             <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
               <Item title="Settings" iconName="settings" onPress={() => {
                 navigation.navigate('SettingsScreen')
+              }}/>
+            </HeaderButtons>
+          ),
+          headerRight: () => (
+            <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
+              <Item title="Select" onPress={() => {
+                alert('Start selecting');
               }}/>
             </HeaderButtons>
           ),

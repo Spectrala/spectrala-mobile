@@ -1,7 +1,5 @@
 import * as React from 'react';
-import { Button, StyleSheet } from 'react-native';
-
-import { Text, View } from '../components/Themed';
+import { Button, StyleSheet, Text, View  } from 'react-native';
 import { HomeStackParamList } from '../types';
 import { StackNavigationProp } from '@react-navigation/stack';
 
