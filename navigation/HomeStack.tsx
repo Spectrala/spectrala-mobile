@@ -8,9 +8,9 @@ import useColorScheme from '../hooks/useColorScheme';
 import CaptureScreen from '../screens/CaptureScreen';
 import CameraScreen from '../screens/CameraScreen';
 import CalibrationScreen from '../screens/CalibrationScreen';
-import HomeScreen from '../screens/Home/HomeScreen';
 import ReviewScreen from '../screens/ReviewScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import HomeScreen from '../screens/Home/HomeScreen';
 
 import { HomeStackParamList, SettingsParamList, ReviewParamList } from '../types';
 

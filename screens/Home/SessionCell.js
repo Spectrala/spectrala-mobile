@@ -4,7 +4,7 @@ import { TouchableWithoutFeedback, Text, View, StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native";
 import { format } from "date-fns";
 import { Ionicons } from "@expo/vector-icons";
-
+import { useTheme } from "@react-navigation/native";
 /**
  * https://icons.expo.fyi
  *
@@ -13,24 +13,30 @@ import { Ionicons } from "@expo/vector-icons";
  * arrow-up-circle-outline
  */
 function SessionCell(props) {
+  const { colors } = useTheme();
+
   return (
     <TouchableOpacity>
-      <View style={styles.container}>
+      <View style={{...styles.container, backgroundColor:colors.card}}>
         <View style={styles.leftBox}>
           <Ionicons
             name={
               props.isUploaded ? "arrow-up-circle" : "arrow-up-circle-outline"
             }
             size={24}
-            color="blue"
+            color={colors.primary}
           />
         </View>
         <View style={styles.centerBox}>
-          <Text style={styles.title}>{props.name}</Text>
-          <Text>{format(props.date, "eeee, MMMM d, yyyy")}</Text>
+          <Text style={{ ...styles.title, color: colors.text }}>
+            {props.name}
+          </Text>
+          <Text style={{ color: colors.text }}>
+            {format(props.date, "eeee, MMMM d, yyyy")}
+          </Text>
         </View>
         <View style={styles.rightBox}>
-          <Text style={{ flex: 1, alignSelf: "center"}}>Charts</Text>
+          <Text style={{ flex: 1, alignSelf: "center" }}>Charts</Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -48,6 +54,7 @@ SessionCell.propTypes = {
 
 // TODO: Add preview of spectra
 // TODO: Adjust for long names
+
 const styles = StyleSheet.create({
   container: {
     height: 64,
@@ -63,15 +70,15 @@ const styles = StyleSheet.create({
   },
   centerBox: {
     alignItems: "flex-start",
-    flex: 1
+    flex: 1,
   },
   rightBox: {
     width: 140,
     backgroundColor: "#F0FF0F20",
-    borderColor: "black",
+    borderColor: "green",
     borderWidth: 0.2,
     marginLeft: "auto",
-    marginRight: 12
+    marginRight: 12,
   },
   title: {
     fontSize: 20,

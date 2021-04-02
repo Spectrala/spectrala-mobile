@@ -5,7 +5,6 @@ import { HomeStackParamList } from '../../types';
 import { StackNavigationProp } from '@react-navigation/stack';
 import SessionList from './SessionList';
 
-
 const SESSIONS = [
   {
     name: "Beer's Law Lab",

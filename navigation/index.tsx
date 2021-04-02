@@ -9,13 +9,45 @@ import { RootStackParamList } from '../types';
 import HomeStack from './HomeStack';
 import LinkingConfiguration from './LinkingConfiguration';
 
-// If you are not familiar with React Navigation, we recommend going through the
-// "Fundamentals" guide: https://reactnavigation.org/docs/getting-started
+
+
+const MyTheme = {
+  dark: false,
+  colors: {
+    primary: 'rgb(255, 45, 85)',
+    background: 'rgb(242, 242, 242)',
+    card: 'rgb(255, 255, 255)',
+    text: 'rgb(28, 88, 200)',
+    border: 'rgb(100, 255, 100)',
+    notification: 'rgb(255, 69, 58)',
+  },
+};
+
+let SpectralaLightTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: 'rgb(239, 99, 6)',
+  },
+};
+
+const SpectralaDarkTheme = {
+  ...DarkTheme,
+  colors: {
+    ...DarkTheme.colors,
+    primary: 'rgb(0, 255, 85)',
+  },
+};
+
+// SpectralaLightTheme = MyTheme;
+
+
+// Docs: https://reactnavigation.org/docs/getting-started
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
     <NavigationContainer
       linking={LinkingConfiguration}
-      theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      theme={colorScheme === 'dark' ? SpectralaDarkTheme : SpectralaLightTheme}>
 
       <OverflowMenuProvider>
         <RootNavigator />

@@ -11,11 +11,14 @@ import {
   StyleSheet,
 } from "react-native";
 import SessionCell from "./SessionCell";
+import { useTheme } from "@react-navigation/native";
 
 function SessionList(props) {
+  const { colors } = useTheme();
+
   return (
     <FlatList
-      style={styles.list}
+      style={{...styles.list, backgroundColor:colors.background}}
       data={props.sessions}
       renderItem={({ item }) => (
         <SessionCell
@@ -31,7 +34,12 @@ function SessionList(props) {
       ItemSeparatorComponent={
         Platform.OS !== "android" &&
         (({ highlighted }) => (
-          <View style={[styles.separator, highlighted && { marginLeft: 0 }]} />
+          <View
+            style={[
+              { ...styles.separator, borderBottomColor: colors.border },
+              highlighted && { marginLeft: 0 },
+            ]}
+          />
         ))
       }
     />
@@ -48,9 +56,8 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   separator: {
-      borderBottomColor: 'lightgray',
-      borderBottomWidth: StyleSheet.hairlineWidth,
-  }
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
 });
 
 export default SessionList;
