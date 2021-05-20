@@ -4,11 +4,16 @@ import { Button, StyleSheet, Text, View } from "react-native";
 import { HomeStackParamList } from "../../types";
 import { StackNavigationProp } from "@react-navigation/stack";
 import DraggablePointsContainer from "./DraggablePointsContainer";
+import CameraView from "./CameraView";
+
+
+// TODO: stop using expo in order to figure out the camera stuff
 
 export default function CameraScreen({ navigation }) {
   return (
     <View style={styles.container}>
-      <DraggablePointsContainer style={styles.pointsContainer} />
+      {/* <CameraView /> */}
+      <DraggablePointsContainer />
     </View>
   );
 }
@@ -16,8 +21,7 @@ export default function CameraScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    height: "100%",
   },
   title: {
     fontSize: 20,
@@ -29,6 +33,11 @@ const styles = StyleSheet.create({
     width: "80%",
   },
   pointsContainer: {
+    height: "100%",
+    width: "100%",
+    display: "flex",
+  },
+  cameraView: {
     height: "100%",
     width: "100%",
     display: "flex",
