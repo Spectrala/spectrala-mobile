@@ -16,8 +16,8 @@ function SessionCell(props) {
   const { colors } = useTheme();
 
   return (
-    <TouchableOpacity>
-      <View style={{...styles.container, backgroundColor:colors.card}}>
+    <TouchableOpacity onPress={props.onSelect}>
+      <View style={{ ...styles.container, backgroundColor: colors.card }}>
         <View style={styles.leftBox}>
           <Ionicons
             name={
@@ -57,7 +57,7 @@ SessionCell.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
-    height: 64,
+    height: 80,
     width: "100%",
     flex: 1,
     flexDirection: "row",
@@ -82,6 +82,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
+    paddingBottom: 2,
     fontWeight: "bold",
   },
 });

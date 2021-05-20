@@ -11,7 +11,7 @@ import LinkingConfiguration from './LinkingConfiguration';
 
 
 
-const MyTheme = {
+const TestTheme = {
   dark: false,
   colors: {
     primary: 'rgb(255, 45, 85)',
@@ -39,7 +39,7 @@ const SpectralaDarkTheme = {
   },
 };
 
-// SpectralaLightTheme = MyTheme;
+// SpectralaLightTheme = TestTheme;
 
 
 // Docs: https://reactnavigation.org/docs/getting-started

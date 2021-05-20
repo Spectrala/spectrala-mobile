@@ -6,7 +6,7 @@ import { Button } from 'react-native';
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 import CaptureScreen from '../screens/CaptureScreen';
-import CameraScreen from '../screens/CameraScreen';
+import CameraScreen from '../screens/Camera/CameraScreen';
 import CalibrationScreen from '../screens/CalibrationScreen';
 import ReviewScreen from '../screens/ReviewScreen';
 import SettingsScreen from '../screens/SettingsScreen';
@@ -46,11 +46,14 @@ type Props = {
   navigation: HomeProp
 }
 
+
+
 export default function HomeNavigator({ navigation } : Props) {
   const colorScheme = useColorScheme();
-
   return (
-    <HomeStack.Navigator initialRouteName="HomeScreen">
+
+// TODO: Make this "HomeScreen"
+    <HomeStack.Navigator initialRouteName="CameraScreen">
       <HomeStack.Screen
         name="HomeScreen"
         component={HomeScreen}

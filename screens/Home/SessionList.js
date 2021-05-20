@@ -18,7 +18,7 @@ function SessionList(props) {
 
   return (
     <FlatList
-      style={{...styles.list, backgroundColor:colors.background}}
+      style={{ ...styles.list, backgroundColor: colors.background }}
       data={props.sessions}
       renderItem={({ item }) => (
         <SessionCell
@@ -27,6 +27,7 @@ function SessionList(props) {
           inSelectionMode={props.inSelectionMode}
           isUploaded={item.isUploaded}
           isSelected={item.isSelected}
+          onSelect={() => props.onSelectCell(item)}
         />
       )}
       keyExtractor={(item) => String(item.name)}
@@ -49,6 +50,7 @@ function SessionList(props) {
 SessionList.propTypes = {
   sessions: PropTypes.array.isRequired,
   inSelectionMode: PropTypes.bool.isRequired,
+  onSelectCell: PropTypes.func.isRequired,
 };
 
 const styles = StyleSheet.create({
