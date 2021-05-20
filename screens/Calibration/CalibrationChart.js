@@ -14,7 +14,7 @@ import * as shape from "d3-shape";
  * arrow-up-circle
  * arrow-up-circle-outline
  */
-function StackedChart(props) {
+function CalibrationChart(props) {
   const { colors } = useTheme();
   const data = [
     {
@@ -94,9 +94,9 @@ function StackedChart(props) {
   );
 }
 
-// TODO: use some real data. 
+// TODO: use some real data.
 
-// StackedChart.propTypes = {
+// CalibrationChart.propTypes = {
 //   name: PropTypes.string.isRequired,
 //   date: PropTypes.instanceOf(Date).isRequired,
 //   onSelect: PropTypes.func,
@@ -107,12 +107,11 @@ function StackedChart(props) {
 
 const styles = StyleSheet.create({
   rightBox: {
-    width: 140,
-    height: "auto",
+    width: "100%",
+    height: "100%",
     paddingTop: 8,
-    marginLeft: "auto",
-    marginRight: 12,
+    paddingHorizontal: 32,
   },
 });
 
-export default StackedChart;
+export default CalibrationChart;

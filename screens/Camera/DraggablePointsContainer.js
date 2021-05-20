@@ -15,6 +15,7 @@ import {
 import { useTheme } from "@react-navigation/native";
 import { Svg, Line, Rect } from "react-native-svg";
 
+
 const CIRCLE_RADIUS = 20;
 
 function DraggablePointsContainer(props) {
