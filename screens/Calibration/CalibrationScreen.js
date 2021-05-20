@@ -8,32 +8,39 @@ import TickContainer from "./TickContainer";
 import { Svg, Line, Rect } from "react-native-svg";
 
 const CHART_HEIGHT = 200;
+const CHART_MARGIN = 16;
+const TICK_HEIGHT = 40;
+const TICK_MARGIN = 4;
+const TICK_WIDTH = 60;
 
 export default function CalibrationScreen({ navigation }) {
-  const calibrationLine = (wavelength) => {
-    return (
-      <Svg height="100%" width="100%">
-        <Line
-          x1={p1.x + CIRCLE_RADIUS}
-          y1={p1.y + CIRCLE_RADIUS}
-          x2={p2.x + CIRCLE_RADIUS}
-          y2={p2.y + CIRCLE_RADIUS}
-          stroke="black"
-          strokeWidth="2"
-        />
-      </Svg>
-    );
-  };
+
 
   return (
     <View style={styles.container}>
       <View style={styles.chart}>
-        <CalibrationChart />
+        <CalibrationChart margin={CHART_MARGIN} />
       </View>
-      <View style={{ ...styles.chart, ...styles.ticks }}>
-        <TickContainer height={CHART_HEIGHT} />
+      <View
+        style={{
+          ...styles.chart,
+          ...styles.ticks,
+        }}
+      >
+        <TickContainer
+          chartHeight={CHART_HEIGHT}
+          tickHeight={TICK_HEIGHT}
+          tickMargin={TICK_MARGIN}
+          tickWidth={TICK_WIDTH}
+          chartMargin={CHART_MARGIN}
+        />
       </View>
-      <CalibrationModePicker />
+      <View style={styles.picker}>
+        <CalibrationModePicker />
+      </View>
+      <Text>Who's Joe?</Text>
+      <Text>Who's Joe?</Text>
+      <Text>Who's Joe?</Text>
     </View>
   );
 }
@@ -50,6 +57,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 0,
     left: 0,
+    height: TICK_HEIGHT + CHART_HEIGHT,
+    marginEnd: TICK_HEIGHT + CHART_HEIGHT,
   },
   title: {
     fontSize: 20,
@@ -59,5 +68,8 @@ const styles = StyleSheet.create({
     marginVertical: 30,
     height: 1,
     width: "80%",
+  },
+  picker: {
+    marginTop: TICK_HEIGHT,
   },
 });

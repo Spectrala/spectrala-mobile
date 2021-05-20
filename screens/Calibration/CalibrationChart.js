@@ -83,7 +83,7 @@ function CalibrationChart(props) {
 
   return (
     <StackedAreaChart
-      style={styles.rightBox}
+      style={{...styles.rightBox, paddingHorizontal: props.margin}}
       data={data}
       keys={keys}
       colors={chartColors}
@@ -96,21 +96,15 @@ function CalibrationChart(props) {
 
 // TODO: use some real data.
 
-// CalibrationChart.propTypes = {
-//   name: PropTypes.string.isRequired,
-//   date: PropTypes.instanceOf(Date).isRequired,
-//   onSelect: PropTypes.func,
-//   inSelectionMode: PropTypes.bool.isRequired,
-//   isUploaded: PropTypes.bool,
-//   isSelected: PropTypes.bool,
-// };
+CalibrationChart.propTypes = {
+  margin: PropTypes.number.isRequired,
+};
 
 const styles = StyleSheet.create({
   rightBox: {
     width: "100%",
     height: "100%",
     paddingTop: 8,
-    paddingHorizontal: 32,
   },
 });
 

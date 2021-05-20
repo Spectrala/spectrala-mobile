@@ -38,6 +38,7 @@ function CalibrationModePicker(props) {
       }}
       style={{
         borderWidth: 0,
+        borderRadius: 0,
       }}
     />
   );

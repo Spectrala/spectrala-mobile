@@ -25,13 +25,11 @@ function TickContainer(props) {
   const [p1, setP1] = useState(T1_INIT.x);
 
   const createCircle = (initial, setter) => {
-    const circleStyle = { ...styles.circle, backgroundColor: colors.border };
+    const circleStyle = { ...styles.circle, backgroundColor: "navy" };
 
     const pan = useRef(new Animated.ValueXY()).current;
 
-    pan.addListener(({ x }) =>
-      setter(initial.x + x)
-    );
+    pan.addListener(({ x }) => setter(initial.x + x));
 
     const panResponder = useRef(
       PanResponder.create({
@@ -60,7 +58,14 @@ function TickContainer(props) {
         }}
         {...panResponder.panHandlers}
       >
-        <View style={circleStyle} />
+        <View
+          style={{
+            ...circleStyle,
+            height: props.tickHeight - 2 * props.tickMargin,
+            width: props.tickWidth,
+            transform: [{ translateY: props.tickMargin }],
+          }}
+        />
       </Animated.View>
     );
   };
@@ -72,8 +77,8 @@ function TickContainer(props) {
           x1={p1 + CIRCLE_RADIUS}
           y1={0}
           x2={p1 + CIRCLE_RADIUS}
-          y2={200}
-          stroke="black"
+          y2={props.chartHeight + props.tickMargin}
+          stroke="navy"
           strokeWidth="2"
         />
       </Svg>
@@ -83,14 +88,26 @@ function TickContainer(props) {
   return (
     <>
       <View style={styles.container}>{readerLine()}</View>
-      <View style={styles.container}>{createCircle(T1_INIT, setP1)}</View>
+      <View
+        style={{
+          ...styles.tickContainer,
+          height: props.tickHeight,
+          top: props.chartHeight,
+        }}
+      >
+        {createCircle(T1_INIT, setP1)}
+      </View>
     </>
   );
 }
 
 TickContainer.propTypes = {
   style: PropTypes.object,
-  height: PropTypes.number,
+  chartHeight: PropTypes.number.isRequired,
+  tickHeight: PropTypes.number.isRequired,
+  tickMargin: PropTypes.number.isRequired,
+  tickWidth: PropTypes.number.isRequired,
+  chartMargin: PropTypes.number.isRequired,
 };
 
 const styles = StyleSheet.create({
@@ -101,13 +118,15 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
   container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
     position: "absolute",
     top: 0,
     left: 0,
     height: "100%",
+    width: "100%",
+  },
+  tickContainer: {
+    position: "absolute",
+    left: 0,
     width: "100%",
   },
   titleText: {
