@@ -74,7 +74,6 @@ function DraggablePointsContainer(props) {
   const readerLine = useCallback(() => {
     return (
       <Svg height="100%" width="100%">
-        <Rect fill="lime" width="100%" height="100%" />
         <Line
           x1={p1.x + CIRCLE_RADIUS}
           y1={p1.y + CIRCLE_RADIUS}

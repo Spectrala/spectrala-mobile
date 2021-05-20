@@ -5,6 +5,7 @@ import { TouchableOpacity } from "react-native";
 import { format } from "date-fns";
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
+import StackedChart from "./StackedChart";
 /**
  * https://icons.expo.fyi
  *
@@ -35,9 +36,7 @@ function SessionCell(props) {
             {format(props.date, "eeee, MMMM d, yyyy")}
           </Text>
         </View>
-        <View style={styles.rightBox}>
-          <Text style={{ flex: 1, alignSelf: "center" }}>Charts</Text>
-        </View>
+        <StackedChart />
       </View>
     </TouchableOpacity>
   );
@@ -71,14 +70,6 @@ const styles = StyleSheet.create({
   centerBox: {
     alignItems: "flex-start",
     flex: 1,
-  },
-  rightBox: {
-    width: 140,
-    backgroundColor: "#F0FF0F20",
-    borderColor: "green",
-    borderWidth: 0.2,
-    marginLeft: "auto",
-    marginRight: 12,
   },
   title: {
     fontSize: 20,

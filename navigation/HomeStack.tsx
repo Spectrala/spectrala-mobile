@@ -53,7 +53,7 @@ export default function HomeNavigator({ navigation } : Props) {
   return (
 
 // TODO: Make this "HomeScreen"
-    <HomeStack.Navigator initialRouteName="CameraScreen">
+    <HomeStack.Navigator initialRouteName="HomeScreen">
       <HomeStack.Screen
         name="HomeScreen"
         component={HomeScreen}
