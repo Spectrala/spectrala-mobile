@@ -6,6 +6,7 @@ import DraggableFlatList, {
 import PropTypes from "prop-types";
 import { MaterialIcons } from "@expo/vector-icons";
 import CapturedCell from "./CapturedCell";
+import { useTheme } from "@react-navigation/native";
 
 const CHART_HEIGHT = 200;
 const CHART_MARGIN = 16;
@@ -19,17 +20,18 @@ function getColor(i) {
   return `rgb(${colorVal}, ${Math.abs(128 - colorVal)}, ${255 - colorVal})`;
 }
 
-const exampleData = [...Array(20)].map((d, index) => {
+const exampleData = [...Array(10)].map((d, index) => {
   const backgroundColor = getColor(index);
   return {
     key: `item-${backgroundColor}`,
-    label: String(index),
+    label: "New Spectrum " + String(index),
     backgroundColor,
   };
 });
 
 export default function CapturedList({ navigation }) {
   const [data, setData] = useState(exampleData);
+  const { colors } = useTheme();
 
   const renderItem = useCallback(({ item, index, drag, isActive }) => {
     return (
@@ -37,7 +39,7 @@ export default function CapturedList({ navigation }) {
         label={item.label}
         backgroundColor={item.backgroundColor}
         isActive={isActive}
-        dragControl={ drag}
+        dragControl={drag}
       />
     );
   }, []);
@@ -49,6 +51,18 @@ export default function CapturedList({ navigation }) {
         renderItem={renderItem}
         keyExtractor={(item, index) => `draggable-item-${item.key}`}
         onDragEnd={({ data }) => setData(data)}
+        contentContainerStyle={{ paddingBottom: 100 }}
+        ItemSeparatorComponent={
+          Platform.OS !== "android" &&
+          (({ highlighted }) => (
+            <View
+              style={[
+                { ...styles.separator, borderBottomColor: colors.border },
+                highlighted && { marginLeft: 0 },
+              ]}
+            />
+          ))
+        }
       />
     </View>
   );
@@ -78,5 +92,8 @@ const styles = StyleSheet.create({
   modeButtonText: {
     fontSize: 14,
     fontWeight: "bold",
+  },
+  separator: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
 });

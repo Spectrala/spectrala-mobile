@@ -17,7 +17,7 @@ import * as shape from "d3-shape";
 function CaptureChart(props) {
   const { colors } = useTheme();
 
-  const data = [50, 10, 40, 95, 0, 0, 85, 91, 35, 53, 0, 24, 50, 0, 0];
+  const data = [0, 10, 40, 95, 0, 0, 85, 91, 35, 0, 0, 24, 50, 0, 0];
 
   /**
    * Converts a string of an rgb color formatted like "rgb(0,2,255)"
@@ -40,16 +40,15 @@ function CaptureChart(props) {
 
   return (
     <AreaChart
-      style={{ height: 200 }}
+      style={{ height: "100%", width: 140 }}
       data={data}
-      contentInset={{ top: 0, bottom: 0, left: 30, right: 30 }}
+      contentInset={{ top: 0, bottom: 0, left: 10, right: 10 }}
       curve={shape.curveBasis}
       svg={{
         fill: rgbToHexColor(colors.primary) + "99",
         stroke: rgbToHexColor(colors.primary),
       }}
     >
-      <Grid />
     </AreaChart>
   );
 }
@@ -57,7 +56,7 @@ function CaptureChart(props) {
 // TODO: use some real data.
 
 CaptureChart.propTypes = {
-  margin: PropTypes.number,
+  margin: PropTypes.number.isRequired,
 };
 
 const styles = StyleSheet.create({

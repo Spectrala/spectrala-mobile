@@ -1,10 +1,18 @@
 import React, { useState, useCallback } from "react";
-import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
+import {
+  View,
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TextInput,
+} from "react-native";
 import DraggableFlatList, {
   RenderItemParams,
 } from "react-native-draggable-flatlist";
 import PropTypes from "prop-types";
 import { MaterialIcons } from "@expo/vector-icons";
+import PreviewChart from "./PreviewChart";
 
 const CHART_HEIGHT = 200;
 const CHART_MARGIN = 16;
@@ -19,26 +27,33 @@ function getColor(i) {
 }
 
 export default function CapturedCell(props) {
+  const activeProps = {
+    shadowRadius: 4,
+    shadowOpacity: 0.1,
+  };
   return (
-    <View
+    <SafeAreaView
       style={{
         ...styles.container,
-        backgroundColor: props.isActive ? "red" : props.backgroundColor,
+        ...(props.isActive ? activeProps : {}),
       }}
     >
-      <Text
-        style={{
-          fontWeight: "bold",
-          color: "white",
-          fontSize: 32,
+      <TextInput
+        style={styles.input}
+        onChangeText={(wavelength) => {
+          console.log(wavelength);
         }}
-      >
-        {props.label}
-      </Text>
-      <TouchableOpacity onLongPress={props.dragControl}>
-        <MaterialIcons name="drag-indicator" size={24} color="black" />
-      </TouchableOpacity>
-    </View>
+        value={props.label}
+        placeholder="Spectrum name..."
+        keyboardType="default"
+      />
+      <View style={styles.rightContainer}>
+        <PreviewChart />
+        <TouchableOpacity onLongPress={props.dragControl}>
+          <MaterialIcons name="drag-indicator" size={24} color="black" />
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   );
 }
 
@@ -49,29 +64,40 @@ CapturedCell.propTypes = {
   dragControl: PropTypes.func,
 };
 
+const PADDING = 8;
+
 const styles = StyleSheet.create({
   container: {
-    height: 100,
-    alignItems: "center",
-    justifyContent: "space-between",
-    flexDirection: "row",
-    paddingHorizontal: 20,
-  },
-  chart: {
+    height: 60,
     width: "100%",
-    height: CHART_HEIGHT,
-  },
-  modeContainer: {
-    justifyContent: "space-around",
+    flex: 1,
     flexDirection: "row",
-    alignContent: "center",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: "white",
   },
-  modeButton: {
-    justifyContent: "center",
-    height: MODE_BUTTON_HEIGHT,
+  input: {
+    height: 40,
+    marginLeft: PADDING,
+    width: 180,
+    borderWidth: 1,
+    paddingLeft: 10,
   },
-  modeButtonText: {
-    fontSize: 14,
-    fontWeight: "bold",
+  lock: {
+    width: 30,
+    display: "flex",
+    alignItems: "center",
+    marginLeft: PADDING,
+  },
+  minus: {
+    width: 30,
+    display: "flex",
+    alignItems: "center",
+    marginLeft: "auto",
+    marginRight: PADDING,
+  },
+  rightContainer: {
+    flexDirection: "row",
+    alignItems: "center",
   },
 });

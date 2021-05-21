@@ -70,6 +70,7 @@ export default function CalibrationScreen({ navigation }) {
       <View style={styles.picker}>
         <CalibrationModePicker />
       </View>
+
       <View>
         <WavelengthList
           wavelengths={calibrationPoints}
