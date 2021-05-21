@@ -8,7 +8,7 @@ import { Button } from "react-native";
 
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
-import CaptureScreen from "../screens/CaptureScreen";
+import CaptureScreen from "../screens/Capture/CaptureScreen";
 import CameraScreen from "../screens/Camera/CameraScreen";
 import CalibrationScreen from "../screens/Calibration/CalibrationScreen";
 import ReviewScreen from "../screens/ReviewScreen";
@@ -51,7 +51,7 @@ export default function HomeNavigator({ navigation }) {
   const colorScheme = useColorScheme();
   return (
     // TODO: Make this "HomeScreen"
-    <HomeStack.Navigator initialRouteName="CalibrationScreen">
+    <HomeStack.Navigator initialRouteName="CaptureScreen">
       <HomeStack.Screen
         name="HomeScreen"
         component={HomeScreen}

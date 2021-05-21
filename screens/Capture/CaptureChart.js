@@ -14,7 +14,7 @@ import * as shape from "d3-shape";
  * arrow-up-circle
  * arrow-up-circle-outline
  */
-function CalibrationChart(props) {
+function CaptureChart(props) {
   const { colors } = useTheme();
 
   const data = [50, 10, 40, 95, 0, 0, 85, 91, 35, 53, 0, 24, 50, 0, 0];
@@ -56,7 +56,7 @@ function CalibrationChart(props) {
 
 // TODO: use some real data.
 
-CalibrationChart.propTypes = {
+CaptureChart.propTypes = {
   margin: PropTypes.number.isRequired,
 };
 
@@ -68,4 +68,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CalibrationChart;
+export default CaptureChart;
