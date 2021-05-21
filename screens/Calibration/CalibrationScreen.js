@@ -1,10 +1,11 @@
-import * as React from "react";
+import React, { useState } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
 import { HomeStackParamList } from "../../types";
 import { StackNavigationProp } from "@react-navigation/stack";
 import CalibrationChart from "./CalibrationChart";
 import CalibrationModePicker from "./CalibrationModePicker";
 import TickContainer from "./TickContainer";
+import WavelengthList from "./WavelengthList";
 import { Svg, Line, Rect } from "react-native-svg";
 
 const CHART_HEIGHT = 200;
@@ -14,7 +15,14 @@ const TICK_MARGIN = 4;
 const TICK_WIDTH = 60;
 
 export default function CalibrationScreen({ navigation }) {
+  const WAVELENGTHS = [
+    { wavelength: 200 },
+    { wavelength: 280 },
+    { wavelength: 330 },
+    { wavelength: 402 },
+  ];
 
+  const [wavelengths, setWavelengths] = useState(WAVELENGTHS);
 
   return (
     <View style={styles.container}>
@@ -38,9 +46,10 @@ export default function CalibrationScreen({ navigation }) {
       <View style={styles.picker}>
         <CalibrationModePicker />
       </View>
-      <Text>Who's Joe?</Text>
-      <Text>Who's Joe?</Text>
-      <Text>Who's Joe?</Text>
+      <WavelengthList
+        wavelengths={wavelengths}
+        setWavelengths={setWavelengths}
+      />
     </View>
   );
 }
