@@ -15,14 +15,37 @@ const TICK_MARGIN = 4;
 const TICK_WIDTH = 60;
 
 export default function CalibrationScreen({ navigation }) {
-  const WAVELENGTHS = [
-    { wavelength: 200 },
-    { wavelength: 280 },
-    { wavelength: 330 },
-    { wavelength: 402 },
+  const TEST_CALIB_POINTS = [
+    { id: 0, wavelength: 200, isLocked: false },
+    { id: 1, wavelength: 280, isLocked: false },
+    { id: 2, wavelength: 330, isLocked: false },
+    { id: 3, wavelength: 402, isLocked: false },
   ];
 
-  const [wavelengths, setWavelengths] = useState(WAVELENGTHS);
+  const MAX_POINTS = 5;
+
+  const [calibrationPoints, setCalibrationPoints] = useState(TEST_CALIB_POINTS);
+
+  const addNewPoint = () => {
+    const id = Math.max(...calibrationPoints.map((x) => x.id)) + 1;
+    setCalibrationPoints([
+      ...calibrationPoints,
+      { id: id, wavelength: "", isLocked: false },
+    ]);
+  };
+
+  const addNewPointButton = () => {
+    if (calibrationPoints.length < MAX_POINTS) {
+      return (
+        <Button
+          title="Add point"
+          color="black"
+          style={styles.addPointButton}
+          onPress={addNewPoint}
+        />
+      );
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -36,6 +59,7 @@ export default function CalibrationScreen({ navigation }) {
         }}
       >
         <TickContainer
+          wavelengths={calibrationPoints}
           chartHeight={CHART_HEIGHT}
           tickHeight={TICK_HEIGHT}
           tickMargin={TICK_MARGIN}
@@ -46,10 +70,13 @@ export default function CalibrationScreen({ navigation }) {
       <View style={styles.picker}>
         <CalibrationModePicker />
       </View>
-      <WavelengthList
-        wavelengths={wavelengths}
-        setWavelengths={setWavelengths}
-      />
+      <View>
+        <WavelengthList
+          wavelengths={calibrationPoints}
+          setWavelengths={setCalibrationPoints}
+        />
+      </View>
+      {addNewPointButton()}
     </View>
   );
 }
@@ -80,5 +107,10 @@ const styles = StyleSheet.create({
   },
   picker: {
     marginTop: TICK_HEIGHT,
+    zIndex: 3, // works on ios
+    elevation: 3, // works on android
+  },
+  addPointButton: {
+    backgroundColor: "green",
   },
 });

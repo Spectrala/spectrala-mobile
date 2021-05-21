@@ -23,28 +23,32 @@ import { useTheme } from "@react-navigation/native";
 function WavelengthCell(props) {
   const { colors } = useTheme();
 
-  const [number, onChangeNumber] = useState(props.wavelength);
-  const IS_LOCKED = false;
-  const [isLocked, setLocked] = useState(IS_LOCKED);
-
   return (
     <SafeAreaView style={styles.container}>
       <TouchableOpacity
         style={styles.lock}
         onPress={() => {
-          setLocked(!isLocked);
+          props.setSelf({
+            ...props.calibrationPoint,
+            isLocked: !props.isLocked,
+          });
         }}
       >
         <FontAwesome
-          name={isLocked ? "lock" : "unlock-alt"}
+          name={props.isLocked ? "lock" : "unlock-alt"}
           size={24}
           color="black"
         />
       </TouchableOpacity>
       <TextInput
         style={styles.input}
-        onChangeText={onChangeNumber}
-        value={number.toString()}
+        onChangeText={(wavelength) => {
+          props.setSelf({
+            ...props.calibrationPoint,
+            wavelength: wavelength,
+          });
+        }}
+        value={props.calibrationPoint.wavelength.toString()}
         placeholder="Wavelength (nm)"
         keyboardType="numeric"
       />
@@ -56,12 +60,8 @@ function WavelengthCell(props) {
 }
 
 WavelengthCell.propTypes = {
-  name: PropTypes.string,
-  wavelength: PropTypes.number,
-  onSelect: PropTypes.func,
-  inSelectionMode: PropTypes.bool,
-  isUploaded: PropTypes.bool,
-  isSelected: PropTypes.bool,
+  calibrationPoint: PropTypes.object,
+  setSelf: PropTypes.func,
   removeSelf: PropTypes.func,
 };
 
