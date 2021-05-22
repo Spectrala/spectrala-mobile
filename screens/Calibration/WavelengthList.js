@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import WavelengthCell from "./WavelengthCell";
 import { useTheme } from "@react-navigation/native";
+import { KeyboardAwareFlatList } from "react-native-keyboard-aware-scroll-view";
 
 import * as CalibPt from "../../redux/reducers/calibration/calibration_point";
 
@@ -100,6 +101,7 @@ function WavelengthList(props) {
           onBeginPlace={() => dispatch(beginPlace({ targetIndex: index }))}
           onCancel={() => dispatch(cancelPlace({ targetIndex: index }))}
           onDelete={() => dispatch(removePoint({ targetIndex: index }))}
+          isEnabled={props.inputEnabled}
         />
       )}
       keyExtractor={(item) => String(item.key)}
@@ -122,8 +124,7 @@ function WavelengthList(props) {
 WavelengthList.propTypes = {
   calibrationPoints: PropTypes.array.isRequired,
   setWavelengths: PropTypes.func.isRequired,
-  inSelectionMode: PropTypes.bool,
-  onSelectCell: PropTypes.func,
+  inputEnabled: PropTypes.bool.isRequired,
 };
 
 const styles = StyleSheet.create({

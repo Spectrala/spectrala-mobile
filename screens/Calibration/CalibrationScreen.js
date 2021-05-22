@@ -50,6 +50,8 @@ export default function CalibrationScreen({ navigation }) {
     }
   };
 
+  const [open, setOpen] = useState(false);
+
   return (
     <View style={styles.container}>
       <View style={styles.chart}>
@@ -71,13 +73,14 @@ export default function CalibrationScreen({ navigation }) {
         />
       </View>
       <View style={styles.picker}>
-        <CalibrationModePicker />
+        <CalibrationModePicker open={open} setOpen={setOpen} />
       </View>
 
       <View>
         <WavelengthList
           calibrationPoints={calibrationPoints}
           setWavelengths={setCalibrationPoints}
+          inputEnabled={!open}
         />
       </View>
       {addNewPointButton()}
@@ -112,7 +115,7 @@ const styles = StyleSheet.create({
   picker: {
     marginTop: TICK_HEIGHT,
     zIndex: 3, // works on ios
-    elevation: 3, // works on android
+    elevation: 30, // works on android
   },
   addPointButton: {
     backgroundColor: "green",

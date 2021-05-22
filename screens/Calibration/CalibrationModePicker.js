@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { TouchableWithoutFeedback, Text, View, StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native";
@@ -27,18 +27,6 @@ const DEFAULT_CALIBRATION = "cfl";
 function CalibrationModePicker(props) {
   const { colors } = useTheme();
 
-  const [open, setOpen] = useState(false);
-  const [valueID, setValueID] = useState(DEFAULT_CALIBRATION);
-  
-  
-  // If changing presets is necessary, use something like this
-  // const [items, setItems] = useState([
-  //   { label: "CFL Bulb", value: "cfl" },
-  //   { label: "Ch3a Lab Kit", value: "ch3kit" },
-  // ]);
-  // In the DropDownPicker component:
-  // setItems={setItems}
-
   const calibrationPoints = useSelector(
     selectCalibrationPoints,
     (a, b) => false // TODO: Fix hack
@@ -47,7 +35,18 @@ function CalibrationModePicker(props) {
   const dispatch = useDispatch();
   const presets = currentAndOtherCalibrationPresets(calibrationPoints);
 
-  useEffect(() => {
+  const [valueID, setValueID] = useState(presets.current.id);
+  const [items, setItems] = useState(presets.all);
+
+  // If changing presets is necessary, use something like this
+  // const [items, setItems] = useState([
+  //   { label: "CFL Bulb", value: "cfl" },
+  //   { label: "Ch3a Lab Kit", value: "ch3kit" },
+  // ]);
+  // In the DropDownPicker component:
+  //
+
+  const updatePreset = useCallback(() => {
     const preset = presets.all.filter((p) => p.id === valueID)[0];
     if (preset.value) {
       dispatch(
@@ -56,22 +55,30 @@ function CalibrationModePicker(props) {
         })
       );
     }
-  }, [valueID]);
+  }, [valueID, items]);
+
+  useEffect(() => {
+    updatePreset();
+  }, [valueID, items]);
 
   if (!presets) return;
 
   return (
     <DropDownPicker
-      open={open}
+      open={props.open}
       value={presets.current.id}
       items={presets.all}
+      setItems={setItems}
       schema={{
         label: "title",
         value: "id",
       }}
       itemKey="id"
-      setOpen={setOpen}
-      setValue={setValueID}
+      setOpen={props.setOpen}
+      setValue={(setter) => {
+        setValueID(setter);
+        updatePreset();
+      }}
       searchable={true}
       searchPlaceholder={"Search..."}
       containerStyle={{
@@ -90,14 +97,10 @@ function CalibrationModePicker(props) {
 
 // TODO: use some real data.
 
-// CalibrationModePicker.propTypes = {
-//   name: PropTypes.string.isRequired,
-//   date: PropTypes.instanceOf(Date).isRequired,
-//   onSelect: PropTypes.func,
-//   inSelectionMode: PropTypes.bool.isRequired,
-//   isUploaded: PropTypes.bool,
-//   isSelected: PropTypes.bool,
-// };
+CalibrationModePicker.propTypes = {
+  open: PropTypes.bool.isRequired,
+  setOpen: PropTypes.func.isRequired,
+};
 
 const styles = StyleSheet.create({
   container: {

@@ -4,7 +4,6 @@ import {
   TouchableWithoutFeedback,
   Text,
   View,
-  SafeAreaView,
   StyleSheet,
   TextInput,
 } from "react-native";
@@ -12,6 +11,7 @@ import { TouchableOpacity } from "react-native";
 import { format } from "date-fns";
 import { FontAwesome, Entypo } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
+import KeyboardSpacer from "react-native-keyboard-spacer";
 
 /**
  * https://icons.expo.fyi
@@ -66,7 +66,7 @@ function WavelengthCell(props) {
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {getPrependedGroup()}
       <TextInput
         style={{ ...styles.input, ...(invalid ? styles.invalidInput : {}) }}
@@ -74,12 +74,13 @@ function WavelengthCell(props) {
         value={wavelength ? wavelength.toString() : ""}
         placeholder="Wavelength (nm)"
         keyboardType="numeric"
+        editable={props.isEnabled}
       />
       {getValidationText()}
       <TouchableOpacity style={styles.minus} onPress={props.onDelete}>
         <FontAwesome name={"minus-circle"} size={24} color="black" />
       </TouchableOpacity>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -93,11 +94,15 @@ WavelengthCell.propTypes = {
   onBeginPlace: PropTypes.func,
   placementStatusDescription: PropTypes.object,
   onDelete: PropTypes.func,
+  isEnabled: PropTypes.bool,
 };
 
 const PADDING = 8;
 
 const styles = StyleSheet.create({
+  masterContainer: {
+    flex: 1,
+  },
   container: {
     height: 60,
     width: "100%",
