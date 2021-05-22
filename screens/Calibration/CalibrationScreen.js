@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
 import { HomeStackParamList } from "../../types";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -7,6 +7,20 @@ import CalibrationModePicker from "./CalibrationModePicker";
 import TickContainer from "./TickContainer";
 import WavelengthList from "./WavelengthList";
 import { Svg, Line, Rect } from "react-native-svg";
+import { useDispatch, useSelector } from "react-redux";
+
+import {
+  selectCalibrationPoints,
+  modifyWavelength,
+  removePoint,
+  addOption,
+  beginPlace,
+  cancelPlace,
+  editPlacement,
+  setCalibrationPoints,
+  setPreset,
+} from "../../redux/reducers/calibration/calibration";
+import { TouchableOpacity } from "react-native";
 
 const CHART_HEIGHT = 200;
 const CHART_MARGIN = 16;
@@ -15,16 +29,13 @@ const TICK_MARGIN = 4;
 const TICK_WIDTH = 60;
 
 export default function CalibrationScreen({ navigation }) {
-  const TEST_CALIB_POINTS = [
-    { id: 0, wavelength: 200, isLocked: false },
-    { id: 1, wavelength: 280, isLocked: false },
-    { id: 2, wavelength: 330, isLocked: false },
-    { id: 3, wavelength: 402, isLocked: false },
-  ];
-
   const MAX_POINTS = 5;
 
-  const [calibrationPoints, setCalibrationPoints] = useState(TEST_CALIB_POINTS);
+  const calibrationPoints = useSelector(
+    selectCalibrationPoints,
+    (a, b) => false // TODO: fix hack
+  );
+  const dispatch = useDispatch();
 
   const addNewPoint = () => {
     const id = Math.max(...calibrationPoints.map((x) => x.id)) + 1;
@@ -46,6 +57,7 @@ export default function CalibrationScreen({ navigation }) {
       );
     }
   };
+
 
   return (
     <View style={styles.container}>

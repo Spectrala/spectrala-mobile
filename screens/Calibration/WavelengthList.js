@@ -12,30 +12,42 @@ import {
 } from "react-native";
 import WavelengthCell from "./WavelengthCell";
 import { useTheme } from "@react-navigation/native";
+import { modifyWavelength } from "../../redux/reducers/calibration/calibration";
+import { useDispatch, useSelector } from "react-redux";
 
 function WavelengthList(props) {
   const { colors } = useTheme();
 
   const removeItem = (item) => props.wavelengths.filter((w) => w.id != item.id);
 
+  const dispatch = useDispatch();
+
   return (
     <FlatList
       style={{ ...styles.list, backgroundColor: colors.background }}
       data={props.wavelengths}
       scrollEnabled={false}
-      renderItem={({ item }) => (
+      renderItem={({ item, idx }) => (
         <WavelengthCell
           calibrationPoint={item}
-          setSelf={(newSelf) => {
-            const idx = props.wavelengths.indexOf(item);
-            let wavelengths = [...props.wavelengths];
-            wavelengths[idx] = { ...newSelf, id: wavelengths[idx].id };
-            props.setWavelengths(wavelengths);
+          changeWavelength={(wavelength) => {
+            dispatch(
+              modifyWavelength({
+                targetIndex: idx,
+                value: parseInt(wavelength),
+              })
+            );
           }}
-          removeSelf={() => props.setWavelengths(removeItem(item))}
+          removeSelf={() => {
+            dispatch(
+              removePoint({
+                targetIndex: idx,
+              })
+            );
+          }}
         />
       )}
-      keyExtractor={(item) => String(item.id)}
+      keyExtractor={(item) => String(item.key)}
       showsVerticalScrollIndicator={true}
       ItemSeparatorComponent={
         Platform.OS !== "android" &&

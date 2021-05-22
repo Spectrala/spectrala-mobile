@@ -1,5 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { SourceEnum } from '../views/video/source_select';
+
+export const SourceEnum = {
+    STREAM: 'SOURCE_STREAM',
+    WEBCAM: 'SOURCE_WEBCAM',
+    IMAGE: 'SOURCE_IMAGE',
+    MOBILE_STREAM: 'SOURCE_MOBILE_STREAM',
+};
 
 // Samples included in the moving average
 const PIXEL_LINE_HISTORY_DEPTH = 5;

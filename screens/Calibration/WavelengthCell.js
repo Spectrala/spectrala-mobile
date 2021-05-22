@@ -42,12 +42,7 @@ function WavelengthCell(props) {
       </TouchableOpacity>
       <TextInput
         style={styles.input}
-        onChangeText={(wavelength) => {
-          props.setSelf({
-            ...props.calibrationPoint,
-            wavelength: wavelength,
-          });
-        }}
+        onChangeText={(wavelength) => props.changeWavelength(wavelength)}
         value={props.calibrationPoint.wavelength.toString()}
         placeholder="Wavelength (nm)"
         keyboardType="numeric"
@@ -61,7 +56,7 @@ function WavelengthCell(props) {
 
 WavelengthCell.propTypes = {
   calibrationPoint: PropTypes.object,
-  setSelf: PropTypes.func,
+  changeWavelength: PropTypes.func,
   removeSelf: PropTypes.func,
 };
 
