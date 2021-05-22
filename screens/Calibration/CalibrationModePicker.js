@@ -29,15 +29,15 @@ function CalibrationModePicker(props) {
 
   const [open, setOpen] = useState(false);
   const [valueID, setValueID] = useState(DEFAULT_CALIBRATION);
-  const [items, setItems] = useState([
-    { label: "CFL Bulb", value: "cfl" },
-    { label: "Ch3a Lab Kit", value: "ch3kit" },
-  ]);
-
-  //   {
-  //     title: 'Ch3A Lab Kit',
-  //     value: [400, 530, 875, 940],
-  // },
+  
+  
+  // If changing presets is necessary, use something like this
+  // const [items, setItems] = useState([
+  //   { label: "CFL Bulb", value: "cfl" },
+  //   { label: "Ch3a Lab Kit", value: "ch3kit" },
+  // ]);
+  // In the DropDownPicker component:
+  // setItems={setItems}
 
   const calibrationPoints = useSelector(
     selectCalibrationPoints,
@@ -50,7 +50,6 @@ function CalibrationModePicker(props) {
   useEffect(() => {
     const preset = presets.all.filter((p) => p.id === valueID)[0];
     if (preset.value) {
-      console.log("okay something got called");
       dispatch(
         setPreset({
           preset,
@@ -59,13 +58,7 @@ function CalibrationModePicker(props) {
     }
   }, [valueID]);
 
-  useEffect(() => {
-    console.log(`Items: ${JSON.stringify(items)}`);
-  }, [items]);
-
   if (!presets) return;
-
-  console.log(`Show this preset: ${JSON.stringify(presets.current)}`);
 
   return (
     <DropDownPicker
@@ -81,7 +74,6 @@ function CalibrationModePicker(props) {
       setValue={setValueID}
       searchable={true}
       searchPlaceholder={"Search..."}
-      setItems={setItems}
       containerStyle={{
         borderWidth: 0,
       }}

@@ -36,6 +36,7 @@ export const getPlacementStatusDescription = (cp) => ({
     hasBeenPlaced: hasBeenPlaced(cp),
 });
 export const setWavelength = (cp, wavelength) => {
+    cp.wavelength = 3;
     cp.wavelength = parseInt(wavelength);
     setPlacement(cp, null);
 };

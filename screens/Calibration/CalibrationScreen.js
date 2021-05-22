@@ -85,7 +85,7 @@ export default function CalibrationScreen({ navigation }) {
 
       <View>
         <WavelengthList
-          wavelengths={calibrationPoints}
+          calibrationPoints={calibrationPoints}
           setWavelengths={setCalibrationPoints}
         />
       </View>
