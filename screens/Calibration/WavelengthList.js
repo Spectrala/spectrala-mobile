@@ -13,12 +13,6 @@ import {
 import WavelengthCell from "./WavelengthCell";
 import { useTheme } from "@react-navigation/native";
 
-import {
-  MINIMUM_WAVELENGTH,
-  MAXIMUM_WAVELENGTH,
-  currentAndOtherCalibrationPresets,
-  presetOfTitle,
-} from "../../redux/reducers/calibration/calibration_constants";
 import * as CalibPt from "../../redux/reducers/calibration/calibration_point";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -44,6 +38,7 @@ function WavelengthList(props) {
 
   const calibrationPoints = props.calibrationPoints;
 
+  // TODO: Make isDuplicateWavelength work (could also be implementation).
   const isDuplicateWavelength = useCallback(
     (wavelength) => {
       if (wavelength === null || wavelength === "") return false;
@@ -59,7 +54,7 @@ function WavelengthList(props) {
       if (CalibPt.wavelengthIsEmpty(point)) {
         return null;
       } else if (!CalibPt.wavelengthIsValid(point)) {
-        return `Select a wavelength between ${MINIMUM_WAVELENGTH} and ${MAXIMUM_WAVELENGTH}`;
+        return `Select a wavelength between ${CalibPt.MINIMUM_WAVELENGTH} and ${CalibPt.MAXIMUM_WAVELENGTH}`;
       } else if (isDuplicateWavelength(CalibPt.getWavelength(point))) {
         return "Duplicated wavelength found.";
       }
@@ -80,34 +75,31 @@ function WavelengthList(props) {
       data={props.calibrationPoints}
       scrollEnabled={false}
       renderItem={({ item, index }) => (
-        /**
-         *  modifyWavelength: (state, action) => {
-            const point =
-                state.calibrationPoints.value[action.payload.targetIndex];
-            CalibPt.setWavelength(point, action.payload.value);
-            if (point.isBeingPlaced && !CalibPt.isValidToPlace(point)) {
-              CalibPt.setPlacementStatus(point, false);
-          }
-},
-         */
-
         <WavelengthCell
           calibrationPoint={item}
+          checkValid={pointIsInvalid}
+          getValidationFeedback={getValidationFeedback}
           changeWavelength={(wavelength) => {
             dispatch(
               modifyWavelength({
                 targetIndex: index,
-                value: parseInt(wavelength),
+                value: wavelength,
               })
             );
           }}
-          removeSelf={() => {
+          placementStatusDescription={CalibPt.getPlacementStatusDescription(
+            item
+          )}
+          onEdit={() => {
             dispatch(
-              removePoint({
+              editPlacement({
                 targetIndex: index,
               })
             );
           }}
+          onBeginPlace={() => dispatch(beginPlace({ targetIndex: index }))}
+          onCancel={() => dispatch(cancelPlace({ targetIndex: index }))}
+          onDelete={() => dispatch(removePoint({ targetIndex: index }))}
         />
       )}
       keyExtractor={(item) => String(item.key)}

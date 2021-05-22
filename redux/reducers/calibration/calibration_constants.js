@@ -1,6 +1,6 @@
 import * as CalibPt from "./calibration_point";
-export const MINIMUM_WAVELENGTH = 300;
-export const MAXIMUM_WAVELENGTH = 1000;
+
+export const MAX_POINTS = 5;
 
 export const calibrationPresets = [
   {

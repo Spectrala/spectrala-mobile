@@ -20,6 +20,8 @@ import {
   setCalibrationPoints,
   setPreset,
 } from "../../redux/reducers/calibration/calibration";
+import { MAX_POINTS } from "../../redux/reducers/calibration/calibration_constants";
+
 import { TouchableOpacity } from "react-native";
 
 const CHART_HEIGHT = 200;
@@ -29,21 +31,11 @@ const TICK_MARGIN = 4;
 const TICK_WIDTH = 60;
 
 export default function CalibrationScreen({ navigation }) {
-  const MAX_POINTS = 5;
-
   const calibrationPoints = useSelector(
     selectCalibrationPoints,
     (a, b) => false // TODO: fix hack
   );
   const dispatch = useDispatch();
-
-  const addNewPoint = () => {
-    const id = Math.max(...calibrationPoints.map((x) => x.id)) + 1;
-    setCalibrationPoints([
-      ...calibrationPoints,
-      { id: id, wavelength: "", isLocked: false },
-    ]);
-  };
 
   const addNewPointButton = () => {
     if (calibrationPoints.length < MAX_POINTS) {
@@ -52,12 +44,11 @@ export default function CalibrationScreen({ navigation }) {
           title="Add point"
           color="black"
           style={styles.addPointButton}
-          onPress={addNewPoint}
+          onPress={() => dispatch(addOption())}
         />
       );
     }
   };
-
 
   return (
     <View style={styles.container}>

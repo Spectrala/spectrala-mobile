@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import PropTypes from "prop-types";
 import {
   TouchableWithoutFeedback,
@@ -10,8 +10,9 @@ import {
 } from "react-native";
 import { TouchableOpacity } from "react-native";
 import { format } from "date-fns";
-import { FontAwesome } from "@expo/vector-icons";
+import { FontAwesome, Entypo } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
+
 /**
  * https://icons.expo.fyi
  *
@@ -23,31 +24,59 @@ import { useTheme } from "@react-navigation/native";
 function WavelengthCell(props) {
   const { colors } = useTheme();
 
+  const invalid = props.checkValid(props.calibrationPoint);
+
+  const getValidationText = () => {
+    if (!invalid) return;
+    return (
+      <Text style={styles.validationText}>
+        {props.getValidationFeedback(props.calibrationPoint)}
+      </Text>
+    );
+  };
+
+  const wavelength = props.calibrationPoint.wavelength;
+
+  const getPrependedGroup = useCallback(() => {
+    const description = props.placementStatusDescription;
+
+    if (description["isBeingPlaced"]) {
+      return (
+        <TouchableOpacity style={styles.lock} onPress={props.onCancel}>
+          <FontAwesome name="unlock-alt" size={24} color="black" />
+        </TouchableOpacity>
+      );
+    } else if (description["hasBeenPlaced"]) {
+      return (
+        <TouchableOpacity style={styles.lock} onPress={props.onEdit}>
+          <FontAwesome name="lock" size={24} color="black" />
+        </TouchableOpacity>
+      );
+    }
+
+    return (
+      <TouchableOpacity
+        style={styles.placeText}
+        disabled={invalid}
+        onPress={props.onBeginPlace}
+      >
+        <Text>Place</Text>
+      </TouchableOpacity>
+    );
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity
-        style={styles.lock}
-        onPress={() => {
-          props.setSelf({
-            ...props.calibrationPoint,
-            isLocked: !props.isLocked,
-          });
-        }}
-      >
-        <FontAwesome
-          name={props.isLocked ? "lock" : "unlock-alt"}
-          size={24}
-          color="black"
-        />
-      </TouchableOpacity>
+      {getPrependedGroup()}
       <TextInput
-        style={styles.input}
-        onChangeText={(wavelength) => props.changeWavelength(wavelength)}
-        value={props.calibrationPoint.wavelength.toString()}
+        style={{ ...styles.input, ...(invalid ? styles.invalidInput : {}) }}
+        onChangeText={(text) => props.changeWavelength(text)}
+        value={wavelength ? wavelength.toString() : ""}
         placeholder="Wavelength (nm)"
         keyboardType="numeric"
       />
-      <TouchableOpacity style={styles.minus} onPress={props.removeSelf}>
+      {getValidationText()}
+      <TouchableOpacity style={styles.minus} onPress={props.onDelete}>
         <FontAwesome name={"minus-circle"} size={24} color="black" />
       </TouchableOpacity>
     </SafeAreaView>
@@ -57,11 +86,14 @@ function WavelengthCell(props) {
 WavelengthCell.propTypes = {
   calibrationPoint: PropTypes.object,
   changeWavelength: PropTypes.func,
-  removeSelf: PropTypes.func,
+  checkValid: PropTypes.func,
+  getValidationFeedback: PropTypes.func,
+  onEdit: PropTypes.func,
+  onCancel: PropTypes.func,
+  onBeginPlace: PropTypes.func,
+  placementStatusDescription: PropTypes.object,
+  onDelete: PropTypes.func,
 };
-
-// TODO: Add preview of spectra
-// TODO: Adjust for long names
 
 const PADDING = 8;
 
@@ -81,6 +113,15 @@ const styles = StyleSheet.create({
     width: 180,
     borderWidth: 1,
     paddingLeft: 10,
+    borderColor: "black",
+  },
+  invalidInput: {
+    borderColor: "orange",
+    width: 60,
+  },
+  validationText: {
+    marginHorizontal: PADDING,
+    flexShrink: 1,
   },
   lock: {
     width: 30,
@@ -94,6 +135,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginLeft: "auto",
     marginRight: PADDING,
+  },
+  placeText: {
+    fontSize: 14,
   },
 });
 

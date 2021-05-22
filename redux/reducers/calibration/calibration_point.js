@@ -1,7 +1,5 @@
-import {
-    MINIMUM_WAVELENGTH,
-    MAXIMUM_WAVELENGTH,
-} from './calibration_constants';
+export const MINIMUM_WAVELENGTH = 300;
+export const MAXIMUM_WAVELENGTH = 1000;
 
 // This module contains utilities for working with calibration points, which are of the form:
 // {
@@ -13,47 +11,46 @@ import {
 // For ergononomics, use it like "import * as CalibPt from 'path/to/file'"
 
 export const construct = (wavelength, placement, isBeingPlaced) => ({
-    wavelength,
-    placement,
-    isBeingPlaced,
+  wavelength,
+  placement,
+  isBeingPlaced,
 });
 export const getPlacement = (cp) => cp.placement;
 export const getWavelength = (cp) => cp.wavelength;
 export const hasBeenPlaced = (cp) => !!cp.placement;
-export const getWavelengthDescription = (cp) => cp.wavelength + 'nm';
+export const getWavelengthDescription = (cp) => cp.wavelength + "nm";
 export const getPlacementLocationDescription = (cp) => {
-    if (!hasBeenPlaced(cp)) {
-        return null;
-    }
-    return {
-        wavelength: getWavelengthDescription(cp),
-        rawWavelength: cp.wavelength,
-        placement: cp.placement,
-    };
+  if (!hasBeenPlaced(cp)) {
+    return null;
+  }
+  return {
+    wavelength: getWavelengthDescription(cp),
+    rawWavelength: cp.wavelength,
+    placement: cp.placement,
+  };
 };
 export const getPlacementStatusDescription = (cp) => ({
-    isBeingPlaced: cp.isBeingPlaced,
-    hasBeenPlaced: hasBeenPlaced(cp),
+  isBeingPlaced: cp.isBeingPlaced,
+  hasBeenPlaced: hasBeenPlaced(cp),
 });
 export const setWavelength = (cp, wavelength) => {
-    cp.wavelength = 3;
-    cp.wavelength = parseInt(wavelength);
-    setPlacement(cp, null);
+  cp.wavelength = parseInt(wavelength);
+  setPlacement(cp, null);
 };
 
 export const setPlacementStatus = (cp, beingPlaced) => {
-    cp.isBeingPlaced = beingPlaced;
+  cp.isBeingPlaced = beingPlaced;
 };
 
 export const setPlacement = (cp, x) => {
-    cp.placement = x;
+  cp.placement = x;
 };
 
 export const wavelengthIsValid = (cp) =>
-    !isNaN(cp.wavelength) &&
-    cp.wavelength >= MINIMUM_WAVELENGTH &&
-    cp.wavelength <= MAXIMUM_WAVELENGTH;
+  !isNaN(cp.wavelength) &&
+  cp.wavelength >= MINIMUM_WAVELENGTH &&
+  cp.wavelength <= MAXIMUM_WAVELENGTH;
 
-export const wavelengthIsEmpty = (cp) => cp.wavelength === '' || !cp.wavelength;
+export const wavelengthIsEmpty = (cp) => cp.wavelength === "" || !cp.wavelength;
 
 export const isValidToPlace = (cp) => wavelengthIsValid(cp);
