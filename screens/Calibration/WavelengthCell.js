@@ -12,6 +12,7 @@ import { format } from "date-fns";
 import { FontAwesome, Entypo } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
 import KeyboardSpacer from "react-native-keyboard-spacer";
+import * as CalibPt from "../../redux/reducers/calibration/calibration_point";
 
 /**
  * https://icons.expo.fyi
@@ -37,8 +38,11 @@ function WavelengthCell(props) {
 
   const wavelength = props.calibrationPoint.wavelength;
 
-  const getPrependedGroup = useCallback(() => {
-    const description = props.placementStatusDescription;
+  const getPrependedGroup = () => {
+    const description = CalibPt.getPlacementStatusDescription(
+      props.calibrationPoint
+    );
+    // console.log(`Description: ${JSON.stringify(description)}`);
 
     if (description["isBeingPlaced"]) {
       return (
@@ -63,7 +67,7 @@ function WavelengthCell(props) {
         <Text>Place</Text>
       </TouchableOpacity>
     );
-  }, []);
+  };
 
   return (
     <View style={styles.container}>

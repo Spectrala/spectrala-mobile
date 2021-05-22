@@ -57,7 +57,6 @@ export const calibrationSlice = createSlice({
   },
   reducers: {
     modifyWavelength: (state, action) => {
-      console.log(`Target index: ${action.payload.targetIndex}`);
       const point = state.calibrationPoints.value[action.payload.targetIndex];
       CalibPt.setWavelength(point, action.payload.value);
       /** Make sure the point cannot be placed if the new value is invalid. */

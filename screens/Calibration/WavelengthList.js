@@ -13,7 +13,6 @@ import {
 import WavelengthCell from "./WavelengthCell";
 import { useTheme } from "@react-navigation/native";
 import { KeyboardAwareFlatList } from "react-native-keyboard-aware-scroll-view";
-
 import * as CalibPt from "../../redux/reducers/calibration/calibration_point";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -88,9 +87,6 @@ function WavelengthList(props) {
               })
             );
           }}
-          placementStatusDescription={CalibPt.getPlacementStatusDescription(
-            item
-          )}
           onEdit={() => {
             dispatch(
               editPlacement({
