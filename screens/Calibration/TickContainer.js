@@ -27,6 +27,8 @@ function TickContainer(props) {
       backgroundColor: colors.primary,
     };
 
+    const tickThumbHeight = props.tickHeight - 2 * props.tickMargin;
+
     const pan = useRef(new Animated.ValueXY()).current;
 
     pan.addListener(({ x }) => setter(initial + x));
@@ -62,7 +64,7 @@ function TickContainer(props) {
         <View
           style={{
             ...circleStyle,
-            height: props.tickHeight - 2 * props.tickMargin,
+            height: tickThumbHeight,
             width: props.tickWidth,
             transform: [{ translateY: props.tickMargin }],
           }}
@@ -74,60 +76,51 @@ function TickContainer(props) {
   };
 
   const activeLine = useCallback(
-    (xPosition) => {
+    (idx, xPosition) => {
       return (
-        <Svg height="100%" width="100%">
-          <Line
-            x1={xPosition + CIRCLE_RADIUS}
-            y1={0}
-            x2={xPosition + CIRCLE_RADIUS}
-            y2={props.chartHeight + props.tickMargin}
-            stroke={colors.primary}
-            strokeWidth="2"
-          />
-        </Svg>
+        <Line
+          key={idx}
+          x1={xPosition + CIRCLE_RADIUS}
+          y1={0}
+          x2={xPosition + CIRCLE_RADIUS}
+          y2={props.chartHeight + props.tickMargin}
+          stroke={colors.primary}
+          strokeWidth="2"
+        />
       );
     },
     [props.activeXPosition]
   );
 
-  const inactiveTick = useCallback(
-    (idx, wavelength, xPosition) => {
-      return (
-        <Svg key={idx} height="100%" width="100%">
-          <Line
-            x1={xPosition + CIRCLE_RADIUS}
-            y1={0}
-            x2={xPosition + CIRCLE_RADIUS}
-            y2={props.chartHeight + props.tickMargin}
-            stroke={colors.primary}
-            strokeWidth="2"
-          />
-        </Svg>
-      );
-    },
-    [props.previouslySetPoints]
-  );
+  const inactiveTick = (idx, wavelength, xPosition) => {
+    return (
+      <Line
+        key={idx}
+        x1={xPosition + CIRCLE_RADIUS}
+        y1={0}
+        x2={xPosition + CIRCLE_RADIUS}
+        y2={props.chartHeight + props.tickMargin}
+        stroke={colors.primary}
+        strokeWidth="2"
+      />
+    );
+  };
 
   return (
     <>
-      <View style={styles.container}>{activeLine(props.activeXPosition)}</View>
-
-      <View
-        style={{
-          ...styles.tickContainer,
-          height: props.tickHeight,
-          top: 0,
-        }}
-      >
-        {props.previouslySetPoints.map((pt, idx) => {
-          return inactiveTick(
-            idx,
-            CalibPt.getWavelengthDescription(pt),
-            CalibPt.getPlacement(pt)
-          );
-        })}
+      <View style={styles.container}>
+        <Svg height="100%" width="100%">
+          {activeLine(-1, props.activeXPosition)}
+          {props.previouslySetPoints.map((pt, idx) => {
+            return inactiveTick(
+              idx,
+              CalibPt.getWavelengthDescription(pt),
+              CalibPt.getPlacement(pt)
+            );
+          })}
+        </Svg>
       </View>
+
       <View
         style={{
           ...styles.tickContainer,
