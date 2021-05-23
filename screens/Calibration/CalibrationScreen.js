@@ -8,7 +8,7 @@ import TickContainer from "./TickContainer";
 import WavelengthList from "./WavelengthList";
 import { Svg, Line, Rect } from "react-native-svg";
 import { useDispatch, useSelector } from "react-redux";
-
+import * as CalibPt from "../../redux/reducers/calibration/calibration_point";
 import {
   selectCalibrationPoints,
   modifyWavelength,
@@ -66,7 +66,7 @@ export default function CalibrationScreen({ navigation }) {
         }}
       >
         <TickContainer
-          wavelength={"399"}
+          activeWavelength={"399"}
           chartHeight={CHART_HEIGHT}
           tickHeight={TICK_HEIGHT}
           tickMargin={TICK_MARGIN}
@@ -75,6 +75,7 @@ export default function CalibrationScreen({ navigation }) {
           setActiveXPosition={setActiveX}
           activeXPosition={activeX}
           initialXPosition={initialX}
+          previouslySetPoints={calibrationPoints.filter(CalibPt.hasBeenPlaced)}
         />
       </View>
       <View style={styles.picker}>
@@ -120,7 +121,7 @@ const styles = StyleSheet.create({
   },
   picker: {
     marginTop: TICK_HEIGHT,
-    zIndex: 3, // works on ios
+    zIndex: 30, // works on ios
     elevation: 30, // works on android
   },
   addPointButton: {

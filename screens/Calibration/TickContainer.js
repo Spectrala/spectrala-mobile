@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { Svg, Line, Rect } from "react-native-svg";
+import * as CalibPt from "../../redux/reducers/calibration/calibration_point";
 
 const CIRCLE_RADIUS = 20;
 
@@ -66,34 +67,71 @@ function TickContainer(props) {
             transform: [{ translateY: props.tickMargin }],
           }}
         >
-          <Text style={styles.tickText}>{props.wavelength}</Text>
+          <Text style={styles.tickText}>{props.activeWavelength}</Text>
         </View>
       </Animated.View>
     );
   };
 
-  const readerLine = useCallback(() => {
-    return (
-      <Svg height="100%" width="100%">
-        <Line
-          x1={props.activeXPosition + CIRCLE_RADIUS}
-          y1={0}
-          x2={props.activeXPosition + CIRCLE_RADIUS}
-          y2={props.chartHeight + props.tickMargin}
-          stroke={colors.primary}
-          strokeWidth="2"
-        />
-      </Svg>
-    );
-  }, [props.activeXPosition]);
+  const activeLine = useCallback(
+    (xPosition) => {
+      return (
+        <Svg height="100%" width="100%">
+          <Line
+            x1={xPosition + CIRCLE_RADIUS}
+            y1={0}
+            x2={xPosition + CIRCLE_RADIUS}
+            y2={props.chartHeight + props.tickMargin}
+            stroke={colors.primary}
+            strokeWidth="2"
+          />
+        </Svg>
+      );
+    },
+    [props.activeXPosition]
+  );
+
+  const inactiveTick = useCallback(
+    (idx, wavelength, xPosition) => {
+      return (
+        <Svg key={idx} height="100%" width="100%">
+          <Line
+            x1={xPosition + CIRCLE_RADIUS}
+            y1={0}
+            x2={xPosition + CIRCLE_RADIUS}
+            y2={props.chartHeight + props.tickMargin}
+            stroke={colors.primary}
+            strokeWidth="2"
+          />
+        </Svg>
+      );
+    },
+    [props.previouslySetPoints]
+  );
 
   return (
     <>
-      <View style={styles.container}>{readerLine()}</View>
+      <View style={styles.container}>{activeLine(props.activeXPosition)}</View>
+
       <View
         style={{
           ...styles.tickContainer,
           height: props.tickHeight,
+          top: 0,
+        }}
+      >
+        {props.previouslySetPoints.map((pt, idx) => {
+          return inactiveTick(
+            idx,
+            CalibPt.getWavelengthDescription(pt),
+            CalibPt.getPlacement(pt)
+          );
+        })}
+      </View>
+      <View
+        style={{
+          ...styles.tickContainer,
+          height: props.chartHeight,
           top: props.chartHeight,
         }}
       >
@@ -110,10 +148,11 @@ TickContainer.propTypes = {
   tickMargin: PropTypes.number.isRequired,
   tickWidth: PropTypes.number.isRequired,
   chartMargin: PropTypes.number.isRequired,
-  wavelength: PropTypes.string.isRequired,
+  activeWavelength: PropTypes.string.isRequired,
   setActiveXPosition: PropTypes.func.isRequired,
   activeXPosition: PropTypes.number.isRequired,
   initialXPosition: PropTypes.number.isRequired,
+  previouslySetPoints: PropTypes.array,
 };
 
 const styles = StyleSheet.create({
