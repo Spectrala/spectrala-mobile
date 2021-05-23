@@ -42,7 +42,12 @@ function CalibrationChart(props) {
     <AreaChart
       style={{ height: 200 }}
       data={data}
-      contentInset={{ top: 0, bottom: 0, left: 30, right: 30 }}
+      contentInset={{
+        top: 0,
+        bottom: 0,
+        left: props.horizontalInset,
+        right: props.horizontalInset,
+      }}
       curve={shape.curveBasis}
       svg={{
         fill: rgbToHexColor(colors.primary) + "99",
@@ -58,6 +63,7 @@ function CalibrationChart(props) {
 
 CalibrationChart.propTypes = {
   margin: PropTypes.number.isRequired,
+  horizontalInset: PropTypes.number.isRequired,
 };
 
 const styles = StyleSheet.create({

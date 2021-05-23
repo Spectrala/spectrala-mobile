@@ -17,6 +17,7 @@ import { Svg, Line, Rect } from "react-native-svg";
 import * as CalibPt from "../../redux/reducers/calibration/calibration_point";
 
 const CIRCLE_RADIUS = 20;
+const INACTIVE_TEXT_WIDTH = 60;
 
 function TickContainer(props) {
   const { colors } = useTheme();
@@ -51,12 +52,11 @@ function TickContainer(props) {
       })
     ).current;
 
-    // TODO: fix hardcoded style (10)
     return (
       <Animated.View
         style={{
           position: "absolute",
-          left: initial - 10,
+          left: initial - props.chartInset,
           transform: [{ translateX: pan.x }],
         }}
         {...panResponder.panHandlers}
@@ -76,13 +76,13 @@ function TickContainer(props) {
   };
 
   const activeLine = useCallback(
-    (idx, xPosition) => {
+    (xPosition) => {
       return (
         <Line
-          key={idx}
-          x1={xPosition + CIRCLE_RADIUS}
+          key={"active"}
+          x1={xPosition}
           y1={0}
-          x2={xPosition + CIRCLE_RADIUS}
+          x2={xPosition}
           y2={props.chartHeight + props.tickMargin}
           stroke={colors.primary}
           strokeWidth="2"
@@ -95,14 +95,24 @@ function TickContainer(props) {
   const inactiveTick = (idx, wavelength, xPosition) => {
     return (
       <Line
-        key={idx}
-        x1={xPosition + CIRCLE_RADIUS}
+        key={`line-${idx}`}
+        x1={xPosition}
         y1={0}
-        x2={xPosition + CIRCLE_RADIUS}
+        x2={xPosition}
         y2={props.chartHeight + props.tickMargin}
-        stroke={colors.primary}
+        stroke={"black"}
         strokeWidth="2"
+        strokeDasharray="2"
       />
+    );
+  };
+
+  const inactiveText = (idx, wavelength, xPosition) => {
+    const left = xPosition - INACTIVE_TEXT_WIDTH / 2;
+    return (
+      <View key={idx} style={{ ...styles.inactiveTextContainer, left: left }}>
+        <Text style={styles.inactiveText}>{wavelength}</Text>
+      </View>
     );
   };
 
@@ -110,7 +120,7 @@ function TickContainer(props) {
     <>
       <View style={styles.container}>
         <Svg height="100%" width="100%">
-          {activeLine(-1, props.activeXPosition)}
+          {activeLine(props.activeXPosition)}
           {props.previouslySetPoints.map((pt, idx) => {
             return inactiveTick(
               idx,
@@ -120,6 +130,13 @@ function TickContainer(props) {
           })}
         </Svg>
       </View>
+      {props.previouslySetPoints.map((pt, idx) => {
+        return inactiveText(
+          idx,
+          CalibPt.getWavelengthDescription(pt),
+          CalibPt.getPlacement(pt)
+        );
+      })}
 
       <View
         style={{
@@ -141,6 +158,7 @@ TickContainer.propTypes = {
   tickMargin: PropTypes.number.isRequired,
   tickWidth: PropTypes.number.isRequired,
   chartMargin: PropTypes.number.isRequired,
+  chartInset: PropTypes.number.isRequired,
   activeWavelength: PropTypes.string.isRequired,
   setActiveXPosition: PropTypes.func.isRequired,
   activeXPosition: PropTypes.number.isRequired,
@@ -176,6 +194,19 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 24,
     fontWeight: "bold",
+  },
+  inactiveText: {
+    fontSize: 14,
+    lineHeight: 24,
+  },
+  inactiveTextContainer: {
+    backgroundColor: "white",
+    borderWidth: 2,
+    height: 30,
+    width: INACTIVE_TEXT_WIDTH,
+    top: 20,
+    justifyContent: "center",
+    alignItems: "center",
   },
   tick: {
     height: CIRCLE_RADIUS * 2,

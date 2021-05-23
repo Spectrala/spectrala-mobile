@@ -26,6 +26,7 @@ import { TouchableOpacity } from "react-native";
 
 const CHART_HEIGHT = 200;
 const CHART_MARGIN = 16;
+const CHART_INSET = 30;
 const TICK_HEIGHT = 40;
 const TICK_MARGIN = 4;
 const TICK_WIDTH = 60;
@@ -57,7 +58,7 @@ export default function CalibrationScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.chart}>
-        <CalibrationChart margin={CHART_MARGIN} />
+        <CalibrationChart margin={CHART_MARGIN} horizontalInset={CHART_INSET} />
       </View>
       <View
         style={{
@@ -72,6 +73,7 @@ export default function CalibrationScreen({ navigation }) {
           tickMargin={TICK_MARGIN}
           tickWidth={TICK_WIDTH}
           chartMargin={CHART_MARGIN}
+          chartInset={CHART_INSET}
           setActiveXPosition={setActiveX}
           activeXPosition={activeX}
           initialXPosition={initialX}
