@@ -7,7 +7,6 @@ import DraggablePointsContainer from "./DraggablePointsContainer";
 import CameraView from "./CameraView";
 
 // TODO: stop using expo in order to figure out the camera stuff
-
 export default function CameraScreen({ navigation }) {
   return (
     <View style={styles.container}>
