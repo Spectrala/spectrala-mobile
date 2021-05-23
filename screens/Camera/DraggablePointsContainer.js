@@ -80,8 +80,8 @@ function DraggablePointsContainer(props) {
           y1={p1.y + CIRCLE_RADIUS}
           x2={p2.x + CIRCLE_RADIUS}
           y2={p2.y + CIRCLE_RADIUS}
-          stroke="black"
-          strokeWidth="2"
+          stroke="white"
+          strokeWidth="4"
         />
       </Svg>
     );

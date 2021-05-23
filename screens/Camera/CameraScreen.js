@@ -11,7 +11,7 @@ import CameraView from "./CameraView";
 export default function CameraScreen({ navigation }) {
   return (
     <View style={styles.container}>
-      {/* <CameraView /> */}
+      <CameraView />
       <DraggablePointsContainer />
     </View>
   );
