@@ -26,6 +26,7 @@ import {
   editPlacement,
   setCalibrationPoints,
   setPreset,
+  placePoint,
 } from "../../redux/reducers/calibration/calibration";
 
 function WavelengthList(props) {
@@ -96,6 +97,14 @@ function WavelengthList(props) {
           }}
           onBeginPlace={() => dispatch(beginPlace({ targetIndex: index }))}
           onCancel={() => dispatch(cancelPlace({ targetIndex: index }))}
+          onEndPlace={() =>
+            dispatch(
+              placePoint({
+                value: props.activeXPosition,
+                targetIndex: index,
+              })
+            )
+          }
           onDelete={() => dispatch(removePoint({ targetIndex: index }))}
           isEnabled={props.inputEnabled}
         />
@@ -121,6 +130,7 @@ WavelengthList.propTypes = {
   calibrationPoints: PropTypes.array.isRequired,
   setWavelengths: PropTypes.func.isRequired,
   inputEnabled: PropTypes.bool.isRequired,
+  activeXPosition: PropTypes.number,
 };
 
 const styles = StyleSheet.create({

@@ -51,6 +51,8 @@ export default function CalibrationScreen({ navigation }) {
   };
 
   const [open, setOpen] = useState(false);
+  const initialX = 100;
+  const [activeX, setActiveX] = useState(initialX);
 
   return (
     <View style={styles.container}>
@@ -64,12 +66,15 @@ export default function CalibrationScreen({ navigation }) {
         }}
       >
         <TickContainer
-          wavelengths={calibrationPoints}
+          wavelength={"399"}
           chartHeight={CHART_HEIGHT}
           tickHeight={TICK_HEIGHT}
           tickMargin={TICK_MARGIN}
           tickWidth={TICK_WIDTH}
           chartMargin={CHART_MARGIN}
+          setActiveXPosition={setActiveX}
+          activeXPosition={activeX}
+          initialXPosition={initialX}
         />
       </View>
       <View style={styles.picker}>
@@ -81,6 +86,7 @@ export default function CalibrationScreen({ navigation }) {
           calibrationPoints={calibrationPoints}
           setWavelengths={setCalibrationPoints}
           inputEnabled={!open}
+          activeXPosition={activeX}
         />
       </View>
       {addNewPointButton()}

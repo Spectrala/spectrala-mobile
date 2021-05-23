@@ -46,9 +46,18 @@ function WavelengthCell(props) {
 
     if (description["isBeingPlaced"]) {
       return (
-        <TouchableOpacity style={styles.lock} onPress={props.onCancel}>
-          <FontAwesome name="unlock-alt" size={24} color="black" />
-        </TouchableOpacity>
+        <>
+          <TouchableOpacity
+            style={styles.placeText}
+            disabled={invalid}
+            onPress={props.onCancel}
+          >
+            <Text>Cancel</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.lock} onPress={props.onEndPlace}>
+            <FontAwesome name="unlock-alt" size={24} color="black" />
+          </TouchableOpacity>
+        </>
       );
     } else if (description["hasBeenPlaced"]) {
       return (
@@ -96,6 +105,7 @@ WavelengthCell.propTypes = {
   onEdit: PropTypes.func,
   onCancel: PropTypes.func,
   onBeginPlace: PropTypes.func,
+  onEndPlace: PropTypes.func,
   placementStatusDescription: PropTypes.object,
   onDelete: PropTypes.func,
   isEnabled: PropTypes.bool,
