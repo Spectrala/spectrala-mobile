@@ -52,6 +52,8 @@ export default function CapturedList({ navigation }) {
         keyExtractor={(item, index) => `draggable-item-${item.key}`}
         onDragEnd={({ data }) => setData(data)}
         contentContainerStyle={{ paddingBottom: 100 }}
+        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
         ItemSeparatorComponent={
           Platform.OS !== "android" &&
           (({ highlighted }) => (

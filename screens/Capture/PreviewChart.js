@@ -55,10 +55,6 @@ function CaptureChart(props) {
 
 // TODO: use some real data.
 
-CaptureChart.propTypes = {
-  margin: PropTypes.number.isRequired,
-};
-
 const styles = StyleSheet.create({
   rightBox: {
     width: "100%",

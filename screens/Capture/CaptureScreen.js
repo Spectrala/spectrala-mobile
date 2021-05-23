@@ -17,7 +17,7 @@ export default function CaptureScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.chart}>
-        <CaptureChart margin={CHART_MARGIN} />
+        <CaptureChart/>
       </View>
       <ModeSwitcher />
       <CapturedList />
