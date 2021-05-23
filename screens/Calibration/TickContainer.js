@@ -52,7 +52,7 @@ function TickContainer(props) {
       })
     ).current;
 
-    return (
+    return props.pointIsBeingPlaced ? (
       <Animated.View
         style={{
           position: "absolute",
@@ -72,7 +72,7 @@ function TickContainer(props) {
           <Text style={styles.tickText}>{props.activeWavelength}</Text>
         </View>
       </Animated.View>
-    );
+    ) : null;
   };
 
   const activeLine = useCallback(
@@ -120,7 +120,7 @@ function TickContainer(props) {
     <>
       <View style={styles.container}>
         <Svg height="100%" width="100%">
-          {activeLine(props.activeXPosition)}
+          {props.pointIsBeingPlaced ? activeLine(props.activeXPosition) : null}
           {props.previouslySetPoints.map((pt, idx) => {
             return inactiveTick(
               idx,
@@ -160,6 +160,7 @@ TickContainer.propTypes = {
   chartMargin: PropTypes.number.isRequired,
   chartInset: PropTypes.number.isRequired,
   activeWavelength: PropTypes.string.isRequired,
+  pointIsBeingPlaced: PropTypes.bool.isRequired,
   setActiveXPosition: PropTypes.func.isRequired,
   activeXPosition: PropTypes.number.isRequired,
   initialXPosition: PropTypes.number.isRequired,

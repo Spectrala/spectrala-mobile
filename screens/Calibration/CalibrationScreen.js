@@ -55,6 +55,12 @@ export default function CalibrationScreen({ navigation }) {
   const initialX = 100;
   const [activeX, setActiveX] = useState(initialX);
 
+  const pointBeingPlaced = calibrationPoints.find((p) => p.isBeingPlaced);
+  const pointIsBeingPlaced = !!pointBeingPlaced;
+  const activeWavelength = pointIsBeingPlaced
+    ? CalibPt.getWavelengthDescription(pointBeingPlaced)
+    : "";
+
   return (
     <View style={styles.container}>
       <View style={styles.chart}>
@@ -67,7 +73,8 @@ export default function CalibrationScreen({ navigation }) {
         }}
       >
         <TickContainer
-          activeWavelength={"399"}
+          activeWavelength={activeWavelength}
+          pointIsBeingPlaced={ pointIsBeingPlaced}
           chartHeight={CHART_HEIGHT}
           tickHeight={TICK_HEIGHT}
           tickMargin={TICK_MARGIN}

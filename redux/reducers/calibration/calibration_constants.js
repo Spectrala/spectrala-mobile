@@ -30,7 +30,7 @@ export const expandPreset = (preset) => {
 };
 
 export const presetOfTitle = (title) =>
-  calibrationPresets.filter((p) => p.title === title)[0];
+  calibrationPresets.find((p) => p.title === title);
 
 export const currentCalibrationPreset = (calibrationPoints) => {
   let possiblePresets = [];

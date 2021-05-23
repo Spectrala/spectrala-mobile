@@ -47,7 +47,7 @@ function CalibrationModePicker(props) {
   //
 
   const updatePreset = useCallback(() => {
-    const preset = presets.all.filter((p) => p.id === valueID)[0];
+    const preset = presets.all.find((p) => p.id === valueID);
     if (preset.value) {
       dispatch(
         setPreset({
