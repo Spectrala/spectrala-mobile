@@ -11,7 +11,14 @@ import CameraView from "./CameraView";
 export default function CameraScreen({ navigation }) {
   return (
     <View style={styles.container}>
-      <CameraView />
+      <CameraView
+        captureIntervalSeconds={10}
+        onCaptureFrame={(frame) => {
+          console.log("Frame");
+          console.log(frame);
+        }}
+        isActive={true}
+      />
       <DraggablePointsContainer />
     </View>
   );
