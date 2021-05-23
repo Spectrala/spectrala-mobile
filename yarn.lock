@@ -7169,13 +7169,6 @@ react-is@^17.0.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-17.0.2.tgz#e691d4a8e9c789365655539ab372762b0efb54f0"
   integrity sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==
 
-react-native-camera@^3.43.9:
-  version "3.43.9"
-  resolved "https://registry.yarnpkg.com/react-native-camera/-/react-native-camera-3.43.9.tgz#026322b0a5143da1b6e622bba217713be8b830b2"
-  integrity sha512-HTXxkGdNa9G0ErVXBoqsf1lYorBXjXfVZbDeHUBVxQrOqL8CV3eJTuaY5kHH41Y7woJ8yISmklZeUwpZrskEgw==
-  dependencies:
-    prop-types "^15.6.2"
-
 react-native-draggable-flatlist@^2.6.2:
   version "2.6.2"
   resolved "https://registry.yarnpkg.com/react-native-draggable-flatlist/-/react-native-draggable-flatlist-2.6.2.tgz#d1445fd52e75bc4f4ebbd832a8bc4525cebb8302"
