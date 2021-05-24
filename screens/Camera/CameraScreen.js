@@ -11,7 +11,7 @@ export default function CameraScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <CameraView
-        captureIntervalSeconds={10}
+        captureIntervalSeconds={1}
         onCaptureFrame={(frame) => {
           console.log("Frame");
           console.log(frame);
