@@ -9,6 +9,7 @@ import WavelengthList from "./WavelengthList";
 import { Svg, Line, Rect } from "react-native-svg";
 import { useDispatch, useSelector } from "react-redux";
 import * as CalibPt from "../../redux/reducers/calibration/calibration_point";
+import CameraView from "../Camera/CameraView";
 import {
   selectCalibrationPoints,
   modifyWavelength,
@@ -100,6 +101,15 @@ export default function CalibrationScreen({ navigation }) {
         />
       </View>
       {addNewPointButton()}
+
+      <CameraView
+        captureIntervalSeconds={5}
+        onCaptureFrame={(frame) => {
+          console.log("Frame");
+          console.log(frame);
+        }}
+        isActive={false}
+      />
     </View>
   );
 }

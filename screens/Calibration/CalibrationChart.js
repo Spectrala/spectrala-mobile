@@ -6,6 +6,12 @@ import { format } from "date-fns";
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
 import { AreaChart, Grid } from "react-native-svg-charts";
+import { useDispatch, useSelector } from 'react-redux';
+import { selectChartData } from '../../redux/reducers/video';
+import {
+  selectCalibrationPoints,
+  placePoint,
+} from '../../redux/reducers/calibration/calibration';
 import * as shape from "d3-shape";
 /**
  * https://icons.expo.fyi
@@ -16,8 +22,13 @@ import * as shape from "d3-shape";
  */
 function CalibrationChart(props) {
   const { colors } = useTheme();
+  const data = useSelector(selectChartData);
+  const calibrationPoints = useSelector(selectCalibrationPoints);
+  const dispatch = useDispatch();
 
-  const data = [50, 10, 40, 95, 0, 0, 85, 91, 35, 53, 0, 24, 50, 0, 0];
+  if (!data) {
+    return (<Text>Loading...</Text>)
+  }
 
   /**
    * Converts a string of an rgb color formatted like "rgb(0,2,255)"
@@ -35,13 +46,17 @@ function CalibrationChart(props) {
         .map((x) => parseInt(x).toString(16).padStart(2, "0"))
         .join("")
         .toUpperCase()
+      
     );
   };
+
 
   return (
     <AreaChart
       style={{ height: 200 }}
-      data={data}
+      data={data[0].data}
+      yAccessor={({item}) => item.y}
+      xAccessor={({item}) => item.x}
       contentInset={{
         top: 0,
         bottom: 0,

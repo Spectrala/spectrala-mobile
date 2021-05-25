@@ -51,7 +51,7 @@ export default function HomeNavigator({ navigation }) {
   const colorScheme = useColorScheme();
   return (
     // TODO: Make this "HomeScreen"
-    <HomeStack.Navigator initialRouteName="CameraScreen">
+    <HomeStack.Navigator initialRouteName="CalibrationScreen">
       <HomeStack.Screen
         name="HomeScreen"
         component={HomeScreen}
