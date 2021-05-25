@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     flexDirection: "row",
     alignContent: "center",
-    marginVertical: 4,
+    marginBottom: 4,
   },
   modeButton: {
     justifyContent: "center",

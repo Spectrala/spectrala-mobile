@@ -5,16 +5,18 @@ import { TouchableOpacity } from "react-native";
 import { format } from "date-fns";
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
-import { AreaChart, Grid } from "react-native-svg-charts";
+import {
+  AreaChart,
+  LineChart,
+  Grid,
+  XAxis,
+  YAxis,
+} from "react-native-svg-charts";
 
 import * as shape from "d3-shape";
-/**
- * https://icons.expo.fyi
- *
- * Ionicons:
- * arrow-up-circle
- * arrow-up-circle-outline
- */
+
+const CHART_INSET = 30;
+
 function CaptureChart(props) {
   const { colors } = useTheme();
 
@@ -23,8 +25,6 @@ function CaptureChart(props) {
   } else if (!props.spectrumData.isValid()) {
     return <Text>{props.spectrumData.getMessage()}</Text>;
   }
-
-  const data = [50, 10, 40, 95, 0, 0, 85, 91, 35, 53, 0, 24, 50, 0, 0];
 
   /**
    * Converts a string of an rgb color formatted like "rgb(0,2,255)"
@@ -45,19 +45,77 @@ function CaptureChart(props) {
     );
   };
 
+  const data = props.spectrumData.data;
+
+  const min_x_value = data[0].x;
+  const max_x_value = data[data.length - 1].x;
+
+  let y_range =
+    props.spectrumViewOption === props.spectrumViewOptions.INTENSITY
+      ? [0, 100]
+      : [undefined, undefined];
+
+
+  const contentInset = {
+    top: 0,
+    bottom: 0,
+    left: CHART_INSET,
+    right: CHART_INSET,
+  };
+
+
+  const axesSvg = { fontSize: 10, fill: "grey" };
+  const verticalContentInset = { top: 10, bottom: 5 };
+  const xAxisHeight = 10;
+
+  // Layout of an x-axis together with a y-axis is a problem that stems from flexbox.
+  // All react-native-svg-charts components support full flexbox and therefore all
+  // layout problems should be approached with the mindset "how would I layout regular Views with flex in this way".
+  // In order for us to align the axes correctly we must know the height of the x-axis or the width of the x-axis
+  // and then displace the other axis with just as many pixels. Simple but manual.
+
   return (
-    <AreaChart
-      style={{ height: 200 }}
-      data={data}
-      contentInset={{ top: 0, bottom: 0, left: 30, right: 30 }}
-      curve={shape.curveBasis}
-      svg={{
-        fill: rgbToHexColor(colors.primary) + "99",
-        stroke: rgbToHexColor(colors.primary),
-      }}
-    >
-      <Grid />
-    </AreaChart>
+    <View style={{ height: "100%", padding: 10, flexDirection: "row" }}>
+      <YAxis
+        data={data.map((p) => p.y)}
+        style={{ marginBottom: xAxisHeight }}
+        contentInset={verticalContentInset}
+        svg={axesSvg}
+        numberOfTicks={5}
+        min={y_range[0]}
+        max={y_range[1]}
+      />
+      <View style={{ flex: 1, marginLeft: 10 }}>
+        <AreaChart
+          style={{ flex: 1 }}
+          data={data}
+          yAccessor={({ item }) => item.y}
+          xAccessor={({ item }) => item.x}
+          yMin={y_range[0]}
+          yMax={y_range[1]}
+
+          xMin={min_x_value}
+          xMax={max_x_value}
+          contentInset={verticalContentInset}
+          svg={{
+            fill: rgbToHexColor(colors.primary) + "99",
+            stroke: rgbToHexColor(colors.primary),
+          }}
+        >
+          <Grid />
+        </AreaChart>
+        <XAxis
+          style={{ marginHorizontal: -10, height: xAxisHeight }}
+          data={data.map((p) => p.x)}
+          formatLabel={(value, index) => value}
+          contentInset={{ left: 10, right: 10 }}
+          numberOfTicks={5}
+          min={min_x_value}
+          max={max_x_value}
+          svg={axesSvg}
+        />
+      </View>
+    </View>
   );
 }
 
@@ -67,13 +125,28 @@ CaptureChart.propTypes = {
   margin: PropTypes.number,
   spectrumData: PropTypes.any,
   spectrumViewOption: PropTypes.string,
+  spectrumViewOptions: PropTypes.object,
 };
 
 const styles = StyleSheet.create({
-  rightBox: {
-    width: "100%",
+  chartContainer: {
     height: "100%",
-    paddingTop: 8,
+    flex: 1,
+    flexDirection: "column",
+  },
+  yAxis: {
+    width: 20,
+    top: 0,
+    bottom: 0,
+    backgroundColor: "lime",
+  },
+  masterChartContainer: {
+    flexDirection: "row",
+    flex: 1,
+    paddingBottom: 16,
+  },
+  area: {
+    height: "100%",
   },
 });
 

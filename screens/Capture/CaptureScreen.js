@@ -28,11 +28,7 @@ export default function CaptureScreen({ navigation }) {
   const viewSpect = useSelector(selectPreferredSpectrumOption);
   const hasReference = useSelector(selectHasReference);
   const dispatch = useDispatch();
-
-  const getBtnVariant = (spectrumOption) => {
-    const isActive = spectrumOption === viewSpect;
-    return isActive ? selectedVariant : unselectedVariant;
-  };
+  
 
   const spectrumViewOptions = [
     SPECTRUM_OPTIONS.INTENSITY,
@@ -50,7 +46,11 @@ export default function CaptureScreen({ navigation }) {
     <>
       <View style={styles.container}>
         <View style={styles.chart}>
-          <CaptureChart spectrumData={data} spectrumViewOption={viewSpect} />
+          <CaptureChart
+            spectrumData={data}
+            spectrumViewOption={viewSpect}
+            spectrumViewOptions={SPECTRUM_OPTIONS}
+          />
         </View>
         <ModeSwitcher
           selectedViewOption={viewSpect}
