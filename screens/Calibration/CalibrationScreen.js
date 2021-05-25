@@ -113,10 +113,6 @@ export default function CalibrationScreen({ navigation }) {
 
       <CameraView
         captureIntervalSeconds={5}
-        onCaptureFrame={(frame) => {
-          console.log("Frame");
-          console.log(frame);
-        }}
         isActive={false}
       />
     </View>

@@ -174,7 +174,6 @@ export default function CameraView(props) {
 
 CameraView.propTypes = {
   captureIntervalSeconds: PropTypes.number.isRequired,
-  onCaptureFrame: PropTypes.func.isRequired,
   isActive: PropTypes.bool.isRequired,
 };
 

@@ -7,6 +7,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import ModeSwitcher from "./ModeSwitcher";
 import CapturedList from "./CapturedList";
 import { SafeAreaView } from "react-native";
+import CameraView from "../Camera/CameraView";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -46,27 +47,35 @@ export default function CaptureScreen({ navigation }) {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.chart}>
-        <CaptureChart />
+    <>
+      <View style={styles.container}>
+        <View style={styles.chart}>
+          <CaptureChart spectrumData={data} spectrumViewOption={viewSpect} />
+        </View>
+        <ModeSwitcher
+          selectedViewOption={viewSpect}
+          spectrumViewOptions={spectrumViewOptions}
+          onPress={(spectrumOption) => {
+            dispatch(
+              setPreferredSpectrum({
+                preferredSpectrum: spectrumOption,
+              })
+            );
+          }}
+          optionIsEnabled={isEnabled}
+        />
+        <CapturedList />
+        <View style={styles.captureContainer}>
+          <TouchableOpacity style={styles.captureButton}></TouchableOpacity>
+        </View>
       </View>
-      <ModeSwitcher
-        selectedViewOption={viewSpect}
-        spectrumViewOptions={spectrumViewOptions}
-        onPress={(spectrumOption) => {
-          dispatch(
-            setPreferredSpectrum({
-              preferredSpectrum: spectrumOption,
-            })
-          );
-        }}
-        optionIsEnabled={isEnabled}
+
+      <CameraView
+        captureIntervalSeconds={5}
+        isActive={false}
+        style={{ height: 0 }}
       />
-      <CapturedList />
-      <View style={styles.captureContainer}>
-        <TouchableOpacity style={styles.captureButton}></TouchableOpacity>
-      </View>
-    </View>
+    </>
   );
 }
 

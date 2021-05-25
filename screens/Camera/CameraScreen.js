@@ -12,10 +12,6 @@ export default function CameraScreen({ navigation }) {
     <View style={styles.container}>
       <CameraView
         captureIntervalSeconds={5}
-        onCaptureFrame={(frame) => {
-          console.log("Frame");
-          console.log(frame);
-        }}
         isActive={true}
       />
       <DraggablePointsContainer />

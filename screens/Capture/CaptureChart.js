@@ -7,7 +7,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
 import { AreaChart, Grid } from "react-native-svg-charts";
 
-
 import * as shape from "d3-shape";
 /**
  * https://icons.expo.fyi
@@ -18,6 +17,12 @@ import * as shape from "d3-shape";
  */
 function CaptureChart(props) {
   const { colors } = useTheme();
+
+  if (!props.spectrumData) {
+    return <Text>Loading...</Text>;
+  } else if (!props.spectrumData.isValid()) {
+    return <Text>{props.spectrumData.getMessage()}</Text>;
+  }
 
   const data = [50, 10, 40, 95, 0, 0, 85, 91, 35, 53, 0, 24, 50, 0, 0];
 
@@ -61,6 +66,7 @@ function CaptureChart(props) {
 CaptureChart.propTypes = {
   margin: PropTypes.number,
   spectrumData: PropTypes.any,
+  spectrumViewOption: PropTypes.string,
 };
 
 const styles = StyleSheet.create({
