@@ -9,9 +9,11 @@ import {
 } from "react-native";
 import { Camera } from "expo-camera";
 import { PropTypes } from "prop-types";
-import { decode } from "base-64";
-
-// getPixel('./bg.png', 10, 10); // [255, 255, 255, 0];
+import * as jpeg from "jpeg-js";
+import { extractPixelData } from "./CameraUtil";
+import { useDispatch, useSelector } from "react-redux";
+import { selectLineCoords, updateFeed } from "../../redux/reducers/video";
+import { Buffer } from "buffer";
 
 /**
  * Quality of photos taken from expo camera.
@@ -26,47 +28,103 @@ const PHOTO_QUALITY = 0;
  * Taken from https://stackoverflow.com/a/64586990
  * @param {string} base64data image data, without 'data:image/png;base64,'
  */
-function Uint8ClampedArrayFromBase64(base64_string) {
-  return Uint8ClampedArray.from(decode(base64_string), c => c.charCodeAt(0));
-  // const byteCharacters = decode(base64data);
-  // console.log(byteCharacters);
-  // const byteNumbers = new Array(byteCharacters.length);
-  // for (let i = 0; i < byteCharacters.length; i++) {
-  //   byteNumbers[i] = byteCharacters.charCodeAt(i);
-  // }
-  // return new Uint8ClampedArray(byteNumbers);
-  // Buffer(base64data).toString('base64')
+// function uint8ClampedArrayFromBase64(base64_string) {
+//   return Uint8ClampedArray.from(decode(base64_string), (c) => c.charCodeAt(0));
+// }
+
+function imageToClamped(rawImageData) {
+  const { width, height, data } = jpeg.decode(rawImageData, {
+    useTArray: true,
+  });
+  // Drop the alpha channel info for mobilenet
+  const buffer = new Uint8Array(width * height * 3);
+  let offset = 0; // offset into original data
+  for (let i = 0; i < buffer.length; i += 3) {
+    buffer[i] = data[offset];
+    buffer[i + 1] = data[offset + 1];
+    buffer[i + 2] = data[offset + 2];
+    offset += 4;
+  }
+  return buffer;
+}
+
+function imageDataObjectFromRandom() {
+  const width = 640;
+  const height = 480;
+  const totalEle = width * height * 4;
+  const rands = Array.from({ length: totalEle }, () =>
+    Math.floor(Math.random() * 255)
+  );
+
+  return {
+    data: Uint8ClampedArray.from(rands),
+    height: height,
+    width: width,
+  };
 }
 
 /**
  * Mimics ImageData from a canvas context
  * https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/getImageData
  */
-function ImageDataObjectFromPhoto(photo) {
+function imageDataObjectFromPhoto(photo) {
+  const buf = Buffer.from(photo.base64, "base64");
+
   return {
-    data: Uint8ClampedArrayFromBase64(photo.base64),
+    data: imageToClamped(buf),
     height: photo.height,
     width: photo.width,
   };
 }
 
 export default function CameraView(props) {
+  const calibCoords = useSelector(selectLineCoords);
+  const dispatch = useDispatch();
+
   const [hasPermission, setHasPermission] = useState(null);
   const [cameraRef, setCameraRef] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
-  let interval;
-  let readyForNextFrame = false;
+
+  const [interval, setLocalInterval] = useState(null);
+  const [readyForNextFrame, setReadyForNextFrame] = useState(false);
+
+  const sendFrame = async () => {
+    if (
+      !calibCoords ||
+      calibCoords.lowX === null ||
+      calibCoords.lowY === null ||
+      calibCoords.highX === null ||
+      calibCoords.highY === null
+    ) {
+      return;
+    }
+  };
 
   const takeAndSendFrame = async () => {
-    if (cameraRef && readyForNextFrame) {
-      let photo = await cameraRef.takePictureAsync({
-        base64: true,
-        quality: PHOTO_QUALITY,
-      });
-      const imageData = ImageDataObjectFromPhoto(photo);
+    if (cameraRef) {
+      // let photo = await cameraRef.takePictureAsync({
+      //   base64: true,
+      //   quality: PHOTO_QUALITY,
+      // });
+      // const imgData = imageDataObjectFromPhoto(photo);
+      // console.log(imgData);
 
-      console.log(imageData.data.length);
-      // readyForNextFrame = true;
+      // Data is of different length each time. Must do jpeg decoding.
+      // console.log(imageData.data.length);
+
+      dispatch(
+        updateFeed({
+          value: extractPixelData(
+            imageDataObjectFromRandom(),
+            calibCoords.lowX,
+            calibCoords.lowY,
+            calibCoords.highX,
+            calibCoords.highY
+          ),
+        })
+      );
+
+      setReadyForNextFrame(true);
     }
   };
 
@@ -77,10 +135,9 @@ export default function CameraView(props) {
 
   const setupCamera = () => {
     if (!interval) {
-      readyForNextFrame = true;
-      interval = setInterval(
-        takeAndSendFrame,
-        props.captureIntervalSeconds * 1000
+      setReadyForNextFrame(true);
+      setLocalInterval(
+        setInterval(takeAndSendFrame, props.captureIntervalSeconds * 1000)
       );
     }
   };
@@ -90,7 +147,7 @@ export default function CameraView(props) {
     return () => {
       if (interval) {
         clearInterval(interval);
-        interval = null;
+        setLocalInterval(null);
       }
     };
   }, []);
