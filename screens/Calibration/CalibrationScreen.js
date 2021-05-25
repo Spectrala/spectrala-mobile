@@ -54,7 +54,7 @@ export default function CalibrationScreen({ navigation }) {
   };
 
   const [open, setOpen] = useState(false);
-  const initialX = 0.1;
+  const initialX = 100;
   const [activeX, setActiveX] = useState(initialX);
 
   const pointBeingPlaced = calibrationPoints.find((p) => p.isBeingPlaced);
@@ -112,7 +112,7 @@ export default function CalibrationScreen({ navigation }) {
       {addNewPointButton()}
 
       <CameraView
-        captureIntervalSeconds={5}
+        captureIntervalSeconds={8}
         isActive={false}
       />
     </View>

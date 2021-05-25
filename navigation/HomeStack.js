@@ -11,7 +11,7 @@ import useColorScheme from "../hooks/useColorScheme";
 import CaptureScreen from "../screens/Capture/CaptureScreen";
 import CameraScreen from "../screens/Camera/CameraScreen";
 import CalibrationScreen from "../screens/Calibration/CalibrationScreen";
-import ReviewScreen from "../screens/ReviewScreen";
+import ReviewScreen from "../screens/Review/ReviewScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import HomeScreen from "../screens/Home/HomeScreen";
 
@@ -51,7 +51,7 @@ export default function HomeNavigator({ navigation }) {
   const colorScheme = useColorScheme();
   return (
     // TODO: MARK: Make this "HomeScreen"
-    <HomeStack.Navigator initialRouteName="CaptureScreen">
+    <HomeStack.Navigator initialRouteName="HomeScreen">
       <HomeStack.Screen
         name="HomeScreen"
         component={HomeScreen}
@@ -122,14 +122,18 @@ export default function HomeNavigator({ navigation }) {
           title: "Capture",
           headerRight: () => (
             <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
-              <NextPageButton
-                onPress={() => navigation.navigate("ReviewScreen")}
+              <Item
+                title="Save"
+                onPress={() => {
+                  alert("Save");
+                  navigation.popToTop();
+                }}
               />
             </HeaderButtons>
           ),
         }}
       />
-      <HomeStack.Screen
+      {/* <HomeStack.Screen
         name="ReviewScreen"
         component={ReviewScreen}
         options={{
@@ -146,10 +150,45 @@ export default function HomeNavigator({ navigation }) {
             </HeaderButtons>
           ),
         }}
-      />
+      /> */}
     </HomeStack.Navigator>
   );
 }
+
+
+
+{/* <HomeStack.Screen
+name="CaptureScreen"
+component={CaptureScreen}
+options={{
+  title: "Capture",
+  headerRight: () => (
+    <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
+      <NextPageButton
+        onPress={() => navigation.navigate("ReviewScreen")}
+      />
+    </HeaderButtons>
+  ),
+}}
+/>
+<HomeStack.Screen
+name="ReviewScreen"
+component={ReviewScreen}
+options={{
+  title: "Review",
+  headerRight: () => (
+    <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
+      <Item
+        title="Save"
+        onPress={() => {
+          alert("Save");
+          navigation.popToTop();
+        }}
+      />
+    </HeaderButtons>
+  ),
+}}
+/> */}
 
 function TabBarIcon(props) {
   return <Ionicons size={30} style={{ marginBottom: -3 }} {...props} />;

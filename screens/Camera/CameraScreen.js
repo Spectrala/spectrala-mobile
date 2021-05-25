@@ -10,10 +10,7 @@ import CameraView from "./CameraView";
 export default function CameraScreen({ navigation }) {
   return (
     <View style={styles.container}>
-      <CameraView
-        captureIntervalSeconds={5}
-        isActive={true}
-      />
+      <CameraView captureIntervalSeconds={5} isActive={true} />
       <DraggablePointsContainer />
     </View>
   );
