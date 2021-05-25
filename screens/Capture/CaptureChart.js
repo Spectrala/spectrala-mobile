@@ -6,6 +6,8 @@ import { format } from "date-fns";
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
 import { AreaChart, Grid } from "react-native-svg-charts";
+
+
 import * as shape from "d3-shape";
 /**
  * https://icons.expo.fyi
@@ -58,6 +60,7 @@ function CaptureChart(props) {
 
 CaptureChart.propTypes = {
   margin: PropTypes.number,
+  spectrumData: PropTypes.any,
 };
 
 const styles = StyleSheet.create({

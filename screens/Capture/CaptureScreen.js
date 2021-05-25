@@ -8,18 +8,60 @@ import ModeSwitcher from "./ModeSwitcher";
 import CapturedList from "./CapturedList";
 import { SafeAreaView } from "react-native";
 
+import { useDispatch, useSelector } from "react-redux";
+import {
+  selectValidateLiveSpectrum,
+  SPECTRUM_OPTIONS,
+  setPreferredSpectrum,
+  selectPreferredSpectrumOption,
+  selectHasReference,
+} from "../../redux/reducers/spectrum";
+
 const CHART_HEIGHT = 200;
 const CHART_MARGIN = 16;
 const MODE_BUTTON_HEIGHT = 24;
 const CAPTURE_BUTTON_RADIUS = 38;
 
 export default function CaptureScreen({ navigation }) {
+  const data = useSelector(selectValidateLiveSpectrum);
+  const viewSpect = useSelector(selectPreferredSpectrumOption);
+  const hasReference = useSelector(selectHasReference);
+  const dispatch = useDispatch();
+
+  const getBtnVariant = (spectrumOption) => {
+    const isActive = spectrumOption === viewSpect;
+    return isActive ? selectedVariant : unselectedVariant;
+  };
+
+  const spectrumViewOptions = [
+    SPECTRUM_OPTIONS.INTENSITY,
+    SPECTRUM_OPTIONS.TRANSMITTANCE,
+    SPECTRUM_OPTIONS.ABSORBANCE,
+  ];
+
+  function isEnabled(option) {
+    if (option === SPECTRUM_OPTIONS.INTENSITY) return true;
+    // Only show transmittance/absorbance if there is a reference spectrum
+    return hasReference === true;
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.chart}>
-        <CaptureChart/>
+        <CaptureChart />
       </View>
-      <ModeSwitcher />
+      <ModeSwitcher
+        selectedViewOption={viewSpect}
+        spectrumViewOptions={spectrumViewOptions}
+        onPress={(spectrumOption) => {
+          dispatch(
+            setPreferredSpectrum({
+              preferredSpectrum: spectrumOption,
+            })
+          );
+        }}
+        optionIsEnabled={isEnabled}
+      />
       <CapturedList />
       <View style={styles.captureContainer}>
         <TouchableOpacity style={styles.captureButton}></TouchableOpacity>
