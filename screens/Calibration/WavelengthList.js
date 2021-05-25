@@ -100,7 +100,7 @@ function WavelengthList(props) {
           onEndPlace={() =>
             dispatch(
               placePoint({
-                value: props.activeXPosition,
+                value: props.calibXFromChartX(props.activeXPosition),
                 targetIndex: index,
               })
             )
@@ -131,6 +131,7 @@ WavelengthList.propTypes = {
   setWavelengths: PropTypes.func.isRequired,
   inputEnabled: PropTypes.bool.isRequired,
   activeXPosition: PropTypes.number,
+  calibXFromChartX: PropTypes.func,
 };
 
 const styles = StyleSheet.create({
@@ -140,6 +141,7 @@ const styles = StyleSheet.create({
   separator: {
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
+
 });
 
 export default WavelengthList;

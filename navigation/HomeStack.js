@@ -50,8 +50,8 @@ const HomeStack = createStackNavigator();
 export default function HomeNavigator({ navigation }) {
   const colorScheme = useColorScheme();
   return (
-    // TODO: Make this "HomeScreen"
-    <HomeStack.Navigator initialRouteName="CalibrationScreen">
+    // TODO: MARK: Make this "HomeScreen"
+    <HomeStack.Navigator initialRouteName="CaptureScreen">
       <HomeStack.Screen
         name="HomeScreen"
         component={HomeScreen}

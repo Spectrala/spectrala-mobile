@@ -22,6 +22,7 @@ import {
   setPreset,
 } from "../../redux/reducers/calibration/calibration";
 import { MAX_POINTS } from "../../redux/reducers/calibration/calibration_constants";
+import { Dimensions } from "react-native";
 
 import { TouchableOpacity } from "react-native";
 
@@ -53,7 +54,7 @@ export default function CalibrationScreen({ navigation }) {
   };
 
   const [open, setOpen] = useState(false);
-  const initialX = 100;
+  const initialX = 0.1;
   const [activeX, setActiveX] = useState(initialX);
 
   const pointBeingPlaced = calibrationPoints.find((p) => p.isBeingPlaced);
@@ -61,6 +62,12 @@ export default function CalibrationScreen({ navigation }) {
   const activeWavelength = pointIsBeingPlaced
     ? CalibPt.getWavelengthDescription(pointBeingPlaced)
     : "";
+
+  const screenWidth = Dimensions.get("window").width;
+  const calibrationWidth = screenWidth - 2 * CHART_INSET;
+  const chartXFromCalibX = (calibX) => CHART_INSET + (calibX * calibrationWidth);
+  // TODO: beyond min behaves differently than beyond max.
+  const calibXFromChartX = (chartX) => Math.max(Math.min(1, (chartX - CHART_INSET) / calibrationWidth), 0);
 
   return (
     <View style={styles.container}>
@@ -75,7 +82,7 @@ export default function CalibrationScreen({ navigation }) {
       >
         <TickContainer
           activeWavelength={activeWavelength}
-          pointIsBeingPlaced={ pointIsBeingPlaced}
+          pointIsBeingPlaced={pointIsBeingPlaced}
           chartHeight={CHART_HEIGHT}
           tickHeight={TICK_HEIGHT}
           tickMargin={TICK_MARGIN}
@@ -86,6 +93,7 @@ export default function CalibrationScreen({ navigation }) {
           activeXPosition={activeX}
           initialXPosition={initialX}
           previouslySetPoints={calibrationPoints.filter(CalibPt.hasBeenPlaced)}
+          chartXFromCalibX={chartXFromCalibX}
         />
       </View>
       <View style={styles.picker}>
@@ -98,6 +106,7 @@ export default function CalibrationScreen({ navigation }) {
           setWavelengths={setCalibrationPoints}
           inputEnabled={!open}
           activeXPosition={activeX}
+          calibXFromChartX={calibXFromChartX}
         />
       </View>
       {addNewPointButton()}

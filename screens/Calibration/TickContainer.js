@@ -125,7 +125,7 @@ function TickContainer(props) {
             return inactiveTick(
               idx,
               CalibPt.getWavelengthDescription(pt),
-              CalibPt.getPlacement(pt)
+              props.chartXFromCalibX(CalibPt.getPlacement(pt))
             );
           })}
         </Svg>
@@ -134,7 +134,7 @@ function TickContainer(props) {
         return inactiveText(
           idx,
           CalibPt.getWavelengthDescription(pt),
-          CalibPt.getPlacement(pt)
+          props.chartXFromCalibX(CalibPt.getPlacement(pt))
         );
       })}
 
@@ -165,6 +165,7 @@ TickContainer.propTypes = {
   activeXPosition: PropTypes.number.isRequired,
   initialXPosition: PropTypes.number.isRequired,
   previouslySetPoints: PropTypes.array,
+  chartXFromCalibX: PropTypes.func,
 };
 
 const styles = StyleSheet.create({
