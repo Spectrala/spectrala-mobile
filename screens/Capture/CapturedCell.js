@@ -6,6 +6,7 @@ import {
   StyleSheet,
   SafeAreaView,
   TextInput,
+  Button,
 } from "react-native";
 import DraggableFlatList, {
   RenderItemParams,
@@ -38,17 +39,36 @@ export default function CapturedCell(props) {
         ...(props.isActive ? activeProps : {}),
       }}
     >
+      <TouchableOpacity
+        style={styles.buttonStyle}
+        onPress={props.onDelete}
+      >
+        <Text style={styles.buttonText}>Delete</Text>
+      </TouchableOpacity>
+
       <TextInput
         style={styles.input}
-        onChangeText={(wavelength) => {
-          console.log(wavelength);
-        }}
+        onChangeText={props.onRename}
         value={props.label}
         placeholder="Spectrum name..."
         keyboardType="default"
       />
+
+      <TouchableOpacity
+        onPress={props.onSetReference}
+        style={{
+          ...styles.buttonStyle,
+          ...(props.isReference ? styles.selectedButton : {}),
+        }}
+      >
+        <Text style={{
+          ...styles.buttonText,
+          ...(props.isReference ? styles.selectedButtonText : {}),
+        }}>Ref</Text>
+      </TouchableOpacity>
+
       <View style={styles.rightContainer}>
-        <PreviewChart />
+        <PreviewChart data={props.data} />
         <TouchableOpacity onLongPress={props.dragControl}>
           <MaterialIcons name="drag-indicator" size={24} color="black" />
         </TouchableOpacity>
@@ -62,6 +82,11 @@ CapturedCell.propTypes = {
   backgroundColor: PropTypes.any,
   isActive: PropTypes.bool,
   dragControl: PropTypes.func,
+  data: PropTypes.array,
+  isReference: PropTypes.bool,
+  onSetReference: PropTypes.func,
+  onDelete: PropTypes.func,
+  onRename: PropTypes.func,
 };
 
 const PADDING = 8;
@@ -79,7 +104,7 @@ const styles = StyleSheet.create({
   input: {
     height: 40,
     marginLeft: PADDING,
-    width: 180,
+    width: 140,
     borderWidth: 1,
     paddingLeft: 10,
   },
@@ -99,5 +124,21 @@ const styles = StyleSheet.create({
   rightContainer: {
     flexDirection: "row",
     alignItems: "center",
+  },
+  buttonContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    alignContent: "center",
+  },
+  buttonStyle: {
+    marginLeft: PADDING,
+  },
+  selectedButton: {
+    backgroundColor: "black",
+    padding: 5,
+    borderRadius: 3,
+  },
+  selectedButtonText: {
+    color: "white",
   },
 });

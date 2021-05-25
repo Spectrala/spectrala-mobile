@@ -12,10 +12,12 @@ import CameraView from "../Camera/CameraView";
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectValidateLiveSpectrum,
+  selectIntensity,
   SPECTRUM_OPTIONS,
   setPreferredSpectrum,
   selectPreferredSpectrumOption,
   selectHasReference,
+  recordSpectrum,
 } from "../../redux/reducers/spectrum";
 
 const CHART_HEIGHT = 200;
@@ -27,8 +29,8 @@ export default function CaptureScreen({ navigation }) {
   const data = useSelector(selectValidateLiveSpectrum);
   const viewSpect = useSelector(selectPreferredSpectrumOption);
   const hasReference = useSelector(selectHasReference);
+  const intensities = useSelector(selectIntensity);
   const dispatch = useDispatch();
-  
 
   const spectrumViewOptions = [
     SPECTRUM_OPTIONS.INTENSITY,
@@ -41,6 +43,10 @@ export default function CaptureScreen({ navigation }) {
     // Only show transmittance/absorbance if there is a reference spectrum
     return hasReference === true;
   }
+
+  const captureSpectrum = () => {
+    dispatch(recordSpectrum({ data: intensities }));
+  };
 
   return (
     <>
@@ -66,7 +72,10 @@ export default function CaptureScreen({ navigation }) {
         />
         <CapturedList />
         <View style={styles.captureContainer}>
-          <TouchableOpacity style={styles.captureButton}></TouchableOpacity>
+          <TouchableOpacity
+            style={styles.captureButton}
+            onPress={captureSpectrum}
+          ></TouchableOpacity>
         </View>
       </View>
 

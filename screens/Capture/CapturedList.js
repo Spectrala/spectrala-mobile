@@ -7,6 +7,15 @@ import PropTypes from "prop-types";
 import { MaterialIcons } from "@expo/vector-icons";
 import CapturedCell from "./CapturedCell";
 import { useTheme } from "@react-navigation/native";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  renameSpectrum,
+  selectRecordedSpectra,
+  removeSpectrum,
+  removeReference,
+  setReference,
+  setRecordedSpectra,
+} from "../../redux/reducers/spectrum";
 
 const CHART_HEIGHT = 200;
 const CHART_MARGIN = 16;
@@ -30,27 +39,62 @@ const exampleData = [...Array(10)].map((d, index) => {
 });
 
 export default function CapturedList({ navigation }) {
-  const [data, setData] = useState(exampleData);
+  const dispatch = useDispatch();
+  const recordedSpectra = useSelector(selectRecordedSpectra);
   const { colors } = useTheme();
 
   const renderItem = useCallback(({ item, index, drag, isActive }) => {
+    const spectrum = item;
+
+    const text = spectrum.name ? spectrum.name : "";
+    const aria = `Saved Spectrum ${index + 1}`;
     return (
       <CapturedCell
-        label={item.label}
+        label={text}
         backgroundColor={item.backgroundColor}
         isActive={isActive}
         dragControl={drag}
+        data={spectrum.data}
+        isReference={spectrum.isReference}
+        onSetReference={() => {
+          spectrum.isReference
+            ? dispatch(removeReference())
+            : dispatch(setReference({ targetIndex: index }));
+        }}
+        onDelete={() => {
+          dispatch(
+            removeSpectrum({
+              targetIndex: index,
+            })
+          );
+        }}
+        onRename={(value) => {
+          dispatch(
+            renameSpectrum({
+              targetIndex: index,
+              name: value,
+            })
+          );
+        }}
       />
     );
-  }, []);
+  }, [recordedSpectra]);
+
+  const onReorder = (list) => {
+    dispatch(
+      setRecordedSpectra({
+        value: list,
+      })
+    );
+  };
 
   return (
     <View style={{ flex: 1 }}>
       <DraggableFlatList
-        data={data}
+        data={recordedSpectra}
         renderItem={renderItem}
         keyExtractor={(item, index) => `draggable-item-${item.key}`}
-        onDragEnd={({ data }) => setData(data)}
+        onDragEnd={({ data }) => onReorder(data)}
         contentContainerStyle={{ paddingBottom: 100 }}
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
