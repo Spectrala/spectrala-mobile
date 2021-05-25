@@ -7,17 +7,13 @@ import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
 import { AreaChart, Grid } from "react-native-svg-charts";
 import * as shape from "d3-shape";
-/**
- * https://icons.expo.fyi
- *
- * Ionicons:
- * arrow-up-circle
- * arrow-up-circle-outline
- */
-function CaptureChart(props) {
+
+const CHART_INSET = 30;
+
+function PreviewChart(props) {
   const { colors } = useTheme();
 
-  const data = [0, 10, 40, 95, 0, 0, 85, 91, 35, 0, 0, 24, 50, 0, 0];
+  const data = props.data;
 
   /**
    * Converts a string of an rgb color formatted like "rgb(0,2,255)"
@@ -38,29 +34,47 @@ function CaptureChart(props) {
     );
   };
 
+  const contentInset = {
+    top: 0,
+    bottom: 0,
+    left: CHART_INSET,
+    right: CHART_INSET,
+  };
+
+  const axesSvg = { fontSize: 10, fill: "grey" };
+  const verticalContentInset = { top: 10, bottom: 5 };
+  const xAxisHeight = 10;
+
+  // Layout of an x-axis together with a y-axis is a problem that stems from flexbox.
+  // All react-native-svg-charts components support full flexbox and therefore all
+  // layout problems should be approached with the mindset "how would I layout regular Views with flex in this way".
+  // In order for us to align the axes correctly we must know the height of the x-axis or the width of the x-axis
+  // and then displace the other axis with just as many pixels. Simple but manual.
+
   return (
     <AreaChart
-      style={{ height: "100%", width: 140 }}
+      style={{ width: props.width }}
       data={data}
-      contentInset={{ top: 0, bottom: 0, left: 10, right: 10 }}
-      curve={shape.curveBasis}
+      yAccessor={({ item }) => item.y}
+      xAccessor={({ item }) => item.x}
+      contentInset={verticalContentInset}
       svg={{
         fill: rgbToHexColor(colors.primary) + "99",
-        stroke: rgbToHexColor(colors.primary),
+        // stroke: rgbToHexColor(colors.primary),
       }}
-    >
-    </AreaChart>
+    />
   );
 }
 
 // TODO: use some real data.
 
-const styles = StyleSheet.create({
-  rightBox: {
-    width: "100%",
-    height: "100%",
-    paddingTop: 8,
-  },
-});
+PreviewChart.propTypes = {
+  data: PropTypes.any,
+  width: PropTypes.number,
+};
 
-export default CaptureChart;
+PreviewChart.defaultProps = {
+  width: 100,
+};
+
+export default PreviewChart;
