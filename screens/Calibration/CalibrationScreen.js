@@ -111,10 +111,10 @@ export default function CalibrationScreen({ navigation }) {
       </View>
       {addNewPointButton()}
 
-      <CameraView
+      {/* <CameraView
         captureIntervalSeconds={8}
         isActive={false}
-      />
+      /> */}
     </View>
   );
 }

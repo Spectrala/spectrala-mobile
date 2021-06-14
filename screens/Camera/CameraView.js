@@ -49,8 +49,10 @@ function imageToClamped(rawImageData) {
 }
 
 function imageDataObjectFromRandom() {
-  const width = 640;
-  const height = 480;
+  // const width = 640;
+  // const height = 480;
+  const width = 6;
+  const height = 4;
   const totalEle = width * height * 4;
   const rands = Array.from({ length: totalEle }, () =>
     Math.floor(Math.random() * 255)

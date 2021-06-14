@@ -79,11 +79,11 @@ export default function CaptureScreen({ navigation }) {
         </View>
       </View>
 
-      <CameraView
+      {/* <CameraView
         captureIntervalSeconds={5}
         isActive={false}
         style={{ height: 0 }}
-      />
+      /> */}
     </>
   );
 }
