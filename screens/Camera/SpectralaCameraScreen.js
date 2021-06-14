@@ -1,8 +1,8 @@
 import { Camera } from "expo-camera";
+import React, { useState, useEffect } from "react";
 import * as GL from "expo-gl";
 import { GLView } from "expo-gl";
 import * as Permissions from "expo-permissions";
-import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 // From here: https://github.com/expo/expo/blob/master/apps/native-component-list/src/screens/GL/GLCameraScreen.tsx
@@ -26,37 +26,40 @@ void main() {
   fragColor = vec4(1.0 - texture(cameraTexture, uv).rgb, 1.0);
 }`;
 
-
 // See: https://github.com/expo/expo/pull/10229#discussion_r490961694
 // eslint-disable-next-line @typescript-eslint/ban-types
-class SpectralaCameraScreen extends React.Component {
-  state = {
-    zoom: 0,
-    type: Camera.Constants.Type.back,
+export default function SpectralaCameraScreen() {
+  const [zoom, setZoom] = useState(0);
+  const [type, setType] = useState(Camera.Constants.Type.back);
+
+  let _rafID, camera, glView, texture;
+
+  const onUnmount = () => {
+    if (_rafID !== undefined) {
+      cancelAnimationFrame(_rafID);
+    }
   };
 
-  componentWillUnmount() {
-    if (this._rafID !== undefined) {
-      cancelAnimationFrame(this._rafID);
-    }
-  }
+  useEffect(() => {
+    return onUnmount;
+  }, []);
 
-  async createCameraTexture() {
+  const createCameraTexture = async () => {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
 
     if (status !== "granted") {
       throw new Error("Denied camera permissions!");
     }
 
-    if (this.glView && this.camera) {
-      return this.glView.createCameraTextureAsync(this.camera);
+    if (glView && camera) {
+      return glView.createCameraTextureAsync(camera);
     }
-  }
+  };
 
-  onContextCreate = async (gl) => {
+  const onContextCreate = async (gl) => {
     // Create texture asynchronously
-    this.texture = await this.createCameraTexture();
-    const cameraTexture = this.texture;
+    texture = await createCameraTexture();
+    const cameraTexture = texture;
 
     // Compile vertex and fragment shaders
     const vertShader = gl.createShader(gl.VERTEX_SHADER);
@@ -96,7 +99,7 @@ class SpectralaCameraScreen extends React.Component {
 
     // Render loop
     const loop = () => {
-      this._rafID = requestAnimationFrame(loop);
+      _rafID = requestAnimationFrame(loop);
 
       // Clear
       gl.clearColor(0, 0, 1, 1);
@@ -115,56 +118,49 @@ class SpectralaCameraScreen extends React.Component {
     loop();
   };
 
-  toggleFacing = () => {
-    this.setState((state) => ({
-      type:
-        state.type === Camera.Constants.Type.back
-          ? Camera.Constants.Type.front
-          : Camera.Constants.Type.back,
-    }));
-  };
-
-  zoomOut = () => {
-    this.setState((state) => ({
-      zoom: state.zoom - 0.1 < 0 ? 0 : state.zoom - 0.1,
-    }));
-  };
-
-  zoomIn = () => {
-    this.setState((state) => ({
-      zoom: state.zoom + 0.1 > 1 ? 1 : state.zoom + 0.1,
-    }));
-  };
-
-  render() {
-    return (
-      <View style={styles.container}>
-        <Camera
-          style={StyleSheet.absoluteFill}
-          type={this.state.type}
-          zoom={this.state.zoom}
-          ref={(ref) => (this.camera = ref)}
-        />
-        <GLView
-          style={StyleSheet.absoluteFill}
-          onContextCreate={this.onContextCreate}
-          ref={(ref) => (this.glView = ref)}
-        />
-
-        <View style={styles.buttons}>
-          <TouchableOpacity style={styles.button} onPress={this.toggleFacing}>
-            <Text>Flip</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={this.zoomIn}>
-            <Text>Zoom in</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={this.zoomOut}>
-            <Text>Zoom out</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+  const toggleFacing = () => {
+    setType(
+      type === Camera.Constants.Type.back
+        ? Camera.Constants.Type.front
+        : Camera.Constants.Type.back
     );
-  }
+  };
+
+  const zoomOut = () => {
+    setZoom(zoom - 0.1 < 0 ? 0 : zoom - 0.1);
+  };
+
+  const zoomIn = () => {
+    setZoom(zoom + 0.1 > 1 ? 1 : zoom + 0.1);
+  };
+
+  return (
+    <View style={styles.container}>
+      <Camera
+        style={StyleSheet.absoluteFill}
+        type={type}
+        zoom={zoom}
+        ref={(ref) => (camera = ref)}
+      />
+      <GLView
+        style={StyleSheet.absoluteFill}
+        onContextCreate={onContextCreate}
+        ref={(ref) => (glView = ref)}
+      />
+
+      <View style={styles.buttons}>
+        <TouchableOpacity style={styles.button} onPress={toggleFacing}>
+          <Text>Flip</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={zoomIn}>
+          <Text>Zoom in</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={zoomOut}>
+          <Text>Zoom out</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -194,5 +190,3 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
-
-export default SpectralaCameraScreen;
