@@ -51,7 +51,7 @@ export default function HomeNavigator({ navigation }) {
   const colorScheme = useColorScheme();
   return (
     // TODO: MARK: Make this "HomeScreen"
-    <HomeStack.Navigator initialRouteName="HomeScreen">
+    <HomeStack.Navigator initialRouteName="CameraScreen">
       <HomeStack.Screen
         name="HomeScreen"
         component={HomeScreen}
@@ -155,9 +155,8 @@ export default function HomeNavigator({ navigation }) {
   );
 }
 
-
-
-{/* <HomeStack.Screen
+{
+  /* <HomeStack.Screen
 name="CaptureScreen"
 component={CaptureScreen}
 options={{
@@ -188,7 +187,8 @@ options={{
     </HeaderButtons>
   ),
 }}
-/> */}
+/> */
+}
 
 function TabBarIcon(props) {
   return <Ionicons size={30} style={{ marginBottom: -3 }} {...props} />;

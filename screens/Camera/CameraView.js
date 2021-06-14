@@ -13,7 +13,9 @@ import * as jpeg from "jpeg-js";
 import { extractPixelData } from "./CameraUtil";
 import { useDispatch, useSelector } from "react-redux";
 import { selectLineCoords, updateFeed } from "../../redux/reducers/video";
-import { Buffer } from "buffer";
+import { PIXI } from "expo-pixi";
+
+import SpectralaCameraScreen from "./SpectralaCameraScreen";
 
 /**
  * Quality of photos taken from expo camera.
@@ -28,25 +30,6 @@ const PHOTO_QUALITY = 0;
  * Taken from https://stackoverflow.com/a/64586990
  * @param {string} base64data image data, without 'data:image/png;base64,'
  */
-// function uint8ClampedArrayFromBase64(base64_string) {
-//   return Uint8ClampedArray.from(decode(base64_string), (c) => c.charCodeAt(0));
-// }
-
-function imageToClamped(rawImageData) {
-  const { width, height, data } = jpeg.decode(rawImageData, {
-    useTArray: true,
-  });
-  // Drop the alpha channel info for mobilenet
-  const buffer = new Uint8Array(width * height * 3);
-  let offset = 0; // offset into original data
-  for (let i = 0; i < buffer.length; i += 3) {
-    buffer[i] = data[offset];
-    buffer[i + 1] = data[offset + 1];
-    buffer[i + 2] = data[offset + 2];
-    offset += 4;
-  }
-  return buffer;
-}
 
 function imageDataObjectFromRandom() {
   // const width = 640;
@@ -65,21 +48,10 @@ function imageDataObjectFromRandom() {
   };
 }
 
-/**
- * Mimics ImageData from a canvas context
- * https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/getImageData
- */
-function imageDataObjectFromPhoto(photo) {
-  const buf = Buffer.from(photo.base64, "base64");
-
-  return {
-    data: imageToClamped(buf),
-    height: photo.height,
-    width: photo.width,
-  };
-}
-
 export default function CameraView(props) {
+
+  return (<SpectralaCameraScreen />);
+
   const calibCoords = useSelector(selectLineCoords);
   const dispatch = useDispatch();
 
@@ -104,12 +76,18 @@ export default function CameraView(props) {
 
   const takeAndSendFrame = async () => {
     if (cameraRef) {
-      // let photo = await cameraRef.takePictureAsync({
-      //   base64: true,
-      //   quality: PHOTO_QUALITY,
-      // });
-      // const imgData = imageDataObjectFromPhoto(photo);
-      // console.log(imgData);
+      let photo = await cameraRef.takePictureAsync({
+        base64: true,
+        quality: PHOTO_QUALITY,
+      });
+
+      const context = await GLView.createContextAsync();
+      const app = new PIXI.Application({ context });
+
+
+
+      const imgData = imageDataObjectFromPhoto(photo);
+      console.log(imgData);
 
       // Data is of different length each time. Must do jpeg decoding.
       // console.log(imageData.data.length);
