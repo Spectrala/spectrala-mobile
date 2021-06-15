@@ -4,27 +4,10 @@ import * as GL from "expo-gl";
 import { GLView } from "expo-gl";
 import * as Permissions from "expo-permissions";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { PIXI } from "expo-pixi";
 
 // From here: https://github.com/expo/expo/blob/master/apps/native-component-list/src/screens/GL/GLCameraScreen.tsx
 // Expo uses MIT license. https://github.com/expo/expo#license
-
-const vertShaderSource = `#version 300 es
-precision highp float;
-in vec2 position;
-out vec2 uv;
-void main() {
-  uv = position;
-  gl_Position = vec4(1.0 - 2.0 * position, 0, 1);
-}`;
-
-const fragShaderSource = `#version 300 es
-precision highp float;
-uniform sampler2D cameraTexture;
-in vec2 uv;
-out vec4 fragColor;
-void main() {
-  fragColor = vec4(1.0 - texture(cameraTexture, uv).rgb, 1.0);
-}`;
 
 // See: https://github.com/expo/expo/pull/10229#discussion_r490961694
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -56,66 +39,44 @@ export default function SpectralaCameraScreen() {
     }
   };
 
-  const onContextCreate = async (gl) => {
+  const onContextCreate = async (glContext) => {
     // Create texture asynchronously
     texture = await createCameraTexture();
-    const cameraTexture = texture;
+    takeFrame(glContext);
+  };
 
-    // Compile vertex and fragment shaders
-    const vertShader = gl.createShader(gl.VERTEX_SHADER);
-    gl.shaderSource(vertShader, vertShaderSource);
-    gl.compileShader(vertShader);
+  const takeFrame = async (context) => {
+    // TODO: Crop region of interest
+    // https://docs.expo.io/versions/latest/sdk/gl-view/#glviewtakesnapshotasyncgl-options
 
-    const fragShader = gl.createShader(gl.FRAGMENT_SHADER);
-    gl.shaderSource(fragShader, fragShaderSource);
-    gl.compileShader(fragShader);
+    console.log("take frame");
+    const snapshot = await GLView.takeSnapshotAsync(context);
+    console.log(snapshot);
+    const pixels = await readPixelsAsync(context, snapshot.uri);
+    // console.log(`Number of pixels: ${pixels.length}`);
 
-    // Link, use program, save and enable attributes
-    const program = gl.createProgram();
-    gl.attachShader(program, vertShader);
-    gl.attachShader(program, fragShader);
-    gl.linkProgram(program);
-    gl.validateProgram(program);
+    // const getPixel = (index) => {
+    //   const pixel = index * 4;
+    //   return pixels.slice(pixel, pixel + 4);
+    // };
 
-    gl.useProgram(program);
+    // const [r, g, b, a] = getPixel(0);
+    // console.log({ r, g, b, a });
+  };
 
-    const positionAttrib = gl.getAttribLocation(program, "position");
-    gl.enableVertexAttribArray(positionAttrib);
+  const readPixelsAsync = async (context, uri) => {
+    const app = new PIXI.Application({ context });
 
-    // Create, bind, fill buffer
-    const buffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-    const verts = new Float32Array([-2, 0, 0, -2, 2, 2]);
-    gl.bufferData(gl.ARRAY_BUFFER, verts, gl.STATIC_DRAW);
+    try {
+      const sprite = await PIXI.Sprite.fromExpoAsync(
+        "http://i.imgur.com/uwrbErh.png"
+      );
+    } catch (err) {
+      console.error(err);
+    }
+    // app.stage.addChild(sprite);
 
-    // Bind 'position' attribute
-    gl.vertexAttribPointer(positionAttrib, 2, gl.FLOAT, false, 0, 0);
-
-    // Set 'cameraTexture' uniform
-    gl.uniform1i(gl.getUniformLocation(program, "cameraTexture"), 0);
-
-    // Activate unit 0
-    gl.activeTexture(gl.TEXTURE0);
-
-    // Render loop
-    const loop = () => {
-      _rafID = requestAnimationFrame(loop);
-
-      // Clear
-      gl.clearColor(0, 0, 1, 1);
-      // tslint:disable-next-line: no-bitwise
-      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-      // Bind texture if created
-      gl.bindTexture(gl.TEXTURE_2D, cameraTexture);
-
-      // Draw!
-      gl.drawArrays(gl.TRIANGLES, 0, verts.length / 2);
-
-      // Submit frame
-      gl.endFrameEXP();
-    };
-    loop();
+    // return app.renderer.extract.pixels(sprite);
   };
 
   const toggleFacing = () => {
