@@ -16,6 +16,7 @@ import { selectLineCoords, updateFeed } from "../../redux/reducers/video";
 import { PIXI } from "expo-pixi";
 
 import SpectralaCameraScreen from "./SpectralaCameraScreen";
+import SpectralaCameraScreenCanvas from "./SpectralaCameraScreenCanvas";
 
 /**
  * Quality of photos taken from expo camera.
@@ -50,7 +51,7 @@ function imageDataObjectFromRandom() {
 
 export default function CameraView(props) {
 
-  return (<SpectralaCameraScreen />);
+  return (<SpectralaCameraScreenCanvas />);
 
   const calibCoords = useSelector(selectLineCoords);
   const dispatch = useDispatch();
