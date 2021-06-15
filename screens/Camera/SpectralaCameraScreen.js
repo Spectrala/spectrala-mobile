@@ -74,6 +74,7 @@ export default function SpectralaCameraScreen() {
      * note setTimeout is for debugging. This way, it can be seen if the setup works as expected
      * and exactly the issue takeFrame is causing.
      */
+    texture = await createCameraTexture();
     takeFrame(gl);
   };
 
