@@ -51,7 +51,7 @@ function imageDataObjectFromRandom() {
 
 export default function CameraView(props) {
 
-  return (<SpectralaCameraScreenCanvas />);
+  return (<SpectralaCameraScreen />);
 
   const calibCoords = useSelector(selectLineCoords);
   const dispatch = useDispatch();

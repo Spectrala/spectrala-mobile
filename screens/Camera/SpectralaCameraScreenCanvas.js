@@ -15,11 +15,11 @@ const imgEl = `data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/4QBKRXhpZgAASU
 export default function SpectralaCameraScreenCanvas(props) {
   const [bgColor, setBgColor] = useState("#000");
   const [currentImage, setCurrentImage] = useState(imgEl);
-  let canvas;
+  const [canvas, setCanvas] = useState(null);
 
   useEffect(() => {
-    changeBg();
-  }, []);
+    !canvas || changeBg();
+  }, [canvas]);
 
   const _handleBgChange = (color) => {
     setBgColor(color);
@@ -77,9 +77,7 @@ export default function SpectralaCameraScreenCanvas(props) {
         <View style={styles.example}>
           <View style={styles.exampleLeft}>
             <Canvas
-              ref={(e) => {
-                canvas = e;
-              }}
+              ref={setCanvas}
             />
           </View>
         </View>
