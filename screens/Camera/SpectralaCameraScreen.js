@@ -75,6 +75,63 @@ export default function SpectralaCameraScreen() {
      * and exactly the issue takeFrame is causing.
      */
     texture = await createCameraTexture();
+    const cameraTexture = texture;
+
+    // Compile vertex and fragment shaders
+    const vertShader = gl.createShader(gl.VERTEX_SHADER);
+    gl.shaderSource(vertShader, vertShaderSource);
+    gl.compileShader(vertShader);
+
+    const fragShader = gl.createShader(gl.FRAGMENT_SHADER);
+    gl.shaderSource(fragShader, fragShaderSource);
+    gl.compileShader(fragShader);
+
+    // Link, use program, save and enable attributes
+    const program = gl.createProgram();
+    gl.attachShader(program, vertShader);
+    gl.attachShader(program, fragShader);
+    gl.linkProgram(program);
+    gl.validateProgram(program);
+
+    gl.useProgram(program);
+
+    const positionAttrib = gl.getAttribLocation(program, "position");
+    gl.enableVertexAttribArray(positionAttrib);
+
+    // Create, bind, fill buffer
+    const buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    const verts = new Float32Array([-2, 0, 0, -2, 2, 2]);
+    gl.bufferData(gl.ARRAY_BUFFER, verts, gl.STATIC_DRAW);
+
+    // Bind 'position' attribute
+    gl.vertexAttribPointer(positionAttrib, 2, gl.FLOAT, false, 0, 0);
+
+    // Set 'cameraTexture' uniform
+    gl.uniform1i(gl.getUniformLocation(program, "cameraTexture"), 0);
+
+    // Activate unit 0
+    gl.activeTexture(gl.TEXTURE0);
+
+    // Render loop
+    const loop = () => {
+      this._rafID = requestAnimationFrame(loop);
+
+      // Clear
+      gl.clearColor(0, 0, 1, 1);
+      // tslint:disable-next-line: no-bitwise
+      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+      // Bind texture if created
+      gl.bindTexture(gl.TEXTURE_2D, cameraTexture);
+
+      // Draw!
+      gl.drawArrays(gl.TRIANGLES, 0, verts.length / 2);
+
+      // Submit frame
+      gl.endFrameEXP();
+    };
+    loop();
     takeFrame(gl);
   };
 
@@ -93,7 +150,7 @@ export default function SpectralaCameraScreen() {
         format: "jpeg",
       });
 
-      const options = { encoding: "base64" };
+      const options = { encoding: "base64", compress: 0 };
       const base64 = await FileSystem.readAsStringAsync(snapshot.uri, options);
       const imgSrc = "data:image/jpeg;base64," + base64;
 
@@ -102,7 +159,7 @@ export default function SpectralaCameraScreen() {
         snapshot.width,
         snapshot.height
       );
-      console.log(averageColor);
+      // console.log(averageColor);
     }, 2000);
 
     // const pixels = await readPixelsAsync(context, snapshot);
@@ -122,19 +179,22 @@ export default function SpectralaCameraScreen() {
   const changeBg = async (imgSrc, width, height) => {
     // canvas.width = snapshot.width;
     // canvas.height = snapshot.height;
-    console.log(imgSrc, width, height);
+    // console.log(imgSrc, width, height);
     canvas.width = width;
     canvas.height = height;
     const context = canvas.getContext("2d");
     const image = new CanvasImage(canvas);
+    image.src = imgSrc;
     image.addEventListener("load", () => {
+      console.log("LOADED!!!!!!!!!!");
       context.drawImage(image, 0, 0);
+      console.log("Draw image");
       try {
         context
-          .getImageData(0, 0, canvas.height, canvas.width)
+          // .getImageData(0, 0, canvas.height, canvas.width)
+          .getImageData(0, 0, 100, 100)
           .then((e) => {
             const rgbArray = Object.values(e.data);
-            console.log(rgbArray);
             let blockSize = 5,
               i = -4,
               length,
@@ -155,7 +215,6 @@ export default function SpectralaCameraScreen() {
             rgb.g = ~~(rgb.g / count);
             rgb.b = ~~(rgb.b / count);
             console.log(rgb, "rgb");
-            _handleBgChange(`rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`);
             return `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
           })
           .catch((e) => {
@@ -165,7 +224,6 @@ export default function SpectralaCameraScreen() {
         console.log(e, "e");
       }
     });
-    image.src = imgSrc;
   };
 
   /** button event handlers ~~~~~~~~~~~~~~~~v */
