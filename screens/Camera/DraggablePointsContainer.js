@@ -13,8 +13,9 @@ import {
   PanResponder,
 } from "react-native";
 import { useTheme } from "@react-navigation/native";
-import { Svg, Line, Rect } from "react-native-svg";
-
+import { Svg, Line, Rect, Circle } from "react-native-svg";
+import Slider from "@react-native-community/slider";
+import Victor from "victor";
 
 const CIRCLE_RADIUS = 20;
 
@@ -27,7 +28,35 @@ function DraggablePointsContainer(props) {
   const [p1, setP1] = useState(P1_INIT.pos);
   const [p2, setP2] = useState(P2_INIT.pos);
 
-  const createCircle = (initial, setter) => {
+  const [width, setWidth] = useState(100);
+
+  const getCorners = useCallback(() => {
+    let x1 = new Victor(p1.x + CIRCLE_RADIUS, p1.y + CIRCLE_RADIUS);
+    let x2 = new Victor(p2.x + CIRCLE_RADIUS, p2.y + CIRCLE_RADIUS);
+    const l = x2.subtract(x1);
+    const theta = l.horizontalAngle();
+
+    // Four corners of rectangle with extremes (0, -width/2) and (length, width/2)
+    const yRange = [-width / 2, width / 2];
+    const xRange = [0, l.magnitude()];
+    const rect = yRange.map((y) => xRange.map((x) => new Victor(x, y))).flat();
+
+    // Rotate the box to match the rotation of the line
+    rect.forEach((corner) => corner.rotate(theta));
+
+    // Translate the box to be on the line
+    rect.forEach((corner) => corner.add(x1));
+
+    return rect;
+  }, [p1, p2, width]);
+
+  const [corners, setCorners] = useState(getCorners());
+
+  useEffect(() => {
+    setCorners(getCorners());
+  }, [p1, p2, width]);
+
+  const createCircle = useCallback((initial, setter) => {
     const circleStyle = { ...styles.circle, backgroundColor: colors.primary };
 
     const pan = useRef(new Animated.ValueXY()).current;
@@ -70,7 +99,7 @@ function DraggablePointsContainer(props) {
         <View style={circleStyle} />
       </Animated.View>
     );
-  };
+  });
 
   const readerLine = useCallback(() => {
     return (
@@ -81,11 +110,16 @@ function DraggablePointsContainer(props) {
           x2={p2.x + CIRCLE_RADIUS}
           y2={p2.y + CIRCLE_RADIUS}
           stroke="white"
-          strokeWidth="4"
+          opacity={0.3}
+          strokeWidth={width}
         />
+        {!corners ||
+          corners.map((vec, idx) => {
+            return <Circle key={idx} cx={vec.x} cy={vec.y} r={5} fill="pink" />;
+          })}
       </Svg>
     );
-  }, [p1, p2]);
+  }, [p1, p2, width]);
 
   return (
     <>
@@ -93,6 +127,17 @@ function DraggablePointsContainer(props) {
       <View style={styles.container}>
         {createCircle(P1_INIT, setP1)}
         {createCircle(P2_INIT, setP2)}
+      </View>
+      <View style={styles.sliderContainer}>
+        <Text>Width: {width}</Text>
+        <Slider
+          style={styles.slider}
+          value={width}
+          onValueChange={setWidth}
+          minimumValue={20}
+          maximumValue={200}
+          step={5}
+        />
       </View>
     </>
   );
@@ -128,6 +173,16 @@ const styles = StyleSheet.create({
     height: CIRCLE_RADIUS * 2,
     width: CIRCLE_RADIUS * 2,
     borderRadius: CIRCLE_RADIUS,
+  },
+  sliderContainer: {
+    width: "100%",
+    height: "100%",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    height: 60,
+  },
+  slider: {
+    width: "90%",
   },
 });
 

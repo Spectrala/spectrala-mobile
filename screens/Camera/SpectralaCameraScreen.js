@@ -38,7 +38,7 @@ export default function SpectralaCameraScreen() {
   const [zoom, setZoom] = useState(0);
 
   // Camera mode. Either front or rear camera.
-  const [type, setType] = useState(Camera.Constants.Type.rear);
+  const [type, setType] = useState(Camera.Constants.Type.front);
 
   // Class variables for
   let _rafID, camera, glView, texture, canvas;
@@ -145,21 +145,21 @@ export default function SpectralaCameraScreen() {
     // Docs for takeSnapshotAsync:
     // https://docs.expo.io/versions/latest/sdk/gl-view/#glviewtakesnapshotasyncgl-options
 
-    setInterval(async () => {
-      const snapshot = await GLView.takeSnapshotAsync(context, {
-        format: "jpeg",
-      });
+    // setInterval(async () => {
+    //   const snapshot = await GLView.takeSnapshotAsync(context, {
+    //     format: "jpeg",
+    //   });
 
-      const options = { encoding: "base64", compress: 0 };
-      const base64 = await FileSystem.readAsStringAsync(snapshot.uri, options);
-      const imgSrc = "data:image/jpeg;base64," + base64;
+    //   const options = { encoding: "base64", compress: 0 };
+    //   const base64 = await FileSystem.readAsStringAsync(snapshot.uri, options);
+    //   const imgSrc = "data:image/jpeg;base64," + base64;
 
-      const averageColor = await changeBg(
-        imgSrc,
-        snapshot.width,
-        snapshot.height
-      );
-    }, 2000);
+    //   const averageColor = await changeBg(
+    //     imgSrc,
+    //     snapshot.width,
+    //     snapshot.height
+    //   );
+    // }, 2000);
 
     // const pixels = await readPixelsAsync(context, snapshot);
     // console.log(`Number of pixels: ${pixels.length}`);
