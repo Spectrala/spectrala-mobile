@@ -11,15 +11,16 @@ import {
   StyleSheet,
   Animated,
   PanResponder,
+  Pressable,
+  Modal,
 } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { Svg, Line, Rect, Circle } from "react-native-svg";
-import Slider from "@react-native-community/slider";
 import Victor from "victor";
 
 const CIRCLE_RADIUS = 20;
 
-function DraggablePointsContainer(props) {
+function DraggablePointsContainer({ width }) {
   const { colors } = useTheme();
 
   const P1_INIT = { id: "c1", pos: { x: 100, y: 150 } };
@@ -27,8 +28,6 @@ function DraggablePointsContainer(props) {
 
   const [p1, setP1] = useState(P1_INIT.pos);
   const [p2, setP2] = useState(P2_INIT.pos);
-
-  const [width, setWidth] = useState(100);
 
   const getCorners = useCallback(() => {
     let x1 = new Victor(p1.x + CIRCLE_RADIUS, p1.y + CIRCLE_RADIUS);
@@ -128,23 +127,12 @@ function DraggablePointsContainer(props) {
         {createCircle(P1_INIT, setP1)}
         {createCircle(P2_INIT, setP2)}
       </View>
-      <View style={styles.sliderContainer}>
-        <Text>Width: {width}</Text>
-        <Slider
-          style={styles.slider}
-          value={width}
-          onValueChange={setWidth}
-          minimumValue={20}
-          maximumValue={200}
-          step={5}
-        />
-      </View>
     </>
   );
 }
 
 DraggablePointsContainer.propTypes = {
-  style: PropTypes.object,
+  width: PropTypes.number.isRequired,
 };
 
 const styles = StyleSheet.create({
@@ -175,10 +163,11 @@ const styles = StyleSheet.create({
     borderRadius: CIRCLE_RADIUS,
   },
   sliderContainer: {
+    position: "relative",
     width: "100%",
     height: "100%",
     alignItems: "center",
-    justifyContent: "flex-end",
+    justifyContent: "flex-start",
     height: 60,
   },
   slider: {

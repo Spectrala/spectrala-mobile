@@ -260,7 +260,7 @@ export default function SpectralaCameraScreen() {
         ref={(ref) => (glView = ref)}
       />
 
-      <View style={styles.buttons}>
+      {/* <View style={styles.buttons}>
         <TouchableOpacity style={styles.button} onPress={toggleFacing}>
           <Text>Flip</Text>
         </TouchableOpacity>
@@ -270,7 +270,7 @@ export default function SpectralaCameraScreen() {
         <TouchableOpacity style={styles.button} onPress={zoomOut}>
           <Text>Zoom out</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
     </View>
   );
 }
