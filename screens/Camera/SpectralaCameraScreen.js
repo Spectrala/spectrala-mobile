@@ -159,7 +159,7 @@ export default function SpectralaCameraScreen() {
         snapshot.width,
         snapshot.height
       );
-      // console.log(averageColor);
+      console.log(averageColor);
     }, 2000);
 
     // const pixels = await readPixelsAsync(context, snapshot);
@@ -180,6 +180,7 @@ export default function SpectralaCameraScreen() {
     // canvas.width = snapshot.width;
     // canvas.height = snapshot.height;
     // console.log(imgSrc, width, height);
+    console.log(`Canvas width: ${canvas.width}. Width: ${width}`);
     canvas.width = width;
     canvas.height = height;
     const context = canvas.getContext("2d");
