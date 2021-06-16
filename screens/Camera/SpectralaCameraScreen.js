@@ -3,7 +3,8 @@ import React, { useState, useEffect } from "react";
 import { GLView } from "expo-gl";
 import * as FileSystem from "expo-file-system";
 import * as Permissions from "expo-permissions";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import * as ImageManipulator from "expo-image-manipulator";
+import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
 import { PIXI } from "expo-pixi";
 import Canvas, { Image as CanvasImage } from "react-native-canvas";
 
@@ -34,11 +35,10 @@ void main() {
 // See: https://github.com/expo/expo/pull/10229#discussion_r490961694
 // eslint-disable-next-line @typescript-eslint/ban-types
 export default function SpectralaCameraScreen() {
-  // Zoom level for the camera filter
-  const [zoom, setZoom] = useState(0);
+
 
   // Camera mode. Either front or rear camera.
-  const [type, setType] = useState(Camera.Constants.Type.front);
+  const type = Camera.Constants.Type.front;
 
   // Class variables for
   let _rafID, camera, glView, texture, canvas;
@@ -141,36 +141,29 @@ export default function SpectralaCameraScreen() {
    */
   const takeFrame = async (context) => {
     // TODO: Crop region of interest.
-
     // Docs for takeSnapshotAsync:
     // https://docs.expo.io/versions/latest/sdk/gl-view/#glviewtakesnapshotasyncgl-options
-
     // setInterval(async () => {
     //   const snapshot = await GLView.takeSnapshotAsync(context, {
     //     format: "jpeg",
     //   });
-
     //   const options = { encoding: "base64", compress: 0 };
     //   const base64 = await FileSystem.readAsStringAsync(snapshot.uri, options);
     //   const imgSrc = "data:image/jpeg;base64," + base64;
-
     //   const averageColor = await changeBg(
     //     imgSrc,
     //     snapshot.width,
     //     snapshot.height
     //   );
     // }, 2000);
-
     // const pixels = await readPixelsAsync(context, snapshot);
     // console.log(`Number of pixels: ${pixels.length}`);
     // console.log(pixels);
-
     // For getting a particular pixel
     // const getPixel = (index) => {
     //   const pixel = index * 4;
     //   return pixels.slice(pixel, pixel + 4);
     // };
-
     // const [r, g, b, a] = getPixel(0);
     // console.log({ r, g, b, a });
   };
@@ -223,24 +216,6 @@ export default function SpectralaCameraScreen() {
     });
   };
 
-  /** button event handlers ~~~~~~~~~~~~~~~~v */
-  const toggleFacing = () => {
-    setType(
-      type === Camera.Constants.Type.back
-        ? Camera.Constants.Type.front
-        : Camera.Constants.Type.back
-    );
-  };
-
-  const zoomOut = () => {
-    setZoom(zoom - 0.1 < 0 ? 0 : zoom - 0.1);
-  };
-
-  const zoomIn = () => {
-    setZoom(zoom + 0.1 > 1 ? 1 : zoom + 0.1);
-  };
-  /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^ */
-
   return (
     <View style={styles.container}>
       <Canvas ref={(ref) => (canvas = ref)} />
@@ -249,7 +224,6 @@ export default function SpectralaCameraScreen() {
       <Camera
         style={StyleSheet.absoluteFill}
         type={type}
-        zoom={zoom}
         ref={(ref) => (camera = ref)}
       />
 
@@ -260,17 +234,13 @@ export default function SpectralaCameraScreen() {
         ref={(ref) => (glView = ref)}
       />
 
-      {/* <View style={styles.buttons}>
-        <TouchableOpacity style={styles.button} onPress={toggleFacing}>
-          <Text>Flip</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={zoomIn}>
-          <Text>Zoom in</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={zoomOut}>
-          <Text>Zoom out</Text>
-        </TouchableOpacity>
-      </View> */}
+      <Image
+        style={styles.image}
+        source={{
+          url: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.diversivore.com%2Fwp-content%2Fuploads%2F2015%2F11%2FOrange-Bitter-Header-tester-1024x512.jpg&f=1&nofb=1",
+        }}
+        resizeMode="contain"
+      />
     </View>
   );
 }
@@ -300,5 +270,11 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: "center",
     justifyContent: "center",
+  },
+  image: {
+    paddingHorizontal: 10,
+    height: 100,
+    borderWidth: 2,
+    borderColor: "black",
   },
 });
