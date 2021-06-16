@@ -28,7 +28,7 @@ uniform sampler2D cameraTexture;
 in vec2 uv;
 out vec4 fragColor;
 void main() {
-  fragColor = vec4(1.0 - texture(cameraTexture, uv).rgb, 1.0);
+  fragColor = vec4(texture(cameraTexture, uv).rgb, 1.0);
 }`;
 
 // See: https://github.com/expo/expo/pull/10229#discussion_r490961694
@@ -38,7 +38,7 @@ export default function SpectralaCameraScreen() {
   const [zoom, setZoom] = useState(0);
 
   // Camera mode. Either front or rear camera.
-  const [type, setType] = useState(Camera.Constants.Type.front);
+  const [type, setType] = useState(Camera.Constants.Type.rear);
 
   // Class variables for
   let _rafID, camera, glView, texture, canvas;
@@ -159,7 +159,6 @@ export default function SpectralaCameraScreen() {
         snapshot.width,
         snapshot.height
       );
-      console.log(averageColor);
     }, 2000);
 
     // const pixels = await readPixelsAsync(context, snapshot);
@@ -180,16 +179,13 @@ export default function SpectralaCameraScreen() {
     // canvas.width = snapshot.width;
     // canvas.height = snapshot.height;
     // console.log(imgSrc, width, height);
-    console.log(`Canvas width: ${canvas.width}. Width: ${width}`);
-    canvas.width = width;
-    canvas.height = height;
+    canvas.width = 100;
+    canvas.height = 100;
     const context = canvas.getContext("2d");
     const image = new CanvasImage(canvas);
     image.src = imgSrc;
     image.addEventListener("load", () => {
-      console.log("LOADED!!!!!!!!!!");
       context.drawImage(image, 0, 0);
-      console.log("Draw image");
       try {
         context
           // .getImageData(0, 0, canvas.height, canvas.width)
@@ -247,6 +243,8 @@ export default function SpectralaCameraScreen() {
 
   return (
     <View style={styles.container}>
+      <Canvas ref={(ref) => (canvas = ref)} />
+
       {/* Implementation of expo camera (expo-camera) */}
       <Camera
         style={StyleSheet.absoluteFill}
@@ -254,8 +252,6 @@ export default function SpectralaCameraScreen() {
         zoom={zoom}
         ref={(ref) => (camera = ref)}
       />
-
-      <Canvas ref={(ref) => (canvas = ref)} />
 
       {/* View to grab (expo-gl) */}
       <GLView
