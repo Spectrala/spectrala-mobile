@@ -1,24 +1,15 @@
 import { Camera } from "expo-camera";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { GLView } from "expo-gl";
-import * as FileSystem from "expo-file-system";
 import * as Permissions from "expo-permissions";
 import * as ImageManipulator from "expo-image-manipulator";
 import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
 import Canvas, { Image as CanvasImage } from "react-native-canvas";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  selectLineCoords,
-  updateAllLineCoords,
+  updateFeed,
   selectCorners,
-  setCorners,
 } from "../../redux/reducers/video";
-
-// GL work from here: https://github.com/expo/expo/blob/master/apps/native-component-list/src/screens/GL/GLCameraScreen.tsx
-// Expo uses MIT license. https://github.com/expo/expo#license
-
-// Pixel extraction from snack developed by expo team here: https://snack.expo.io/@bacon/raw-pixel-data
-// Source on reddit (of all places): https://www.reddit.com/r/reactnative/comments/9lb540/get_the_color_of_a_pixel/e7jb39e?utm_source=share&utm_medium=web2x&context=3
 
 const vertShaderSource = `#version 300 es
 precision highp float;
@@ -37,6 +28,7 @@ out vec4 fragColor;
 void main() {
   fragColor = vec4(texture(cameraTexture, uv).rgb, 1.0);
 }`;
+
 
 function CameraView(props) {
   // Camera mode. Either front or rear camera.
@@ -76,12 +68,11 @@ function CameraView(props) {
     }
   };
 
+
+
+  // GL work from here: https://github.com/expo/expo/blob/master/apps/native-component-list/src/screens/GL/GLCameraScreen.tsx
+  // Expo uses MIT license. https://github.com/expo/expo#license
   const onContextCreate = async (gl) => {
-    /**
-     * IF UNCOMMENTED, ATTEMPTS TO GRAB THE SCREEN AFTER 5 SECONDS.
-     * note setTimeout is for debugging. This way, it can be seen if the setup works as expected
-     * and exactly the issue takeFrame is causing.
-     */
     texture = await createCameraTexture();
     const cameraTexture = texture;
 
@@ -140,7 +131,7 @@ function CameraView(props) {
       gl.endFrameEXP();
     };
     loop();
-    setInterval(() => {
+    useInterval(() => {
       tick(gl);
     }, 2000);
   };
@@ -241,6 +232,29 @@ function CameraView(props) {
     </View>
   );
 }
+
+// Hooks don't work with setInterval. Use this instead. 
+// https://overreacted.io/making-setinterval-declarative-with-react-hooks/
+function useInterval(callback, delay) {
+  const savedCallback = useRef();
+
+  // Remember the latest callback.
+  useEffect(() => {
+    savedCallback.current = callback;
+  }, [callback]);
+
+  // Set up the interval.
+  useEffect(() => {
+    function tick() {
+      savedCallback.current();
+    }
+    if (delay !== null) {
+      let id = setInterval(tick, delay);
+      return () => clearInterval(id);
+    }
+  }, [delay]);
+}
+
 
 const styles = StyleSheet.create({
   container: {
