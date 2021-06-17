@@ -1,10 +1,10 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 export const SourceEnum = {
-    STREAM: 'SOURCE_STREAM',
-    WEBCAM: 'SOURCE_WEBCAM',
-    IMAGE: 'SOURCE_IMAGE',
-    MOBILE_STREAM: 'SOURCE_MOBILE_STREAM',
+  STREAM: "SOURCE_STREAM",
+  WEBCAM: "SOURCE_WEBCAM",
+  IMAGE: "SOURCE_IMAGE",
+  MOBILE_STREAM: "SOURCE_MOBILE_STREAM",
 };
 
 // Samples included in the moving average
@@ -24,105 +24,102 @@ const isNotOversaturated = (val) => val < OVERSATURATION_CEILING;
  * Selectors can choose how they export this data to something more useful for other classes.
  */
 export const videoSlice = createSlice({
-    name: 'video',
-    initialState: {
-        pixelLineHistory: [],
-        isOversaturated: false,
-        lineCoords: {
-            lowX: 100,
-            lowY: 200,
-            highX: 200,
-            highY: 600,
-        },
-        selectedSource: SourceEnum.WEBCAM,
-        uploadedImage: undefined,
-        selectedWebcam: undefined,
+  name: "video",
+  initialState: {
+    pixelLineHistory: [],
+    isOversaturated: false,
+    lineCoords: {
+      lowX: 100,
+      lowY: 200,
+      highX: 200,
+      highY: 600,
     },
-    reducers: {
-        updateFeed: (state, action) => {
-            const newline = action.payload.value;
-            let lineHist = state.pixelLineHistory;
-            /**
-             * This maintains a history of a certain length
-             * of pixel values in order to create a moving average of intensities.
-             * There's obvious uncertainty when looking at the static bounce around.
-             * Smoothing this out is better for UX and scientific accuracy.
-             */
-            if (lineHist.length > 0) {
-                if (lineHist[0].length === newline.length) {
-                    if (lineHist.length >= PIXEL_LINE_HISTORY_DEPTH)
-                        lineHist = lineHist.slice(
-                            PIXEL_LINE_HISTORY_DEPTH - lineHist.length + 1
-                        );
-                    lineHist.push(newline);
-                } else {
-                    lineHist = [newline];
-                }
-            } else {
-                lineHist = [newline];
-            }
-            state.pixelLineHistory = lineHist;
-
-            /**
-             * Detect oversaturation
-             */
-            state.isOversaturated = !newline.every(isNotOversaturated);
-        },
-        updateLineCoords: (state, action) => {
-            state.lineCoords[action.payload.targetKey] = action.payload.value;
-        },
-        updateAllLineCoords: (state, action) => {
-            state.lineCoords = action.payload.value;
-        },
-        setSelectedSource: (state, action) => {
-            state.selectedSource = action.payload.value;
-            state.selectedWebcam = action.payload.webcam;
-        },
-        setUploadedImage: (state, action) => {
-            // Done because going to data upload makes image blank.
-            state.uploadedImage = action.payload.image;
-
-        },
-        setCorners: (state, action) => {
-            state.corners = action.payload.value;
+    selectedSource: SourceEnum.WEBCAM,
+    uploadedImage: undefined,
+    selectedWebcam: undefined,
+    corners: undefined,
+  },
+  reducers: {
+    updateFeed: (state, action) => {
+      const newline = action.payload.value;
+      let lineHist = state.pixelLineHistory;
+      /**
+       * This maintains a history of a certain length
+       * of pixel values in order to create a moving average of intensities.
+       * There's obvious uncertainty when looking at the static bounce around.
+       * Smoothing this out is better for UX and scientific accuracy.
+       */
+      if (lineHist.length > 0) {
+        if (lineHist[0].length === newline.length) {
+          if (lineHist.length >= PIXEL_LINE_HISTORY_DEPTH)
+            lineHist = lineHist.slice(
+              PIXEL_LINE_HISTORY_DEPTH - lineHist.length + 1
+            );
+          lineHist.push(newline);
+        } else {
+          lineHist = [newline];
         }
+      } else {
+        lineHist = [newline];
+      }
+      state.pixelLineHistory = lineHist;
+
+      /**
+       * Detect oversaturation
+       */
+      state.isOversaturated = !newline.every(isNotOversaturated);
     },
+    updateLineCoords: (state, action) => {
+      state.lineCoords[action.payload.targetKey] = action.payload.value;
+    },
+    updateAllLineCoords: (state, action) => {
+      state.lineCoords = action.payload.value;
+    },
+    setSelectedSource: (state, action) => {
+      state.selectedSource = action.payload.value;
+      state.selectedWebcam = action.payload.webcam;
+    },
+    setUploadedImage: (state, action) => {
+      // Done because going to data upload makes image blank.
+      state.uploadedImage = action.payload.image;
+    },
+    setCorners: (state, action) => {
+      state.corners = action.payload.value;
+    },
+  },
 });
 
 export const {
-    updateFeed,
-    updateLineCoords,
-    updateAllLineCoords,
-    setSelectedSource,
-    setUploadedImage,
-    setCorners,
+  updateFeed,
+  updateLineCoords,
+  updateAllLineCoords,
+  setSelectedSource,
+  setUploadedImage,
+  setCorners,
 } = videoSlice.actions;
-
 
 export const selectUploadedImage = (state) => state.video.uploadedImage;
 
 export const selectIntensities = (state) => {
-    const pixels = state.video.pixelLineHistory;
-    if (pixels && pixels.length > 0) {
-        const pixelLines = pixels.map((line) =>
-            line.map((obj) => (obj.r + obj.g + obj.b) / 3 / 2.55)
-        );
-        var averagedLine = [];
-        const len = pixelLines[0].length;
+  const pixels = state.video.pixelLineHistory;
+  if (pixels && pixels.length > 0) {
+    const pixelLines = pixels.map((line) =>
+      line.map((obj) => (obj.r + obj.g + obj.b) / 3 / 2.55)
+    );
+    var averagedLine = [];
+    const len = pixelLines[0].length;
 
-        for (var i = 0; i < len; i++) {
-            let column = [];
-            for (var j = 0; j < pixelLines.length; j++) {
-                column.push(pixelLines[j][i]);
-            }
+    for (var i = 0; i < len; i++) {
+      let column = [];
+      for (var j = 0; j < pixelLines.length; j++) {
+        column.push(pixelLines[j][i]);
+      }
 
-            averagedLine.push(
-                column.reduce((a, b) => a + b, 0) / pixelLines.length
-            );
-        }
-        return averagedLine;
+      averagedLine.push(column.reduce((a, b) => a + b, 0) / pixelLines.length);
     }
-    return null;
+    return averagedLine;
+  }
+  return null;
 };
 
 export const selectSource = (state) => state.video.selectedSource;
@@ -136,22 +133,22 @@ export const selectLineCoords = (state) => state.video.lineCoords;
 export const selectCorners = (state) => state.video.corners;
 
 export const selectChartData = (state) => {
-    const intensities = selectIntensities(state);
-    if (!intensities) {
-        return null;
-    }
-    return [
-        {
-            id: 'spectrum',
-            color: '#00873E',
-            data: intensities.map((y, idx) => {
-                return {
-                    x: idx / (intensities.length - 1),
-                    y: y,
-                };
-            }),
-        },
-    ];
+  const intensities = selectIntensities(state);
+  if (!intensities) {
+    return null;
+  }
+  return [
+    {
+      id: "spectrum",
+      color: "#00873E",
+      data: intensities.map((y, idx) => {
+        return {
+          x: idx / (intensities.length - 1),
+          y: y,
+        };
+      }),
+    },
+  ];
 };
 
 export default videoSlice.reducer;

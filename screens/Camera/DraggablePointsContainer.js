@@ -32,10 +32,7 @@ function DraggablePointsContainer({ width }) {
     selectLineCoords,
     (a, b) => false // TODO: fix hack
   );
-  const corners = useSelector(
-    selectCorners,
-    (a, b) => false // TODO: fix hack
-  );
+  const corners = useSelector(selectCorners);
   const dispatch = useDispatch();
 
   // const P1_INIT = {
@@ -74,6 +71,7 @@ function DraggablePointsContainer({ width }) {
         },
       })
     );
+    updateCorners();
   }, [p1, p2]);
 
   const updateCorners = useCallback(() => {
@@ -102,7 +100,7 @@ function DraggablePointsContainer({ width }) {
 
   useEffect(() => {
     updateCorners();
-  }, [p1, p2, width]);
+  }, []);
 
   const createCircle = (initial, setter) => {
     if (!initial) return;
@@ -152,6 +150,8 @@ function DraggablePointsContainer({ width }) {
   };
 
   const readerLine = useCallback(() => {
+    console.log("Corners in readerline");
+    console.log(corners);
     return (
       <Svg height="100%" width="100%">
         <Line
