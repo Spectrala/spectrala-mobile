@@ -1,5 +1,5 @@
 import { Camera } from "expo-camera";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { GLView } from "expo-gl";
 import * as ImageManipulator from "expo-image-manipulator";
 import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
@@ -32,7 +32,9 @@ function CameraView(props) {
   const type = Camera.Constants.Type.front;
 
   // Class variables for
-  let _rafID, camera, glView, texture, canvas, glContext
+  let _rafID, camera, glView, texture, canvas;
+
+  const [glContext, setGlContext] = useState(undefined);
 
   const [imgUri, setImgUri] = useState(
     "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.diversivore.com%2Fwp-content%2Fuploads%2F2015%2F11%2FOrange-Bitter-Header-tester-1024x512.jpg&f=1&nofb=1"
@@ -40,6 +42,10 @@ function CameraView(props) {
 
   const corners = useSelector(selectCorners, () => false);
   const [hasPermission, setHasPermission] = useState(null);
+
+  const countTimer = useInterval(() => {
+    !glContext || tick(glContext);
+  }, FRAME_INTERVAL_MS);
 
   /**
    * Clean up the screen. Returning from useEffect is equivalent to
@@ -50,10 +56,6 @@ function CameraView(props) {
       const { status } = await Camera.requestPermissionsAsync();
       setHasPermission(status === "granted");
     })();
-  
-    const countTimer = useInterval(() => {
-      tick(glContext);
-    }, FRAME_INTERVAL_MS);
 
     return () => {
       clearInterval(countTimer);
@@ -73,7 +75,7 @@ function CameraView(props) {
   // GL work from here: https://github.com/expo/expo/blob/master/apps/native-component-list/src/screens/GL/GLCameraScreen.tsx
   // Expo uses MIT license. https://github.com/expo/expo#license
   const onContextCreate = async (gl) => {
-    glContext = gl;
+    setGlContext(gl);
     texture = await createCameraTexture();
     const cameraTexture = texture;
 
@@ -243,11 +245,11 @@ function useInterval(callback, delay) {
 
   // Set up the interval.
   useEffect(() => {
-    function tick() {
+    function t() {
       savedCallback.current();
     }
     if (delay !== null) {
-      let id = setInterval(tick, delay);
+      let id = setInterval(t, delay);
       return () => clearInterval(id);
     }
   }, [delay]);

@@ -29,25 +29,34 @@ function DraggablePointsContainer({ width }) {
   const { colors } = useTheme();
   const lineCoords = useSelector(
     selectLineCoords,
-    () => false // TODO: fix hack
+    (a, b) => false // TODO: fix hack
   );
   const corners = useSelector(selectCorners);
   const dispatch = useDispatch();
 
+  // const P1_INIT = {
+  //   x: lineCoords.lowX,
+  //   y: lineCoords.lowY,
+  // };
+
+  // const P2_INIT = {
+  //   x: lineCoords.highX,
+  //   y: lineCoords.highY,
+  // };
+
   // TODO: See how above code can be used to get an initial value from redux.
   const P1_INIT = {
     x: 100,
-    y: 200,
+    y: 300,
   };
 
   const P2_INIT = {
     x: 200,
-    y: 600,
+    y: 300,
   };
 
-  const [p1, setP1] = useState(P1_INIT);
-
-  const [p2, setP2] = useState(P2_INIT);
+  const [p1, setP1] = useState({...P1_INIT});
+  const [p2, setP2] = useState({...P2_INIT});
 
   const updateStore = useCallback(() => {
     let x1 = new Victor(p1.x + CIRCLE_RADIUS, p1.y + CIRCLE_RADIUS);
@@ -88,15 +97,6 @@ function DraggablePointsContainer({ width }) {
   }, [p1, p2, width]);
 
   useEffect(() => {
-    // setP1({
-    //   x: lineCoords.lowX,
-    //   y: lineCoords.lowY,
-    // });
-
-    // setP2({
-    //   x: lineCoords.highX,
-    //   y: lineCoords.highY,
-    // });
     updateStore();
   }, [width]);
 
