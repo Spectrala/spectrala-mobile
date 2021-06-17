@@ -25,12 +25,14 @@ void main() {
   fragColor = vec4(texture(cameraTexture, uv).rgb, 1.0);
 }`;
 
+const FRAME_INTERVAL_MS = 1000;
+
 function CameraView(props) {
   // Camera mode. Either front or rear camera.
   const type = Camera.Constants.Type.front;
 
   // Class variables for
-  let _rafID, camera, glView, texture, canvas;
+  let _rafID, camera, glView, texture, canvas, glContext
 
   const [imgUri, setImgUri] = useState(
     "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.diversivore.com%2Fwp-content%2Fuploads%2F2015%2F11%2FOrange-Bitter-Header-tester-1024x512.jpg&f=1&nofb=1"
@@ -48,8 +50,13 @@ function CameraView(props) {
       const { status } = await Camera.requestPermissionsAsync();
       setHasPermission(status === "granted");
     })();
+  
+    const countTimer = useInterval(() => {
+      tick(glContext);
+    }, FRAME_INTERVAL_MS);
 
     return () => {
+      clearInterval(countTimer);
       if (_rafID !== undefined) {
         cancelAnimationFrame(_rafID);
       }
@@ -66,6 +73,7 @@ function CameraView(props) {
   // GL work from here: https://github.com/expo/expo/blob/master/apps/native-component-list/src/screens/GL/GLCameraScreen.tsx
   // Expo uses MIT license. https://github.com/expo/expo#license
   const onContextCreate = async (gl) => {
+    glContext = gl;
     texture = await createCameraTexture();
     const cameraTexture = texture;
 
@@ -124,9 +132,6 @@ function CameraView(props) {
       gl.endFrameEXP();
     };
     loop();
-    // useInterval(() => {
-    //   tick(gl);
-    // }, 2000);
   };
 
   const tick = async (gl) => {
