@@ -5,10 +5,7 @@ import * as ImageManipulator from "expo-image-manipulator";
 import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
 import Canvas, { Image as CanvasImage } from "react-native-canvas";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  updateFeed,
-  selectCorners,
-} from "../../redux/reducers/video";
+import { updateFeed, selectCorners } from "../../redux/reducers/video";
 
 const vertShaderSource = `#version 300 es
 precision highp float;
@@ -27,7 +24,6 @@ out vec4 fragColor;
 void main() {
   fragColor = vec4(texture(cameraTexture, uv).rgb, 1.0);
 }`;
-
 
 function CameraView(props) {
   // Camera mode. Either front or rear camera.
@@ -48,25 +44,24 @@ function CameraView(props) {
    * onComponentUnmount for a class component.
    */
   useEffect(() => {
+    (async () => {
+      const { status } = await Camera.requestPermissionsAsync();
+      setHasPermission(status === "granted");
+    })();
 
     return () => {
       if (_rafID !== undefined) {
         cancelAnimationFrame(_rafID);
       }
     };
-  }, []);
+  }, [hasPermission]);
 
   // Function used in the expo demo
   const createCameraTexture = async () => {
-    const { status } = await Camera.requestPermissionsAsync();
-    setHasPermission(status === 'granted');
-    
     if (glView && camera) {
       return glView.createCameraTextureAsync(camera);
     }
   };
-
-
 
   // GL work from here: https://github.com/expo/expo/blob/master/apps/native-component-list/src/screens/GL/GLCameraScreen.tsx
   // Expo uses MIT license. https://github.com/expo/expo#license
@@ -129,9 +124,9 @@ function CameraView(props) {
       gl.endFrameEXP();
     };
     loop();
-    useInterval(() => {
-      tick(gl);
-    }, 2000);
+    // useInterval(() => {
+    //   tick(gl);
+    // }, 2000);
   };
 
   const tick = async (gl) => {
@@ -231,7 +226,7 @@ function CameraView(props) {
   );
 }
 
-// Hooks don't work with setInterval. Use this instead. 
+// Hooks don't work with setInterval. Use this instead.
 // https://overreacted.io/making-setinterval-declarative-with-react-hooks/
 function useInterval(callback, delay) {
   const savedCallback = useRef();
@@ -252,7 +247,6 @@ function useInterval(callback, delay) {
     }
   }, [delay]);
 }
-
 
 const styles = StyleSheet.create({
   container: {

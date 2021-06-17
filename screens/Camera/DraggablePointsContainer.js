@@ -99,7 +99,7 @@ function DraggablePointsContainer({ width }) {
 
   useEffect(() => {
     updateStore();
-  }, []);
+  }, [width]);
 
   const createCircle = (initial, setter) => {
     if (!initial) return;
