@@ -38,8 +38,6 @@ void main() {
   fragColor = vec4(texture(cameraTexture, uv).rgb, 1.0);
 }`;
 
-// See: https://github.com/expo/expo/pull/10229#discussion_r490961694
-// eslint-disable-next-line @typescript-eslint/ban-types
 function CameraView(props) {
   // Camera mode. Either front or rear camera.
   const type = Camera.Constants.Type.front;
@@ -277,6 +275,5 @@ const styles = StyleSheet.create({
     borderColor: "black",
   },
 });
-
 
 export default CameraView;
