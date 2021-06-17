@@ -1,7 +1,6 @@
 import { Camera } from "expo-camera";
 import React, { useState, useEffect, useRef } from "react";
 import { GLView } from "expo-gl";
-import * as Permissions from "expo-permissions";
 import * as ImageManipulator from "expo-image-manipulator";
 import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
 import Canvas, { Image as CanvasImage } from "react-native-canvas";
@@ -42,12 +41,14 @@ function CameraView(props) {
   );
 
   const corners = useSelector(selectCorners, () => false);
+  const [hasPermission, setHasPermission] = useState(null);
 
   /**
    * Clean up the screen. Returning from useEffect is equivalent to
    * onComponentUnmount for a class component.
    */
   useEffect(() => {
+
     return () => {
       if (_rafID !== undefined) {
         cancelAnimationFrame(_rafID);
@@ -57,12 +58,9 @@ function CameraView(props) {
 
   // Function used in the expo demo
   const createCameraTexture = async () => {
-    const { status } = await Permissions.askAsync(Permissions.CAMERA);
-
-    if (status !== "granted") {
-      throw new Error("Denied camera permissions!");
-    }
-
+    const { status } = await Camera.requestPermissionsAsync();
+    setHasPermission(status === 'granted');
+    
     if (glView && camera) {
       return glView.createCameraTextureAsync(camera);
     }
