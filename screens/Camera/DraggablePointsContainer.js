@@ -148,8 +148,6 @@ function DraggablePointsContainer({ width }) {
   };
 
   const readerLine = useCallback(() => {
-    console.log("Corners in readerline");
-    console.log(corners);
     return (
       <Svg height="100%" width="100%">
         <Line

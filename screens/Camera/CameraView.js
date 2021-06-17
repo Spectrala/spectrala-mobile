@@ -25,16 +25,17 @@ void main() {
   fragColor = vec4(texture(cameraTexture, uv).rgb, 1.0);
 }`;
 
-const FRAME_INTERVAL_MS = 1000;
+const FRAME_INTERVAL_MS = 5000;
 
 function CameraView(props) {
   // Camera mode. Either front or rear camera.
-  const type = Camera.Constants.Type.front;
+  const type = Camera.Constants.Type.rear;
 
   // Class variables for
-  let _rafID, camera, glView, texture, canvas;
+  let _rafID, camera, glView, texture;
 
   const [glContext, setGlContext] = useState(undefined);
+  const [canvas, setCanvas] = useState(undefined);
 
   const [imgUri, setImgUri] = useState(
     "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.diversivore.com%2Fwp-content%2Fuploads%2F2015%2F11%2FOrange-Bitter-Header-tester-1024x512.jpg&f=1&nofb=1"
@@ -158,39 +159,48 @@ function CameraView(props) {
   };
 
   const cropFrame = async (uri) => {
-    const xVals = corners.map((c) => c.x);
-    const yVals = corners.map((c) => c.y);
+    // TODO: Unsure why SCALE is necessary.
+    const SCALE = 2;
+    const xVals = corners.map((c) => SCALE * c.x);
+    const yVals = corners.map((c) => SCALE * c.y);
     const minX = Math.min(...xVals);
     const maxX = Math.max(...xVals);
     const minY = Math.min(...yVals);
     const maxY = Math.max(...yVals);
-    console.log("Corners in copyFrame");
-    console.log(corners);
+
+    const width = maxX - minX;
+    const height = maxY - minY;
+
+    // Find minX, minY, maxX, maxY
 
     const result = await ImageManipulator.manipulateAsync(uri, [
       {
         crop: {
           originX: minX,
           originY: minY,
-          width: maxX - minX,
-          height: maxY - minY,
+          width,
+          height,
         },
       },
     ]);
 
-    setImgUri(result.uri);
+    readImage(result.uri, width, height);
   };
 
-  const readAndSendImage = (imgSrc, width, height) => {
+  const readImage = (imgSrc, width, height) => {
+    setImgUri(imgSrc);
     canvas.width = width;
     canvas.height = height;
     const context = canvas.getContext("2d");
     const image = new CanvasImage(canvas);
     image.src = imgSrc;
+    console.log("listen for laod");
     image.addEventListener("load", () => {
+      console.log("loaded");
       context.drawImage(image, 0, 0);
+      console.log("drew");
       context
-        .getImageData(0, 0, canvas.height, canvas.width)
+        .getImageData(0, 0, canvas.width, canvas.height)
         .then((imageData) => {
           console.log(
             "Image data:",
@@ -206,8 +216,6 @@ function CameraView(props) {
 
   return (
     <View style={styles.container}>
-      <Canvas ref={(ref) => (canvas = ref)} />
-
       {/* Implementation of expo camera (expo-camera) */}
       <Camera
         style={StyleSheet.absoluteFill}
@@ -229,6 +237,8 @@ function CameraView(props) {
         }}
         resizeMode="contain"
       />
+
+      <Canvas ref={setCanvas} />
     </View>
   );
 }
