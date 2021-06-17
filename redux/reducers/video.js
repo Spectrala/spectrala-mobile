@@ -28,16 +28,20 @@ export const videoSlice = createSlice({
   initialState: {
     pixelLineHistory: [],
     isOversaturated: false,
-    lineCoords: {
-      lowX: 100,
-      lowY: 200,
-      highX: 200,
-      highY: 600,
+    readerBoxData: {
+      lineCoords: {
+        lowX: 100,
+        lowY: 200,
+        highX: 200,
+        highY: 600,
+      },
+      corners: undefined,
+      width: undefined,
+      length: undefined,
     },
     selectedSource: SourceEnum.WEBCAM,
     uploadedImage: undefined,
     selectedWebcam: undefined,
-    corners: undefined,
   },
   reducers: {
     updateFeed: (state, action) => {
@@ -69,11 +73,8 @@ export const videoSlice = createSlice({
        */
       state.isOversaturated = !newline.every(isNotOversaturated);
     },
-    updateLineCoords: (state, action) => {
-      state.lineCoords[action.payload.targetKey] = action.payload.value;
-    },
-    updateAllLineCoords: (state, action) => {
-      state.lineCoords = action.payload.value;
+    updateReaderBoxData: (state, action) => {
+      state.readerBoxData = action.payload.value;
     },
     setSelectedSource: (state, action) => {
       state.selectedSource = action.payload.value;
@@ -83,19 +84,14 @@ export const videoSlice = createSlice({
       // Done because going to data upload makes image blank.
       state.uploadedImage = action.payload.image;
     },
-    setCorners: (state, action) => {
-      state.corners = action.payload.value;
-    },
   },
 });
 
 export const {
   updateFeed,
-  updateLineCoords,
-  updateAllLineCoords,
+  updateReaderBoxData,
   setSelectedSource,
   setUploadedImage,
-  setCorners,
 } = videoSlice.actions;
 
 export const selectUploadedImage = (state) => state.video.uploadedImage;
@@ -128,9 +124,9 @@ export const selectWebcam = (state) => state.video.selectedWebcam;
 
 export const selectOversaturation = (state) => state.video.isOversaturated;
 
-export const selectLineCoords = (state) => state.video.lineCoords;
+export const selectLineCoords = (state) => state.video.readerBoxData.lineCoords;
 
-export const selectCorners = (state) => state.video.corners;
+export const selectCorners = (state) => state.video.readerBoxData.corners;
 
 export const selectChartData = (state) => {
   const intensities = selectIntensities(state);

@@ -49,7 +49,7 @@ function CameraView(props) {
     "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.diversivore.com%2Fwp-content%2Fuploads%2F2015%2F11%2FOrange-Bitter-Header-tester-1024x512.jpg&f=1&nofb=1"
   );
 
-  const corners = useSelector(selectCorners);
+  const corners = useSelector(selectCorners, () => false);
 
   /**
    * Clean up the screen. Returning from useEffect is equivalent to

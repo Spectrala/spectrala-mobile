@@ -20,9 +20,8 @@ import Victor from "victor";
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectLineCoords,
-  updateAllLineCoords,
+  updateReaderBoxData,
   selectCorners,
-  setCorners,
 } from "../../redux/reducers/video";
 const CIRCLE_RADIUS = 20;
 
@@ -61,20 +60,6 @@ function DraggablePointsContainer({ width }) {
   const [p2, setP2] = useState(P2_INIT);
 
   const updateStore = useCallback(() => {
-    dispatch(
-      updateAllLineCoords({
-        value: {
-          lowX: p1.x,
-          lowY: p1.y,
-          highX: p2.x,
-          highY: p2.y,
-        },
-      })
-    );
-    updateCorners();
-  }, [p1, p2]);
-
-  const updateCorners = useCallback(() => {
     let x1 = new Victor(p1.x + CIRCLE_RADIUS, p1.y + CIRCLE_RADIUS);
     let x2 = new Victor(p2.x + CIRCLE_RADIUS, p2.y + CIRCLE_RADIUS);
     const l = x2.subtract(x1);
@@ -91,15 +76,29 @@ function DraggablePointsContainer({ width }) {
     // Translate the box to be on the line
     rect.forEach((corner) => corner.add(x1));
 
-    const serializable = rect.map((corner) => {
+    const derivedCorners = rect.map((corner) => {
       return { x: corner.x, y: corner.y };
     });
 
-    dispatch(setCorners({ value: serializable }));
+    dispatch(
+      updateReaderBoxData({
+        value: {
+          lineCoords: {
+            lowX: p1.x,
+            lowY: p1.y,
+            highX: p2.x,
+            highY: p2.y,
+          },
+          corners: derivedCorners,
+          width,
+          length: l.magnitude(),
+        },
+      })
+    );
   }, [p1, p2, width]);
 
   useEffect(() => {
-    updateCorners();
+    updateStore();
   }, []);
 
   const createCircle = (initial, setter) => {
