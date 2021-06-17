@@ -29,10 +29,10 @@ export const videoSlice = createSlice({
         pixelLineHistory: [],
         isOversaturated: false,
         lineCoords: {
-            lowX: 0.1,
-            lowY: 0.5,
-            highX: 0.9,
-            highY: 0.5,
+            lowX: 100,
+            lowY: 200,
+            highX: 200,
+            highY: 600,
         },
         selectedSource: SourceEnum.WEBCAM,
         uploadedImage: undefined,
@@ -82,6 +82,9 @@ export const videoSlice = createSlice({
             // Done because going to data upload makes image blank.
             state.uploadedImage = action.payload.image;
 
+        },
+        setCorners: (state, action) => {
+            state.corners = action.payload.value;
         }
     },
 });
@@ -92,6 +95,7 @@ export const {
     updateAllLineCoords,
     setSelectedSource,
     setUploadedImage,
+    setCorners,
 } = videoSlice.actions;
 
 
@@ -128,6 +132,8 @@ export const selectWebcam = (state) => state.video.selectedWebcam;
 export const selectOversaturation = (state) => state.video.isOversaturated;
 
 export const selectLineCoords = (state) => state.video.lineCoords;
+
+export const selectCorners = (state) => state.video.corners;
 
 export const selectChartData = (state) => {
     const intensities = selectIntensities(state);

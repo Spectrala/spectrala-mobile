@@ -17,19 +17,66 @@ import {
 import { useTheme } from "@react-navigation/native";
 import { Svg, Line, Rect, Circle } from "react-native-svg";
 import Victor from "victor";
-
+import { useDispatch, useSelector } from "react-redux";
+import {
+  selectLineCoords,
+  updateAllLineCoords,
+  selectCorners,
+  setCorners,
+} from "../../redux/reducers/video";
 const CIRCLE_RADIUS = 20;
 
 function DraggablePointsContainer({ width }) {
   const { colors } = useTheme();
+  const lineCoords = useSelector(
+    selectLineCoords,
+    (a, b) => false // TODO: fix hack
+  );
+  const corners = useSelector(
+    selectCorners,
+    (a, b) => false // TODO: fix hack
+  );
+  const dispatch = useDispatch();
 
-  const P1_INIT = { id: "c1", pos: { x: 100, y: 150 } };
-  const P2_INIT = { id: "c2", pos: { x: 200, y: 200 } };
+  // const P1_INIT = {
+  //   x: lineCoords.lowX,
+  //   y: lineCoords.lowY,
+  // };
 
-  const [p1, setP1] = useState(P1_INIT.pos);
-  const [p2, setP2] = useState(P2_INIT.pos);
+  // const P2_INIT = {
+  //   x: lineCoords.highX,
+  //   y: lineCoords.highY,
+  // };
 
-  const getCorners = useCallback(() => {
+  // TODO: See how above code can be used to get an initial value from redux.
+  const P1_INIT = {
+    x: 100,
+    y: 200,
+  };
+
+  const P2_INIT = {
+    x: 200,
+    y: 600,
+  };
+
+  const [p1, setP1] = useState(P1_INIT);
+
+  const [p2, setP2] = useState(P2_INIT);
+
+  const updateStore = useCallback(() => {
+    dispatch(
+      updateAllLineCoords({
+        value: {
+          lowX: p1.x,
+          lowY: p1.y,
+          highX: p2.x,
+          highY: p2.y,
+        },
+      })
+    );
+  }, [p1, p2]);
+
+  const updateCorners = useCallback(() => {
     let x1 = new Victor(p1.x + CIRCLE_RADIUS, p1.y + CIRCLE_RADIUS);
     let x2 = new Victor(p2.x + CIRCLE_RADIUS, p2.y + CIRCLE_RADIUS);
     const l = x2.subtract(x1);
@@ -38,7 +85,7 @@ function DraggablePointsContainer({ width }) {
     // Four corners of rectangle with extremes (0, -width/2) and (length, width/2)
     const yRange = [-width / 2, width / 2];
     const xRange = [0, l.magnitude()];
-    const rect = yRange.map((y) => xRange.map((x) => new Victor(x, y))).flat();
+    const rect = xRange.map((x) => yRange.map((y) => new Victor(x, y))).flat();
 
     // Rotate the box to match the rotation of the line
     rect.forEach((corner) => corner.rotate(theta));
@@ -46,26 +93,30 @@ function DraggablePointsContainer({ width }) {
     // Translate the box to be on the line
     rect.forEach((corner) => corner.add(x1));
 
-    return rect;
-  }, [p1, p2, width]);
+    const serializable = rect.map((corner) => {
+      return { x: corner.x, y: corner.y };
+    });
 
-  const [corners, setCorners] = useState(getCorners());
+    dispatch(setCorners({ value: serializable }));
+  }, [p1, p2, width]);
 
   useEffect(() => {
-    setCorners(getCorners());
+    updateCorners();
   }, [p1, p2, width]);
 
-  const createCircle = useCallback((initial, setter) => {
+  const createCircle = (initial, setter) => {
+    if (!initial) return;
     const circleStyle = { ...styles.circle, backgroundColor: colors.primary };
 
     const pan = useRef(new Animated.ValueXY()).current;
 
-    pan.addListener(({ x, y }) =>
+    pan.addListener(({ x, y }) => {
       setter({
-        x: initial.pos.x + x,
-        y: initial.pos.y + y,
-      })
-    );
+        x: initial.x + x,
+        y: initial.y + y,
+      });
+      updateStore();
+    });
 
     const panResponder = useRef(
       PanResponder.create({
@@ -89,8 +140,8 @@ function DraggablePointsContainer({ width }) {
       <Animated.View
         style={{
           position: "absolute",
-          left: initial.pos.x,
-          top: initial.pos.y,
+          left: initial.x,
+          top: initial.y,
           transform: [{ translateX: pan.x }, { translateY: pan.y }],
         }}
         {...panResponder.panHandlers}
@@ -98,7 +149,7 @@ function DraggablePointsContainer({ width }) {
         <View style={circleStyle} />
       </Animated.View>
     );
-  });
+  };
 
   const readerLine = useCallback(() => {
     return (
@@ -118,7 +169,7 @@ function DraggablePointsContainer({ width }) {
           })}
       </Svg>
     );
-  }, [p1, p2, width]);
+  }, [p1, p2, width, corners]);
 
   return (
     <>
