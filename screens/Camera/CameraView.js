@@ -1,6 +1,7 @@
 import { Camera } from "expo-camera";
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { GLView } from "expo-gl";
+import * as FileSystem from "expo-file-system";
 import * as ImageManipulator from "expo-image-manipulator";
 import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
 import Canvas, { Image as CanvasImage } from "react-native-canvas";
@@ -187,18 +188,19 @@ function CameraView(props) {
     readImage(result.uri, width, height);
   };
 
-  const readImage = (imgSrc, width, height) => {
+  const readImage = async (imgSrc, width, height) => {
     setImgUri(imgSrc);
     canvas.width = width;
     canvas.height = height;
     const context = canvas.getContext("2d");
     const image = new CanvasImage(canvas);
-    image.src = imgSrc;
-    console.log("listen for laod");
+
+    const options = { encoding: "base64", compress: 0.4 };
+    const base64 = await FileSystem.readAsStringAsync(imgSrc, options);
+    const src = "data:image/jpeg;base64," + base64;
+    image.src = src;
     image.addEventListener("load", () => {
-      console.log("loaded");
       context.drawImage(image, 0, 0);
-      console.log("drew");
       context
         .getImageData(0, 0, canvas.width, canvas.height)
         .then((imageData) => {
