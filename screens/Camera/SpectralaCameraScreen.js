@@ -5,8 +5,14 @@ import * as FileSystem from "expo-file-system";
 import * as Permissions from "expo-permissions";
 import * as ImageManipulator from "expo-image-manipulator";
 import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
-import { PIXI } from "expo-pixi";
 import Canvas, { Image as CanvasImage } from "react-native-canvas";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  selectLineCoords,
+  updateAllLineCoords,
+  selectCorners,
+  setCorners,
+} from "../../redux/reducers/video";
 
 // GL work from here: https://github.com/expo/expo/blob/master/apps/native-component-list/src/screens/GL/GLCameraScreen.tsx
 // Expo uses MIT license. https://github.com/expo/expo#license
@@ -35,13 +41,20 @@ void main() {
 // See: https://github.com/expo/expo/pull/10229#discussion_r490961694
 // eslint-disable-next-line @typescript-eslint/ban-types
 export default function SpectralaCameraScreen() {
-
-
   // Camera mode. Either front or rear camera.
   const type = Camera.Constants.Type.front;
 
   // Class variables for
   let _rafID, camera, glView, texture, canvas;
+
+  const [imgUri, setImgUri] = useState(
+    "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.diversivore.com%2Fwp-content%2Fuploads%2F2015%2F11%2FOrange-Bitter-Header-tester-1024x512.jpg&f=1&nofb=1"
+  );
+
+  const corners = useSelector(
+    selectCorners,
+    (a, b) => false // TODO: fix hack
+  );
 
   /**
    * Clean up the screen. Returning from useEffect is equivalent to
@@ -132,7 +145,7 @@ export default function SpectralaCameraScreen() {
       gl.endFrameEXP();
     };
     loop();
-    takeFrame(gl);
+    setInterval(() => takeFrame(gl), 2000);
   };
 
   /**
@@ -143,76 +156,35 @@ export default function SpectralaCameraScreen() {
     // TODO: Crop region of interest.
     // Docs for takeSnapshotAsync:
     // https://docs.expo.io/versions/latest/sdk/gl-view/#glviewtakesnapshotasyncgl-options
-    // setInterval(async () => {
-    //   const snapshot = await GLView.takeSnapshotAsync(context, {
-    //     format: "jpeg",
-    //   });
-    //   const options = { encoding: "base64", compress: 0 };
-    //   const base64 = await FileSystem.readAsStringAsync(snapshot.uri, options);
-    //   const imgSrc = "data:image/jpeg;base64," + base64;
-    //   const averageColor = await changeBg(
-    //     imgSrc,
-    //     snapshot.width,
-    //     snapshot.height
-    //   );
-    // }, 2000);
-    // const pixels = await readPixelsAsync(context, snapshot);
-    // console.log(`Number of pixels: ${pixels.length}`);
-    // console.log(pixels);
-    // For getting a particular pixel
-    // const getPixel = (index) => {
-    //   const pixel = index * 4;
-    //   return pixels.slice(pixel, pixel + 4);
-    // };
-    // const [r, g, b, a] = getPixel(0);
-    // console.log({ r, g, b, a });
+    const snapshot = await GLView.takeSnapshotAsync(context, {
+      format: "jpeg",
+    });
+    const options = { encoding: "base64", compress: 0.4 };
+    const base64 = await FileSystem.readAsStringAsync(snapshot.uri, options);
+    const imgSrc = "data:image/jpeg;base64," + base64;
+    setImgUri(imgSrc);
   };
 
-  const changeBg = async (imgSrc, width, height) => {
-    // canvas.width = snapshot.width;
-    // canvas.height = snapshot.height;
-    // console.log(imgSrc, width, height);
-    canvas.width = 100;
-    canvas.height = 100;
+  const readAndSendImage = (imgSrc, width, height) => {
+    canvas.width = width;
+    canvas.height = height;
     const context = canvas.getContext("2d");
     const image = new CanvasImage(canvas);
     image.src = imgSrc;
     image.addEventListener("load", () => {
       context.drawImage(image, 0, 0);
-      try {
-        context
-          // .getImageData(0, 0, canvas.height, canvas.width)
-          .getImageData(0, 0, 100, 100)
-          .then((e) => {
-            const rgbArray = Object.values(e.data);
-            let blockSize = 5,
-              i = -4,
-              length,
-              rgb = { r: 0, g: 0, b: 0 },
-              count = 0;
-
-            length = rgbArray.length;
-
-            while ((i += blockSize * 4) < length) {
-              ++count;
-              rgb.r += rgbArray[i];
-              rgb.g += rgbArray[i + 1];
-              rgb.b += rgbArray[i + 2];
-            }
-
-            // ~~ used to floor values
-            rgb.r = ~~(rgb.r / count);
-            rgb.g = ~~(rgb.g / count);
-            rgb.b = ~~(rgb.b / count);
-            console.log(rgb, "rgb");
-            return `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
-          })
-          .catch((e) => {
-            console.log(e, "catch");
-          });
-      } catch (e) {
-        console.log(e, "e");
-      }
+      context
+        .getImageData(0, 0, canvas.height, canvas.width)
+        .then((imageData) => {
+          console.log(
+            "Image data:",
+            imageData,
+            Object.values(imageData.data).length
+          );
+        })
+        .catch((e) => {
+          console.error("Error with fetching image data:", e);
+        });
     });
   };
 
@@ -237,7 +209,7 @@ export default function SpectralaCameraScreen() {
       <Image
         style={styles.image}
         source={{
-          url: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.diversivore.com%2Fwp-content%2Fuploads%2F2015%2F11%2FOrange-Bitter-Header-tester-1024x512.jpg&f=1&nofb=1",
+          uri: imgUri,
         }}
         resizeMode="contain"
       />
