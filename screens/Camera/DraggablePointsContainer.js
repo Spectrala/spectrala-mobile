@@ -34,31 +34,16 @@ function DraggablePointsContainer({ width }) {
   const corners = useSelector(selectCorners);
   const dispatch = useDispatch();
 
-  // const P1_INIT = {
-  //   x: lineCoords.lowX,
-  //   y: lineCoords.lowY,
-  // };
-
-  // const P2_INIT = {
-  //   x: lineCoords.highX,
-  //   y: lineCoords.highY,
-  // };
-
-  // TODO: See how above code can be used to get an initial value from redux.
-  const P1_INIT = {
-    x: 100,
-    y: 200,
-  };
-
-  const P2_INIT = {
-    x: 300,
-    y: 400,
-  };
-
   const [viewDims, setViewDims] = useState(null);
 
-  const [p1, setP1] = useState({ ...P1_INIT });
-  const [p2, setP2] = useState({ ...P2_INIT });
+  const [p1, setP1] = useState({
+    x: lineCoords.lowX,
+    y: lineCoords.lowY,
+  });
+  const [p2, setP2] = useState({
+    x: lineCoords.highX,
+    y: lineCoords.highY,
+  });
 
   const updateStore = useCallback(() => {
     let x1 = new Victor(p1.x, p1.y);
@@ -102,52 +87,54 @@ function DraggablePointsContainer({ width }) {
     updateStore();
   }, [width]);
 
-  const createCircle = (initial, setter) => {
-    if (!initial) return;
-    const circleStyle = { ...styles.circle, backgroundColor: colors.primary };
+  const createCircle = useCallback(
+    (point, setter) => {
+      const circleStyle = { ...styles.circle, backgroundColor: colors.primary };
 
-    const pan = useRef(new Animated.ValueXY()).current;
+      const pan = useRef(new Animated.ValueXY()).current;
+      const initial = useRef(point).current;
 
-    pan.addListener(({ x, y }) => {
-      setter({
-        x: initial.x + x,
-        y: initial.y + y,
+      pan.addListener(({ x, y }) => {
+        setter({
+          x: initial.x + x,
+          y: initial.y + y,
+        });
+        updateStore();
       });
-      updateStore();
-    });
 
-    const panResponder = useRef(
-      PanResponder.create({
-        onMoveShouldSetPanResponder: () => true,
-        onPanResponderGrant: () => {
-          pan.setOffset({
-            x: pan.x._value,
-            y: pan.y._value,
-          });
-        },
-        onPanResponderMove: Animated.event([null, { dx: pan.x, dy: pan.y }], {
-          useNativeDriver: false,
-        }),
-        onPanResponderRelease: () => {
-          pan.flattenOffset();
-        },
-      })
-    ).current;
+      const panResponder = useRef(
+        PanResponder.create({
+          onMoveShouldSetPanResponder: () => true,
+          onPanResponderGrant: () => {
+            let dx = pan.x._value;
+            let dy = pan.y._value;
+            pan.setOffset({ x: dx, y: dy });
+          },
+          onPanResponderMove: Animated.event([null, { dx: pan.x, dy: pan.y }], {
+            useNativeDriver: false,
+          }),
+          onPanResponderRelease: () => {
+            pan.flattenOffset();
+          },
+        })
+      ).current;
 
-    return (
-      <Animated.View
-        style={{
-          position: "absolute",
-          left: initial.x - CIRCLE_RADIUS,
-          top: initial.y - CIRCLE_RADIUS,
-          transform: [{ translateX: pan.x }, { translateY: pan.y }],
-        }}
-        {...panResponder.panHandlers}
-      >
-        <View style={circleStyle} />
-      </Animated.View>
-    );
-  };
+      return (
+        <Animated.View
+          style={{
+            position: "absolute",
+            left: initial.x - CIRCLE_RADIUS,
+            top: initial.y - CIRCLE_RADIUS,
+            transform: [{ translateX: pan.x }, { translateY: pan.y }],
+          }}
+          {...panResponder.panHandlers}
+        >
+          <View style={circleStyle} />
+        </Animated.View>
+      );
+    },
+    [viewDims, p1, p2, width]
+  );
 
   const readerLine = useCallback(() => {
     return (
@@ -172,13 +159,13 @@ function DraggablePointsContainer({ width }) {
   return (
     <>
       <View style={styles.container}>{readerLine()}</View>
-      <SafeAreaView
+      <View
         style={styles.container}
         onLayout={(event) => setViewDims(event.nativeEvent.layout)}
       >
-        {createCircle(P1_INIT, setP1)}
-        {createCircle(P2_INIT, setP2)}
-      </SafeAreaView>
+        {createCircle(p1, setP1)}
+        {createCircle(p2, setP2)}
+      </View>
     </>
   );
 }

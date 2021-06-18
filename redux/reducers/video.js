@@ -31,7 +31,7 @@ export const videoSlice = createSlice({
     readerBoxData: {
       lineCoords: {
         lowX: 100,
-        lowY: 200,
+        lowY: 600,
         highX: 200,
         highY: 600,
       },
