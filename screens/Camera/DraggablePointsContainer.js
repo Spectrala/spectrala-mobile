@@ -1,4 +1,10 @@
-import React, { useCallback, useRef, useState, useEffect } from "react";
+import React, {
+  useCallback,
+  useRef,
+  useState,
+  useEffect,
+  useMemo,
+} from "react";
 import PropTypes from "prop-types";
 import {
   FlatList,
@@ -46,8 +52,10 @@ function DraggablePointsContainer({ width }) {
   });
 
   const updateStore = useCallback(() => {
-    let x1 = new Victor(p1.x, p1.y);
-    let x2 = new Victor(p2.x, p2.y);
+    if (!viewDims) return;
+
+    let x1 = new Victor(p1.x * viewDims.width, p1.y * viewDims.height);
+    let x2 = new Victor(p2.x * viewDims.width, p2.y * viewDims.height);
     const l = x2.subtract(x1);
     const theta = l.horizontalAngle();
 
@@ -63,7 +71,7 @@ function DraggablePointsContainer({ width }) {
     rect.forEach((corner) => corner.add(x1));
 
     const derivedCorners = rect.map((corner) => {
-      return { x: corner.x, y: corner.y };
+      return { x: corner.x / viewDims.width, y: corner.y / viewDims.height };
     });
 
     dispatch(
@@ -81,11 +89,11 @@ function DraggablePointsContainer({ width }) {
         },
       })
     );
-  }, [p1, p2, width]);
+  }, [p1, p2, width, viewDims]);
 
   useEffect(() => {
     updateStore();
-  }, [width]);
+  }, [width, viewDims, p1, p2]);
 
   const createCircle = useCallback(
     (point, setter) => {
@@ -95,36 +103,40 @@ function DraggablePointsContainer({ width }) {
       const initial = useRef(point).current;
 
       pan.addListener(({ x, y }) => {
-        setter({
-          x: initial.x + x,
-          y: initial.y + y,
+        !viewDims || setter({
+          x: initial.x + (x / viewDims.width),
+          y: initial.y + (y / viewDims.height),
         });
-        updateStore();
       });
 
-      const panResponder = useRef(
-        PanResponder.create({
-          onMoveShouldSetPanResponder: () => true,
-          onPanResponderGrant: () => {
-            let dx = pan.x._value;
-            let dy = pan.y._value;
-            pan.setOffset({ x: dx, y: dy });
-          },
-          onPanResponderMove: Animated.event([null, { dx: pan.x, dy: pan.y }], {
-            useNativeDriver: false,
+      const panResponder = useMemo(
+        () =>
+          PanResponder.create({
+            onMoveShouldSetPanResponder: () => true,
+            onPanResponderGrant: () => {
+              let dx = pan.x._value;
+              let dy = pan.y._value;
+              pan.setOffset({ x: dx, y: dy });
+            },
+            onPanResponderMove: Animated.event(
+              [null, { dx: pan.x, dy: pan.y }],
+              {
+                useNativeDriver: false,
+              }
+            ),
+            onPanResponderRelease: () => {
+              pan.flattenOffset();
+            },
           }),
-          onPanResponderRelease: () => {
-            pan.flattenOffset();
-          },
-        })
-      ).current;
+        [viewDims]
+      );
 
-      return (
+      return !viewDims || (
         <Animated.View
           style={{
             position: "absolute",
-            left: initial.x - CIRCLE_RADIUS,
-            top: initial.y - CIRCLE_RADIUS,
+            left: (initial.x  * viewDims.width)  - CIRCLE_RADIUS,
+            top: (initial.y  * viewDims.height) - CIRCLE_RADIUS,
             transform: [{ translateX: pan.x }, { translateY: pan.y }],
           }}
           {...panResponder.panHandlers}
@@ -138,23 +150,33 @@ function DraggablePointsContainer({ width }) {
 
   const readerLine = useCallback(() => {
     return (
-      <Svg height="100%" width="100%">
-        <Line
-          x1={p1.x}
-          y1={p1.y}
-          x2={p2.x}
-          y2={p2.y}
-          stroke="white"
-          opacity={0.3}
-          strokeWidth={width}
-        />
-        {!corners ||
-          corners.map((vec, idx) => {
-            return <Circle key={idx} cx={vec.x} cy={vec.y} r={5} fill="pink" />;
-          })}
-      </Svg>
+      !viewDims || (
+        <Svg height="100%" width="100%">
+          <Line
+            x1={p1.x * viewDims.width}
+            y1={p1.y * viewDims.height}
+            x2={p2.x * viewDims.width}
+            y2={p2.y * viewDims.height}
+            stroke="white"
+            opacity={0.3}
+            strokeWidth={width}
+          />
+          {!corners ||
+            corners.map((vec, idx) => {
+              return (
+                <Circle
+                  key={idx}
+                  cx={vec.x * viewDims.width}
+                  cy={vec.y * viewDims.height}
+                  r={5}
+                  fill="pink"
+                />
+              );
+            })}
+        </Svg>
+      )
     );
-  }, [p1, p2, width, corners]);
+  }, [p1, p2, width, corners, viewDims]);
 
   return (
     <>
