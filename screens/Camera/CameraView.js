@@ -155,6 +155,7 @@ function CameraView(props) {
   const takeFrame = async (context) => {
     const snapshot = await GLView.takeSnapshotAsync(context, {
       format: "jpeg",
+      compress: 0,
     });
     return snapshot.uri;
   };
@@ -190,12 +191,13 @@ function CameraView(props) {
 
   const readImage = async (imgSrc, width, height) => {
     setImgUri(imgSrc);
+    return;
     canvas.width = width;
     canvas.height = height;
     const context = canvas.getContext("2d");
     const image = new CanvasImage(canvas);
 
-    const options = { encoding: "base64", compress: 0.4 };
+    const options = { encoding: FileSystem.EncodingType.Base64 };
     const base64 = await FileSystem.readAsStringAsync(imgSrc, options);
     const src = "data:image/jpeg;base64," + base64;
     image.src = src;
@@ -232,13 +234,13 @@ function CameraView(props) {
         ref={(ref) => (glView = ref)}
       />
 
-      <Image
+      {/* <Image
         style={styles.image}
         source={{
           uri: imgUri,
         }}
         resizeMode="contain"
-      />
+      /> */}
 
       <Canvas ref={setCanvas} />
     </View>

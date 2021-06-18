@@ -47,20 +47,22 @@ function DraggablePointsContainer({ width }) {
   // TODO: See how above code can be used to get an initial value from redux.
   const P1_INIT = {
     x: 100,
-    y: 300,
+    y: 200,
   };
 
   const P2_INIT = {
-    x: 200,
-    y: 300,
+    x: 300,
+    y: 400,
   };
 
-  const [p1, setP1] = useState({...P1_INIT});
-  const [p2, setP2] = useState({...P2_INIT});
+  const [viewDims, setViewDims] = useState(null);
+
+  const [p1, setP1] = useState({ ...P1_INIT });
+  const [p2, setP2] = useState({ ...P2_INIT });
 
   const updateStore = useCallback(() => {
-    let x1 = new Victor(p1.x + CIRCLE_RADIUS, p1.y + CIRCLE_RADIUS);
-    let x2 = new Victor(p2.x + CIRCLE_RADIUS, p2.y + CIRCLE_RADIUS);
+    let x1 = new Victor(p1.x, p1.y);
+    let x2 = new Victor(p2.x, p2.y);
     const l = x2.subtract(x1);
     const theta = l.horizontalAngle();
 
@@ -136,8 +138,8 @@ function DraggablePointsContainer({ width }) {
       <Animated.View
         style={{
           position: "absolute",
-          left: initial.x,
-          top: initial.y,
+          left: initial.x - CIRCLE_RADIUS,
+          top: initial.y - CIRCLE_RADIUS,
           transform: [{ translateX: pan.x }, { translateY: pan.y }],
         }}
         {...panResponder.panHandlers}
@@ -151,10 +153,10 @@ function DraggablePointsContainer({ width }) {
     return (
       <Svg height="100%" width="100%">
         <Line
-          x1={p1.x + CIRCLE_RADIUS}
-          y1={p1.y + CIRCLE_RADIUS}
-          x2={p2.x + CIRCLE_RADIUS}
-          y2={p2.y + CIRCLE_RADIUS}
+          x1={p1.x}
+          y1={p1.y}
+          x2={p2.x}
+          y2={p2.y}
           stroke="white"
           opacity={0.3}
           strokeWidth={width}
@@ -170,10 +172,13 @@ function DraggablePointsContainer({ width }) {
   return (
     <>
       <View style={styles.container}>{readerLine()}</View>
-      <View style={styles.container}>
+      <SafeAreaView
+        style={styles.container}
+        onLayout={(event) => setViewDims(event.nativeEvent.layout)}
+      >
         {createCircle(P1_INIT, setP1)}
         {createCircle(P2_INIT, setP2)}
-      </View>
+      </SafeAreaView>
     </>
   );
 }
@@ -196,8 +201,10 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 0,
     left: 0,
-    height: "100%",
+    bottom: 100,
     width: "100%",
+    borderWidth: 4,
+    borderColor: "black",
   },
   titleText: {
     fontSize: 14,
