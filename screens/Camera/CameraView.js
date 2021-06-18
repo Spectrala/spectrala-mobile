@@ -139,8 +139,8 @@ function CameraView(props) {
   };
 
   const tick = async (gl) => {
-    const screen = await takeFrame(gl);
-    const cropped = await cropFrame(screen);
+    const { uri, width, height } = await takeFrame(gl);
+    const cropped = await cropFrame(uri, width, height);
   };
 
   /**
@@ -157,31 +157,25 @@ function CameraView(props) {
       format: "jpeg",
       compress: 0,
     });
-    return snapshot.uri;
+    return snapshot;
   };
 
-  const cropFrame = async (uri) => {
+  const cropFrame = async (uri, width, height) => {
     // TODO: Unsure why SCALE is necessary.
-    const SCALE = 2;
-    const xVals = corners.map((c) => SCALE * c.x);
-    const yVals = corners.map((c) => SCALE * c.y);
+    const xVals = corners.map((c) => width * c.x);
+    const yVals = corners.map((c) => height * c.y);
     const minX = Math.min(...xVals);
     const maxX = Math.max(...xVals);
     const minY = Math.min(...yVals);
     const maxY = Math.max(...yVals);
-
-    const width = maxX - minX;
-    const height = maxY - minY;
-
-    // Find minX, minY, maxX, maxY
 
     const result = await ImageManipulator.manipulateAsync(uri, [
       {
         crop: {
           originX: minX,
           originY: minY,
-          width,
-          height,
+          width: maxX - minX,
+          height: maxY - minY,
         },
       },
     ]);
@@ -234,13 +228,13 @@ function CameraView(props) {
         ref={(ref) => (glView = ref)}
       />
 
-      {/* <Image
+      <Image
         style={styles.image}
         source={{
           uri: imgUri,
         }}
         resizeMode="contain"
-      /> */}
+      />
 
       <Canvas ref={setCanvas} />
     </View>
