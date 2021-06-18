@@ -196,6 +196,14 @@ DraggablePointsContainer.propTypes = {
   width: PropTypes.number.isRequired,
 };
 
+
+/**
+ * NOTE: 
+ * 
+ * The entire dimensions of the GLView (rendering the camrea) must be
+ * covered by the 
+ * 
+ */
 const styles = StyleSheet.create({
   list: {
     width: "100%",
@@ -210,10 +218,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 0,
     left: 0,
-    bottom: 100,
+    bottom: 0,
     width: "100%",
-    borderWidth: 4,
-    borderColor: "black",
   },
   titleText: {
     fontSize: 14,
