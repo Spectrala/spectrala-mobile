@@ -45,8 +45,6 @@ export const videoSlice = createSlice({
       },
       corners: undefined,
       angle: undefined,
-      width: undefined,
-      length: undefined,
       secondCropBox: undefined,
     },
     selectedSource: SourceEnum.WEBCAM,
@@ -139,10 +137,6 @@ export const selectLineCoords = (state) => state.video.readerBoxData.lineCoords;
 export const selectCorners = (state) => state.video.readerBoxData.corners;
 
 export const selectAngle = (state) => state.video.readerBoxData.angle;
-
-export const selectWidth = (state) => state.video.readerBoxData.width;
-
-export const selectLength = (state) => state.video.readerBoxData.length;
 
 export const selectSecondCropBox = (state) => state.video.readerBoxData.secondCropBox;
 

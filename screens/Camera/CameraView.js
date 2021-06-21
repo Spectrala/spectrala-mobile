@@ -51,8 +51,6 @@ function CameraView(props) {
 
   const corners = useSelector(selectCorners, () => false);
   const boxAngle = useSelector(selectAngle);
-  const boxWidth = useSelector(selectWidth);
-  const boxLength = useSelector(selectLength);
   const secondCropBox = useSelector(selectSecondCropBox);
   const [hasPermission, setHasPermission] = useState(null);
 
@@ -165,7 +163,7 @@ function CameraView(props) {
    */
   const takeFrame = async (context) => {
     const snapshot = await GLView.takeSnapshotAsync(context, {
-      format: "jpeg",
+      format: "png",
       compress: 0,
     });
     return snapshot;
@@ -190,26 +188,17 @@ function CameraView(props) {
         },
       },
       {
-        rotate: 90 - boxAngle,
+        rotate: Math.ceil(90 - boxAngle),
       },
     ]);
-
-    console.log({
-      masterWidth: result.width,
-      masterHeight: result.height,
-      originX: secondCropBox.originXPct * result.width,
-      originY: secondCropBox.originYPct * result.height,
-      width: secondCropBox.widthPct * result.width,
-      height: secondCropBox.heightPct * result.height,
-    });
 
     const final = await ImageManipulator.manipulateAsync(result.uri, [
       {
         crop: {
-          originX: secondCropBox.originXPct * result.width,
-          originY: secondCropBox.originYPct * result.height,
-          width: secondCropBox.widthPct * result.width,
-          height: secondCropBox.heightPct * result.height,
+          originX: Math.floor(secondCropBox.originXPct * result.width),
+          originY: Math.floor(secondCropBox.originYPct * result.height),
+          width: Math.ceil(secondCropBox.widthPct * result.width),
+          height: Math.ceil(secondCropBox.heightPct * result.height),
         },
       },
     ]);
