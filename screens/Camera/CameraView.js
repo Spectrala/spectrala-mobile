@@ -6,7 +6,14 @@ import * as ImageManipulator from "expo-image-manipulator";
 import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
 import Canvas, { Image as CanvasImage } from "react-native-canvas";
 import { useDispatch, useSelector } from "react-redux";
-import { updateFeed, selectCorners } from "../../redux/reducers/video";
+import {
+  updateFeed,
+  selectCorners,
+  selectAngle,
+  selectWidth,
+  selectLength,
+  selectSecondCropBox,
+} from "../../redux/reducers/video";
 
 const vertShaderSource = `#version 300 es
 precision highp float;
@@ -43,6 +50,10 @@ function CameraView(props) {
   );
 
   const corners = useSelector(selectCorners, () => false);
+  const boxAngle = useSelector(selectAngle);
+  const boxWidth = useSelector(selectWidth);
+  const boxLength = useSelector(selectLength);
+  const secondCropBox = useSelector(selectSecondCropBox);
   const [hasPermission, setHasPermission] = useState(null);
 
   const countTimer = useInterval(() => {
@@ -178,9 +189,32 @@ function CameraView(props) {
           height: maxY - minY,
         },
       },
+      {
+        rotate: 90 - boxAngle,
+      },
     ]);
 
-    readImage(result.uri, width, height);
+    console.log({
+      masterWidth: result.width,
+      masterHeight: result.height,
+      originX: secondCropBox.originXPct * result.width,
+      originY: secondCropBox.originYPct * result.height,
+      width: secondCropBox.widthPct * result.width,
+      height: secondCropBox.heightPct * result.height,
+    });
+
+    const final = await ImageManipulator.manipulateAsync(result.uri, [
+      {
+        crop: {
+          originX: secondCropBox.originXPct * result.width,
+          originY: secondCropBox.originYPct * result.height,
+          width: secondCropBox.widthPct * result.width,
+          height: secondCropBox.heightPct * result.height,
+        },
+      },
+    ]);
+
+    readImage(final.uri, final.width, final.height);
   };
 
   const readImage = async (imgSrc, width, height) => {
@@ -291,7 +325,7 @@ const styles = StyleSheet.create({
   },
   image: {
     paddingHorizontal: 10,
-    height: 100,
+    height: 200,
     borderWidth: 2,
     borderColor: "black",
   },

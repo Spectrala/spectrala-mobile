@@ -57,7 +57,8 @@ function DraggablePointsContainer({ width }) {
     let x1 = new Victor(p1.x * viewDims.width, p1.y * viewDims.height);
     let x2 = new Victor(p2.x * viewDims.width, p2.y * viewDims.height);
     const l = x2.subtract(x1);
-    const theta = l.horizontalAngle();
+    const theta = l.horizontalAngleDeg();
+    const length = l.magnitude();
 
     // Four corners of rectangle with extremes (0, -width/2) and (length, width/2)
     const yRange = [-width / 2, width / 2];
@@ -65,7 +66,7 @@ function DraggablePointsContainer({ width }) {
     const rect = xRange.map((x) => yRange.map((y) => new Victor(x, y))).flat();
 
     // Rotate the box to match the rotation of the line
-    rect.forEach((corner) => corner.rotate(theta));
+    rect.forEach((corner) => corner.rotateDeg(theta));
 
     // Translate the box to be on the line
     rect.forEach((corner) => corner.add(x1));
@@ -73,6 +74,13 @@ function DraggablePointsContainer({ width }) {
     const derivedCorners = rect.map((corner) => {
       return { x: corner.x / viewDims.width, y: corner.y / viewDims.height };
     });
+
+    const degreesToRadians = Math.PI / 180;
+    const scaleFactor = 0.5 * Math.abs(Math.sin(2 * degreesToRadians * theta));
+    const horizontalMargin = scaleFactor * length;
+    const verticalMargin = scaleFactor * width;
+    const boxWidth = width + 2 * horizontalMargin;
+    const boxHeight = length + 2 * verticalMargin;
 
     dispatch(
       updateReaderBoxData({
@@ -84,8 +92,13 @@ function DraggablePointsContainer({ width }) {
             highY: p2.y,
           },
           corners: derivedCorners,
-          width,
-          length: l.magnitude(),
+          angle: theta,
+          secondCropBox: {
+            originXPct: horizontalMargin / boxWidth,
+            originYPct: verticalMargin / boxHeight,
+            widthPct: width / boxWidth,
+            heightPct: length / boxHeight,
+          },
         },
       })
     );
@@ -103,10 +116,11 @@ function DraggablePointsContainer({ width }) {
       const initial = useRef(point).current;
 
       pan.addListener(({ x, y }) => {
-        !viewDims || setter({
-          x: initial.x + (x / viewDims.width),
-          y: initial.y + (y / viewDims.height),
-        });
+        !viewDims ||
+          setter({
+            x: initial.x + x / viewDims.width,
+            y: initial.y + y / viewDims.height,
+          });
       });
 
       const panResponder = useMemo(
@@ -131,18 +145,20 @@ function DraggablePointsContainer({ width }) {
         [viewDims]
       );
 
-      return !viewDims || (
-        <Animated.View
-          style={{
-            position: "absolute",
-            left: (initial.x  * viewDims.width)  - CIRCLE_RADIUS,
-            top: (initial.y  * viewDims.height) - CIRCLE_RADIUS,
-            transform: [{ translateX: pan.x }, { translateY: pan.y }],
-          }}
-          {...panResponder.panHandlers}
-        >
-          <View style={circleStyle} />
-        </Animated.View>
+      return (
+        !viewDims || (
+          <Animated.View
+            style={{
+              position: "absolute",
+              left: initial.x * viewDims.width - CIRCLE_RADIUS,
+              top: initial.y * viewDims.height - CIRCLE_RADIUS,
+              transform: [{ translateX: pan.x }, { translateY: pan.y }],
+            }}
+            {...panResponder.panHandlers}
+          >
+            <View style={circleStyle} />
+          </Animated.View>
+        )
       );
     },
     [viewDims, p1, p2, width]
@@ -196,13 +212,12 @@ DraggablePointsContainer.propTypes = {
   width: PropTypes.number.isRequired,
 };
 
-
 /**
- * NOTE: 
- * 
+ * NOTE:
+ *
  * The entire dimensions of the GLView (rendering the camrea) must be
- * covered by the 
- * 
+ * covered by the
+ *
  */
 const styles = StyleSheet.create({
   list: {

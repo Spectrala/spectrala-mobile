@@ -15,6 +15,14 @@ const OVERSATURATION_CEILING = 98;
 const isNotOversaturated = (val) => val < OVERSATURATION_CEILING;
 
 /**
+ * readerBoxData:
+ *  lineCoords: object with coordinates for low energy and high energy dots on the reader line.
+ *              the units for coordinates is the fraction of the view's width/height (from 0 to 1)
+ *  corners: coordinates (in no particular order) of the verticies of the rectangle of the reader box
+ *  angle: angle, in degrees, the line between the two points makes with the horizontal axis
+ */
+
+/**
  * videoSlice variables
  *
  * The variable we care about here the most is pixelLine, which is an array
@@ -36,8 +44,10 @@ export const videoSlice = createSlice({
         highY: 0.5,
       },
       corners: undefined,
+      angle: undefined,
       width: undefined,
       length: undefined,
+      secondCropBox: undefined,
     },
     selectedSource: SourceEnum.WEBCAM,
     uploadedImage: undefined,
@@ -127,6 +137,15 @@ export const selectOversaturation = (state) => state.video.isOversaturated;
 export const selectLineCoords = (state) => state.video.readerBoxData.lineCoords;
 
 export const selectCorners = (state) => state.video.readerBoxData.corners;
+
+export const selectAngle = (state) => state.video.readerBoxData.angle;
+
+export const selectWidth = (state) => state.video.readerBoxData.width;
+
+export const selectLength = (state) => state.video.readerBoxData.length;
+
+export const selectSecondCropBox = (state) => state.video.readerBoxData.secondCropBox;
+
 
 export const selectChartData = (state) => {
   const intensities = selectIntensities(state);
