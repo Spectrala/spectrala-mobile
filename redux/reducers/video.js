@@ -14,6 +14,45 @@ const PIXEL_LINE_HISTORY_DEPTH = 5;
 // Look for absolute maximum, and don't do this in video. this should be raw input.
 const OVERSATURATION_CEILING = 98;
 const isNotOversaturated = (val) => val < OVERSATURATION_CEILING;
+
+/**
+ * Function used to extract intensity from any given pixel
+ * during reading an image from the box.
+ *
+ * Takes r,g,b from (0,255) and returns an intensity from 0-100.
+ *
+ * @param {number} r red value from 0 to 255
+ * @param {number} g green value from 0 to 255
+ * @param {number} b blue value from 0 to 255
+ * @returns {number} intensity
+ */
+const rgbToIntensity = (r, g, b) => {
+  // Take brightness to be "value" in HSV color space, 0-100.
+  const hsv = convert.rgb.hsv.raw(r, g, b);
+  // Indicies described: https://github.com/Qix-/color-convert/blob/HEAD/conversions.js
+  const value = hsv[2];
+  return value;
+};
+
+/**
+ * Function to map a 2d reader box to a 1d reader line. Each
+ * line perpendicular to the reader line (between the two dots)
+ * and is represented by a 1d array of intensities (from rgbToIntensity).
+ * 
+ * @param {array} intensities array of intensities from rgbToIntensity
+ * @returns {number} single intensity value from the given horizontal.
+ */
+const reduceHorizontal = (intensities) => {
+  // Return the maximum intensity, given this intensity is not exactly 100.
+  if (intensities.length == 0) return 0;
+  const noExtremes = intensities.filter((i) => i < 100);
+  if (noExtremes.length == 0) {
+    console.warn("All of a horizontal were extreme values (intensity of 100).")
+    return intensities[0];
+  }
+  return Math.max(...noExtremes);
+};
+
 /**
  * readerBoxData:
  *  lineCoords: object with coordinates for low energy and high energy dots on the reader line.
@@ -54,23 +93,23 @@ export const videoSlice = createSlice({
   reducers: {
     updateFeed: (state, action) => {
       const { imageData, width } = action.payload;
+
+      // imageData is a 1-d array of [r, g, b, a, r, g, b, a, ...].
+
       const newline = [];
 
-      const rgbaProcessingFunc = (rgba) => {
-        // Take brightness to be "value" in HSV color space, 0-100.
-        const hsv = convert.rgb.hsv.raw(rgba.slice(0, 3));
-        // Indicies described: https://github.com/Qix-/color-convert/blob/HEAD/conversions.js
-        const value = hsv[2];
-        return value;
-      };
-
       const horizontalProcessingFunc = (horizontal) => {
-        const pixels = [];
+        const intensities = [];
+        // Each pixel is r, g, b, a
         for (let j = 0; j < horizontal.length; j += 4) {
           const chunk = horizontal.slice(j, j + 4);
-          pixels.push(rgbaProcessingFunc(chunk));
+          const r = chunk[0];
+          const g = chunk[1];
+          const b = chunk[2];
+          const intensity = rgbToIntensity(r, g, b);
+          intensities.push(intensity);
         }
-        return pixels[0];
+        return reduceHorizontal(intensities);
       };
 
       for (let i = 0; i < imageData.length; i += 4 * width) {
