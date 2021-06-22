@@ -33,7 +33,10 @@ void main() {
   fragColor = vec4(texture(cameraTexture, uv).rgb, 1.0);
 }`;
 
-const FRAME_INTERVAL_MS = 5000;
+const FRAME_INTERVAL_MS = 400;
+
+// png or jpeg. Jpeg is faster but creates (bad) innacuracies.
+const IMG_FORMAT = "png";
 
 function CameraView(props) {
   // Camera mode. Either front or rear camera.
@@ -57,6 +60,8 @@ function CameraView(props) {
   const countTimer = useInterval(() => {
     !glContext || tick(glContext);
   }, FRAME_INTERVAL_MS);
+
+  const dispatch = useDispatch();
 
   /**
    * Clean up the screen. Returning from useEffect is equivalent to
@@ -201,6 +206,11 @@ function CameraView(props) {
           height: Math.ceil(secondCropBox.heightPct * result.height),
         },
       },
+      {
+        resize: {
+          height: 100,
+        },
+      },
     ]);
 
     readImage(final.uri, final.width, final.height);
@@ -208,7 +218,6 @@ function CameraView(props) {
 
   const readImage = async (imgSrc, width, height) => {
     setImgUri(imgSrc);
-    return;
     canvas.width = width;
     canvas.height = height;
     const context = canvas.getContext("2d");
@@ -216,17 +225,24 @@ function CameraView(props) {
 
     const options = { encoding: FileSystem.EncodingType.Base64 };
     const base64 = await FileSystem.readAsStringAsync(imgSrc, options);
-    const src = "data:image/jpeg;base64," + base64;
+    const src = "data:image/" + IMG_FORMAT + ";base64," + base64;
     image.src = src;
     image.addEventListener("load", () => {
       context.drawImage(image, 0, 0);
       context
         .getImageData(0, 0, canvas.width, canvas.height)
         .then((imageData) => {
-          console.log(
-            "Image data:",
-            imageData,
-            Object.values(imageData.data).length
+          return {
+            data: Object.values(imageData.data),
+            dataWidth: imageData.width,
+          };
+        })
+        .then(({ data, dataWidth }) => {
+          dispatch(
+            updateFeed({
+              imageData: data,
+              width: dataWidth,
+            })
           );
         })
         .catch((e) => {

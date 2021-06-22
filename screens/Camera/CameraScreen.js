@@ -41,7 +41,7 @@ export default function CameraScreen({ navigation }) {
               style={styles.slider}
               value={width}
               onValueChange={setWidth}
-              minimumValue={5}
+              minimumValue={10}
               maximumValue={200}
               step={5}
             />

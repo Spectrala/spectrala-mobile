@@ -75,6 +75,9 @@ function DraggablePointsContainer({ width }) {
       return { x: corner.x / viewDims.width, y: corner.y / viewDims.height };
     });
 
+    // Follow same steps as here: https://github.com/leimao/Rotated-Rectangle-Crop-OpenCV
+    // These constants for secondCropBox compute the bounds of the 
+    // rectangle for the(Crop the "rotated rectangle") step
     const degreesToRadians = Math.PI / 180;
     const scaleFactor = 0.5 * Math.abs(Math.sin(2 * degreesToRadians * theta));
     const horizontalMargin = scaleFactor * length;

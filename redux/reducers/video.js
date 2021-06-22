@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+const convert = require("color-convert");
 
 export const SourceEnum = {
   STREAM: "SOURCE_STREAM",
@@ -13,7 +14,6 @@ const PIXEL_LINE_HISTORY_DEPTH = 5;
 // Look for absolute maximum, and don't do this in video. this should be raw input.
 const OVERSATURATION_CEILING = 98;
 const isNotOversaturated = (val) => val < OVERSATURATION_CEILING;
-
 /**
  * readerBoxData:
  *  lineCoords: object with coordinates for low energy and high energy dots on the reader line.
@@ -53,7 +53,31 @@ export const videoSlice = createSlice({
   },
   reducers: {
     updateFeed: (state, action) => {
-      const newline = action.payload.value;
+      const { imageData, width } = action.payload;
+      const newline = [];
+
+      const rgbaProcessingFunc = (rgba) => {
+        // Take brightness to be "value" in HSV color space, 0-100.
+        const hsv = convert.rgb.hsv.raw(rgba.slice(0, 3));
+        // Indicies described: https://github.com/Qix-/color-convert/blob/HEAD/conversions.js
+        const value = hsv[2];
+        return value;
+      };
+
+      const horizontalProcessingFunc = (horizontal) => {
+        const pixels = [];
+        for (let j = 0; j < horizontal.length; j += 4) {
+          const chunk = horizontal.slice(j, j + 4);
+          pixels.push(rgbaProcessingFunc(chunk));
+        }
+        return pixels[0];
+      };
+
+      for (let i = 0; i < imageData.length; i += 4 * width) {
+        const chunk = imageData.slice(i, i + 4 * width);
+        newline.push(horizontalProcessingFunc(chunk));
+      }
+
       let lineHist = state.pixelLineHistory;
       /**
        * This maintains a history of a certain length
@@ -107,9 +131,10 @@ export const selectUploadedImage = (state) => state.video.uploadedImage;
 export const selectIntensities = (state) => {
   const pixels = state.video.pixelLineHistory;
   if (pixels && pixels.length > 0) {
-    const pixelLines = pixels.map((line) =>
-      line.map((obj) => (obj.r + obj.g + obj.b) / 3 / 2.55)
-    );
+    const pixelLines = pixels;
+    // const pixelLines = pixels.map((line) =>
+    //   line.map((obj) => (obj.r + obj.g + obj.b) / 3 / 2.55)
+    // );
     var averagedLine = [];
     const len = pixelLines[0].length;
 
@@ -138,8 +163,8 @@ export const selectCorners = (state) => state.video.readerBoxData.corners;
 
 export const selectAngle = (state) => state.video.readerBoxData.angle;
 
-export const selectSecondCropBox = (state) => state.video.readerBoxData.secondCropBox;
-
+export const selectSecondCropBox = (state) =>
+  state.video.readerBoxData.secondCropBox;
 
 export const selectChartData = (state) => {
   const intensities = selectIntensities(state);
