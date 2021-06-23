@@ -13,9 +13,17 @@ export default function useCachedResources() {
         SplashScreen.preventAutoHideAsync();
 
         // Load fonts
+        // await Font.loadAsync({
+        //   ...Ionicons.font,
+        //   'space-mono': require('../assets/fonts/SpaceMono-Regular.ttf'),
+        // });
+
         await Font.loadAsync({
-          ...Ionicons.font,
-          'space-mono': require('../assets/fonts/SpaceMono-Regular.ttf'),
+          Lexend: require('../assets/fonts/Heebo/static/Heebo-Regular.ttf'),
+          'Heebo-SemiBold': {
+            uri: require('../assets/fonts/Heebo/static/Heebo-SemiBold.ttf'),
+            display: Font.FontDisplay.FALLBACK,
+          },
         });
       } catch (e) {
         // We might want to provide this error information to an error reporting service
@@ -31,3 +39,4 @@ export default function useCachedResources() {
 
   return isLoadingComplete;
 }
+
