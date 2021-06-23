@@ -29,6 +29,7 @@ import {
   updateReaderBoxData,
   selectCorners,
 } from "../../redux/reducers/video";
+
 const CIRCLE_RADIUS = 20;
 
 function DraggablePointsContainer({ width }) {
@@ -113,7 +114,7 @@ function DraggablePointsContainer({ width }) {
 
   const createCircle = useCallback(
     (point, setter) => {
-      const circleStyle = { ...styles.circle, backgroundColor: colors.primary };
+      const circleStyle = { ...styles.circle, backgroundColor: colors.background };
 
       const pan = useRef(new Animated.ValueXY()).current;
       const initial = useRef(point).current;
@@ -171,27 +172,25 @@ function DraggablePointsContainer({ width }) {
     return (
       !viewDims || (
         <Svg height="100%" width="100%">
-          <Line
-            x1={p1.x * viewDims.width}
-            y1={p1.y * viewDims.height}
-            x2={p2.x * viewDims.width}
-            y2={p2.y * viewDims.height}
-            stroke="white"
-            opacity={0.3}
-            strokeWidth={width}
-          />
-          {!corners ||
-            corners.map((vec, idx) => {
-              return (
-                <Circle
-                  key={idx}
-                  cx={vec.x * viewDims.width}
-                  cy={vec.y * viewDims.height}
-                  r={5}
-                  fill="pink"
-                />
-              );
-            })}
+        <Line
+          x1={p1.x * viewDims.width}
+          y1={p1.y * viewDims.height}
+          x2={p2.x * viewDims.width}
+          y2={p2.y * viewDims.height}
+          stroke="white"
+          opacity={0.1}
+          strokeWidth={width}
+          strokeLinecap="round"
+        />
+        <Line
+          x1={p1.x * viewDims.width}
+          y1={p1.y * viewDims.height}
+          x2={p2.x * viewDims.width}
+          y2={p2.y * viewDims.height}
+          stroke="white"
+          opacity={0.3}
+          strokeWidth={width}
+        />
         </Svg>
       )
     );
@@ -219,7 +218,7 @@ DraggablePointsContainer.propTypes = {
  * NOTE:
  *
  * The entire dimensions of the GLView (rendering the camrea) must be
- * covered by the
+ * covered by the points container.
  *
  */
 const styles = StyleSheet.create({

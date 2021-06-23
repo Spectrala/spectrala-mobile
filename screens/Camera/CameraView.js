@@ -15,6 +15,9 @@ import {
   selectSecondCropBox,
 } from "../../redux/reducers/video";
 
+// When true, the preview of the selected area is visible.
+const IN_DEBUG_MODE = true;
+
 const vertShaderSource = `#version 300 es
 precision highp float;
 in vec2 position;
@@ -33,7 +36,7 @@ void main() {
   fragColor = vec4(texture(cameraTexture, uv).rgb, 1.0);
 }`;
 
-const FRAME_INTERVAL_MS = 400;
+const FRAME_INTERVAL_MS = 500;
 
 // png or jpeg. Jpeg is faster but creates (bad) innacuracies.
 const IMG_FORMAT = "png";
@@ -48,9 +51,7 @@ function CameraView(props) {
   const [glContext, setGlContext] = useState(undefined);
   const [canvas, setCanvas] = useState(undefined);
 
-  const [imgUri, setImgUri] = useState(
-    "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.diversivore.com%2Fwp-content%2Fuploads%2F2015%2F11%2FOrange-Bitter-Header-tester-1024x512.jpg&f=1&nofb=1"
-  );
+  const [imgUri, setImgUri] = useState(null);
 
   const corners = useSelector(selectCorners, () => false);
   const boxAngle = useSelector(selectAngle);
@@ -153,7 +154,7 @@ function CameraView(props) {
 
   const tick = async (gl) => {
     const { uri, width, height } = await takeFrame(gl);
-    const cropped = await cropFrame(uri, width, height);
+    await cropFrame(uri, width, height);
   };
 
   /**
@@ -196,6 +197,8 @@ function CameraView(props) {
       },
     ]);
 
+    FileSystem.deleteAsync(uri, { idempotent: true });
+
     const final = await ImageManipulator.manipulateAsync(result.uri, [
       {
         crop: {
@@ -212,6 +215,8 @@ function CameraView(props) {
       },
     ]);
 
+    FileSystem.deleteAsync(result.uri, { idempotent: true });
+
     readImage(final.uri, final.width, final.height);
   };
 
@@ -219,6 +224,7 @@ function CameraView(props) {
     const rotatedLengthwise = await ImageManipulator.manipulateAsync(imgSrc, [
       { rotate: -90 },
     ]);
+    FileSystem.deleteAsync(imgSrc, { idempotent: true });
     setImgUri(rotatedLengthwise.uri);
   };
 
@@ -250,6 +256,8 @@ function CameraView(props) {
               width: dataWidth,
             })
           );
+
+          FileSystem.deleteAsync(imgSrc, { idempotent: true });
         })
         .catch((e) => {
           console.error("Error with fetching image data:", e);
@@ -274,7 +282,7 @@ function CameraView(props) {
       />
 
       <Image
-        style={styles.image}
+        style={{ ...styles.image, opacity: IN_DEBUG_MODE ? 1.0 : 0 }}
         source={{
           uri: imgUri,
         }}
