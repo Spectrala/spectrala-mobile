@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button, StyleSheet, Text, View, Modal, Pressable } from "react-native";
 
-import { HomeStackParamList } from "../../types";
 import { StackNavigationProp } from "@react-navigation/stack";
 import DraggablePointsContainer from "./DraggablePointsContainer";
 import CameraView from "./CameraView";

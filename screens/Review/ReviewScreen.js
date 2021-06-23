@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
-import { HomeStackParamList } from "../../types";
+
 import { StackNavigationProp } from "@react-navigation/stack";
 import CaptureChart from "../Capture/CaptureChart";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -43,7 +43,6 @@ export default function ReviewScreen({ navigation }) {
     // Only show transmittance/absorbance if there is a reference spectrum
     return hasReference === true;
   }
-
 
   return (
     <>

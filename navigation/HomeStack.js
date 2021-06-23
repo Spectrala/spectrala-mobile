@@ -6,20 +6,12 @@ import {
 import * as React from "react";
 import { Button } from "react-native";
 
-import Colors from "../constants/Colors";
-import useColorScheme from "../hooks/useColorScheme";
 import CaptureScreen from "../screens/Capture/CaptureScreen";
 import CameraScreen from "../screens/Camera/CameraScreen";
 import CalibrationScreen from "../screens/Calibration/CalibrationScreen";
 import ReviewScreen from "../screens/Review/ReviewScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import HomeScreen from "../screens/Home/HomeScreen";
-
-import {
-  HomeStackParamList,
-  SettingsParamList,
-  ReviewParamList,
-} from "../types";
 
 import {
   HeaderButtons,
@@ -48,7 +40,6 @@ const IoniconsHeaderButton = (props) => (
 const HomeStack = createStackNavigator();
 
 export default function HomeNavigator({ navigation }) {
-  const colorScheme = useColorScheme();
   return (
     // TODO: MARK: Make this "HomeScreen"
     <HomeStack.Navigator initialRouteName="CameraScreen">
@@ -153,41 +144,6 @@ export default function HomeNavigator({ navigation }) {
       /> */}
     </HomeStack.Navigator>
   );
-}
-
-{
-  /* <HomeStack.Screen
-name="CaptureScreen"
-component={CaptureScreen}
-options={{
-  title: "Capture",
-  headerRight: () => (
-    <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
-      <NextPageButton
-        onPress={() => navigation.navigate("ReviewScreen")}
-      />
-    </HeaderButtons>
-  ),
-}}
-/>
-<HomeStack.Screen
-name="ReviewScreen"
-component={ReviewScreen}
-options={{
-  title: "Review",
-  headerRight: () => (
-    <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
-      <Item
-        title="Save"
-        onPress={() => {
-          alert("Save");
-          navigation.popToTop();
-        }}
-      />
-    </HeaderButtons>
-  ),
-}}
-/> */
 }
 
 function TabBarIcon(props) {

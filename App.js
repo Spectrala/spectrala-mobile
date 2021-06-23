@@ -1,15 +1,13 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import * as Font from 'expo-font';
-import useCachedResources from "./hooks/useCachedResources";
-import useColorScheme from "./hooks/useColorScheme";
-import Navigation from "./navigation";
+import * as Font from "expo-font";
+import useCachedResources from "./navigation/LoadAssets";
+import Navigation from "./navigation/NavigationWrapper";
 import { RecreatableGlobalStoreProvider } from "./redux/store/store";
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
-  const colorScheme = useColorScheme();
 
   if (!isLoadingComplete) {
     return null;
@@ -17,7 +15,7 @@ export default function App() {
     return (
       <RecreatableGlobalStoreProvider>
         <SafeAreaProvider>
-          <Navigation colorScheme={colorScheme} />
+          <Navigation />
           <StatusBar />
         </SafeAreaProvider>
       </RecreatableGlobalStoreProvider>

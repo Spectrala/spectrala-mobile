@@ -1,18 +1,9 @@
 import * as React from 'react';
 import { Button, StyleSheet, Text, View  } from 'react-native';
-import { HomeStackParamList } from '../types';
 import { StackNavigationProp } from '@react-navigation/stack';
 
-type SettingsScreenNavigationProp = StackNavigationProp<
-  HomeStackParamList,
-  'SettingsScreen'
->;
 
-type Props = {
-  navigation: SettingsScreenNavigationProp;
-};
-
-export default function SettingsScreen({ navigation } : Props) {
+export default function SettingsScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Are yall ready to do some settings</Text>

@@ -1,7 +1,6 @@
 import * as React from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
 import PropTypes from "prop-types";
-import { HomeStackParamList } from "../../types";
 import { StackNavigationProp } from "@react-navigation/stack";
 import SessionList from "./SessionList";
 
