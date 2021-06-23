@@ -318,11 +318,9 @@ function useInterval(callback, delay) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    width: "100%",
+    aspectRatio: 3 / 4,
     flexDirection: "column",
-  },
-  camera: {
-    ...StyleSheet.absoluteFillObject,
   },
   canvas: {
     opacity: 0,
