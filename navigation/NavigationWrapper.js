@@ -10,13 +10,17 @@ import NotFoundScreen from "../screens/NotFoundScreen";
 import HomeStack from "./HomeStack";
 import { Colors, Typography, Spacings } from "react-native-ui-lib";
 
+// Using React Native UI for theme: https://wix.github.io/react-native-ui-lib/
+
+// Generate colors here: https://colors.eva.design
 Colors.loadColors({
-  primaryColor: "#FF0000",
-  secondaryColor: "#81C3D7",
+  primaryColor: "#FD893A",
+  backgroundColor: "#E7EDEE",
   textColor: "#221D23",
-  errorColor: "#E63B2E",
-  successColor: "#ADC76F",
-  warnColor: "#FF963C",
+  successColor: "#63ED8C",
+  infoColor: "#0790F9",
+  warningColor: "#F4C433",
+  dangerColor: "#FF6689",
 });
 
 Typography.loadTypographies({
