@@ -4,15 +4,13 @@ import {
   StackNavigationProp,
 } from "@react-navigation/stack";
 import * as React from "react";
-import { Button } from "react-native";
-
+import { Button, Text, View, StyleSheet } from "react-native";
 import CaptureScreen from "../screens/Capture/CaptureScreen";
 import CameraScreen from "../screens/Camera/CameraScreen";
 import CalibrationScreen from "../screens/Calibration/CalibrationScreen";
 import ReviewScreen from "../screens/Review/ReviewScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import HomeScreen from "../screens/Home/HomeScreen";
-
 import {
   HeaderButtons,
   HeaderButton,
@@ -20,6 +18,7 @@ import {
   HiddenItem,
   OverflowMenu,
 } from "react-navigation-header-buttons";
+import { Colors, Typography, Spacings, ProgressBar } from "react-native-ui-lib";
 
 const NextPageButton = ({ onPress }) => <Item title="Next" onPress={onPress} />;
 
@@ -42,7 +41,10 @@ const HomeStack = createStackNavigator();
 export default function HomeNavigator({ navigation }) {
   return (
     // TODO: MARK: Make this "HomeScreen"
-    <HomeStack.Navigator initialRouteName="CameraScreen">
+    <HomeStack.Navigator
+      initialRouteName="CameraScreen"
+      options={{ headerTintColor: Colors.backgroundColor }}
+    >
       <HomeStack.Screen
         name="HomeScreen"
         component={HomeScreen}
@@ -59,6 +61,11 @@ export default function HomeNavigator({ navigation }) {
               />
             </HeaderButtons>
           ),
+
+          headerStyle: {
+            backgroundColor: Colors.backgroundColor,
+          },
+          headerTintColor: Colors.textColor,
           headerRight: () => (
             <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
               <Item
@@ -82,7 +89,11 @@ export default function HomeNavigator({ navigation }) {
         name="CameraScreen"
         component={CameraScreen}
         options={{
-          title: "Camera",
+          title: "Setup (1/2)",
+          headerStyle: {
+            backgroundColor: Colors.backgroundColor,
+          },
+          headerTintColor: Colors.textColor,
           headerRight: () => (
             <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
               <NextPageButton
@@ -96,7 +107,11 @@ export default function HomeNavigator({ navigation }) {
         name="CalibrationScreen"
         component={CalibrationScreen}
         options={{
-          title: "Calibration",
+          title: "Setup (2/2)",
+          headerStyle: {
+            backgroundColor: Colors.backgroundColor,
+          },
+          headerTintColor: Colors.textColor,
           headerRight: () => (
             <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
               <NextPageButton
@@ -111,6 +126,11 @@ export default function HomeNavigator({ navigation }) {
         component={CaptureScreen}
         options={{
           title: "Capture",
+
+          headerStyle: {
+            backgroundColor: Colors.backgroundColor,
+          },
+          headerTintColor: Colors.textColor,
           headerRight: () => (
             <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
               <Item
@@ -129,7 +149,12 @@ export default function HomeNavigator({ navigation }) {
         component={ReviewScreen}
         options={{
           title: "Review",
-          headerRight: () => (
+          
+          headerStyle: {
+            backgroundColor: Colors.backgroundColor,
+          },
+          headerTintColor: Colors.textColor,
+headerRight: () => (
             <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
               <Item
                 title="Save"

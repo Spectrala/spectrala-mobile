@@ -1,15 +1,11 @@
-import {
-  NavigationContainer,
-  DefaultTheme,
-  DarkTheme,
-} from "@react-navigation/native";
+import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import * as React from "react";
 import { OverflowMenuProvider } from "react-navigation-header-buttons";
 import NotFoundScreen from "../screens/NotFoundScreen";
 import HomeStack from "./HomeStack";
 import { Colors, Typography, Spacings } from "react-native-ui-lib";
-
+import { ThemeManager } from "react-native-ui-lib";
 // Using React Native UI for theme: https://wix.github.io/react-native-ui-lib/
 
 // Generate colors here: https://colors.eva.design
@@ -23,6 +19,15 @@ Colors.loadColors({
   dangerColor: "#FF6689",
 });
 
+const reactNavigationTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: Colors.primaryColor,
+    background: Colors.backgroundColor,
+  },
+};
+
 Typography.loadTypographies({
   heading: { fontSize: 36, fontWeight: "600" },
   subheading: { fontSize: 28, fontWeight: "500" },
@@ -35,10 +40,11 @@ Spacings.loadSpacings({
   gridGutter: 16,
 });
 
+
 // Docs: https://reactnavigation.org/docs/getting-started
 export default function Navigation({ colorScheme }) {
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={reactNavigationTheme}>
       <OverflowMenuProvider>
         <RootNavigator />
       </OverflowMenuProvider>
