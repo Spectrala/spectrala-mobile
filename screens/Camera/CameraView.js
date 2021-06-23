@@ -57,7 +57,7 @@ function CameraView(props) {
   const secondCropBox = useSelector(selectSecondCropBox);
   const [hasPermission, setHasPermission] = useState(null);
 
-  const countTimer = useInterval(() => {
+  useInterval(() => {
     !glContext || tick(glContext);
   }, FRAME_INTERVAL_MS);
 
@@ -74,7 +74,6 @@ function CameraView(props) {
     })();
 
     return () => {
-      clearInterval(countTimer);
       if (_rafID !== undefined) {
         cancelAnimationFrame(_rafID);
       }
@@ -216,8 +215,15 @@ function CameraView(props) {
     readImage(final.uri, final.width, final.height);
   };
 
+  const updateDisplayImage = async (imgSrc) => {
+    const rotatedLengthwise = await ImageManipulator.manipulateAsync(imgSrc, [
+      { rotate: -90 },
+    ]);
+    setImgUri(rotatedLengthwise.uri);
+  };
+
   const readImage = async (imgSrc, width, height) => {
-    setImgUri(imgSrc);
+    updateDisplayImage(imgSrc);
     canvas.width = width;
     canvas.height = height;
     const context = canvas.getContext("2d");
@@ -275,7 +281,7 @@ function CameraView(props) {
         resizeMode="contain"
       />
 
-      <Canvas ref={setCanvas} />
+      <Canvas ref={setCanvas} style={styles.canvas} />
     </View>
   );
 }
@@ -310,6 +316,9 @@ const styles = StyleSheet.create({
   camera: {
     ...StyleSheet.absoluteFillObject,
   },
+  canvas: {
+    opacity: 0,
+  },
   buttons: {
     flex: 1,
     paddingHorizontal: 10,
@@ -330,9 +339,10 @@ const styles = StyleSheet.create({
   },
   image: {
     paddingHorizontal: 10,
-    height: 200,
     borderWidth: 2,
     borderColor: "black",
+    width: "100%",
+    height: 100,
   },
 });
 
