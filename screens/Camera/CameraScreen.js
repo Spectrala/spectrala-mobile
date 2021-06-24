@@ -1,41 +1,46 @@
-import React, { useState, useEffect } from "react";
-import { Button, StyleSheet, Text, View, Modal, Pressable } from "react-native";
+import React, { useState, useEffect, useRef } from "react";
+import { StyleSheet } from "react-native";
+import { Text, View, Slider, Button } from "react-native-ui-lib";
 
 import { StackNavigationProp } from "@react-navigation/stack";
 import DraggablePointsContainer from "./DraggablePointsContainer";
 import CameraView from "./CameraView";
-import Slider from "@react-native-community/slider";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  selectReaderWidth,
+  updateReaderWidth,
+} from "../../redux/reducers/video";
 
 // TODO: stop using expo in order to figure out the camera stuff
 export default function CameraScreen({ navigation }) {
-  const [width, setWidth] = useState(90);
+  const readerWidth = useSelector(selectReaderWidth);
+  const initialWidth = useRef(readerWidth).current;
   const [modalVisible, setModalVisible] = useState(false);
+  const dispatch = useDispatch();
 
   return (
     <View style={styles.container}>
       <CameraView captureIntervalSeconds={5} isActive={true} />
-      <DraggablePointsContainer width={width} />
+      <DraggablePointsContainer width={readerWidth} />
 
-      <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-          <View style={styles.modalRow}>
-            <Text>Width: {width}</Text>
-            <Pressable
-              style={[styles.button, styles.buttonClose]}
-              onPress={() => setModalVisible(!modalVisible)}
-            >
-              <Text style={styles.textStyle}>Hide</Text>
-            </Pressable>
-          </View>
-          <Slider
-            style={styles.slider}
-            value={width}
-            onValueChange={setWidth}
-            minimumValue={10}
-            maximumValue={200}
-            step={5}
-          />
+      <View style={styles.modalView}>
+        <View style={styles.modalRow}>
+          <Text>Width: {readerWidth}</Text>
+          <Button
+            style={[styles.button, styles.buttonClose]}
+            onPress={() => setModalVisible(!modalVisible)}
+          >
+            <Text style={styles.textStyle}>Hide</Text>
+          </Button>
         </View>
+        <Slider
+          containerStyle={styles.slider}
+          value={initialWidth}
+          onValueChange={(value) => dispatch(updateReaderWidth({ value }))}
+          minimumValue={10}
+          maximumValue={200}
+          step={5}
+        />
       </View>
     </View>
   );
@@ -47,44 +52,12 @@ const styles = StyleSheet.create({
     height: "100%",
   },
 
-  buttons: {
-    position: "absolute",
-    left: 0,
-    bottom: 20,
-    width: "100%",
-    height: 60,
-    backgroundColor: "transparent",
-    flexDirection: "row",
-    justifyContent: "space-around",
-  },
-  button: {
-    height: 40,
-    width: 100,
-    backgroundColor: "white",
-    borderRadius: 8,
-    alignItems: "center",
-    justifyContent: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  centeredView: {
-    justifyContent: "flex-end",
-    alignItems: "center",
-    flex: 1,
-  },
   modalView: {
     flex: 1,
     width: "90%",
     margin: 20,
     padding: 20,
     alignItems: "center",
-
 
     backgroundColor: "white",
 

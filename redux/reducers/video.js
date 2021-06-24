@@ -38,7 +38,7 @@ const rgbToIntensity = (r, g, b) => {
  * Function to map a 2d reader box to a 1d reader line. Each
  * line perpendicular to the reader line (between the two dots)
  * and is represented by a 1d array of intensities (from rgbToIntensity).
- * 
+ *
  * @param {array} intensities array of intensities from rgbToIntensity
  * @returns {number} single intensity value from the given horizontal.
  */
@@ -47,7 +47,9 @@ const reduceHorizontal = (intensities) => {
   if (intensities.length == 0) return 0;
   const noExtremes = intensities.filter((i) => i < 100);
   if (noExtremes.length == 0) {
-    console.log("Issue: All of a horizontal were extreme values (intensity of 100).")
+    console.log(
+      "Issue: All of a horizontal were extreme values (intensity of 100)."
+    );
     return intensities[0];
   }
   return Math.max(...noExtremes);
@@ -82,6 +84,7 @@ export const videoSlice = createSlice({
         highX: 0.8,
         highY: 0.5,
       },
+      width: 100,
       corners: undefined,
       angle: undefined,
       secondCropBox: undefined,
@@ -145,7 +148,10 @@ export const videoSlice = createSlice({
       state.isOversaturated = !newline.every(isNotOversaturated);
     },
     updateReaderBoxData: (state, action) => {
-      state.readerBoxData = action.payload.value;
+      state.readerBoxData = { ...state.readerBoxData, ...action.payload.value };
+    },
+    updateReaderWidth: (state, action) => {
+      state.readerBoxData = { ...state.readerBoxData, width: action.payload.value};
     },
     setSelectedSource: (state, action) => {
       state.selectedSource = action.payload.value;
@@ -163,6 +169,7 @@ export const {
   updateReaderBoxData,
   setSelectedSource,
   setUploadedImage,
+  updateReaderWidth,
 } = videoSlice.actions;
 
 export const selectUploadedImage = (state) => state.video.uploadedImage;
@@ -202,6 +209,8 @@ export const selectCorners = (state) => state.video.readerBoxData.corners;
 
 export const selectAngle = (state) => state.video.readerBoxData.angle;
 
+export const selectReaderWidth = (state) => state.video.readerBoxData.width;
+  
 export const selectSecondCropBox = (state) =>
   state.video.readerBoxData.secondCropBox;
 
