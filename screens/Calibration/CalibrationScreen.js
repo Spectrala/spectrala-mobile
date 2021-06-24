@@ -148,7 +148,4 @@ const styles = StyleSheet.create({
     zIndex: 30, // works on ios
     elevation: 30, // works on android
   },
-  addPointButton: {
-    backgroundColor: "green",
-  },
 });
