@@ -10,13 +10,8 @@ export default function useCachedResources() {
   React.useEffect(() => {
     async function loadResourcesAndDataAsync() {
       try {
-        SplashScreen.preventAutoHideAsync();
-
-        // Load fonts
-        // await Font.loadAsync({
-        //   ...Ionicons.font,
-        //   'space-mono': require('../assets/fonts/SpaceMono-Regular.ttf'),
-        // });
+        // TODO: Understand what commented splash screen lines are meant for
+        // SplashScreen.preventAutoHideAsync();
 
         await Font.loadAsync({
           Lexend: require('../assets/fonts/Heebo/static/Heebo-Regular.ttf'),
@@ -30,7 +25,7 @@ export default function useCachedResources() {
         console.warn(e);
       } finally {
         setLoadingComplete(true);
-        SplashScreen.hideAsync();
+        // SplashScreen.hideAsync();
       }
     }
 
