@@ -13,7 +13,7 @@ import DraggableFlatList, {
 } from "react-native-draggable-flatlist";
 import PropTypes from "prop-types";
 import { MaterialIcons } from "@expo/vector-icons";
-import PreviewChart from "../Capture/PreviewChart";
+import PreviewChart from "../capture/PreviewChart";
 import { Touchable } from "react-native";
 
 const CHART_HEIGHT = 200;

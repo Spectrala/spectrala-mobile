@@ -2,12 +2,12 @@ import * as React from "react";
 import { Button, StyleSheet } from "react-native";
 import { Text, View } from "react-native-ui-lib";
 import { StackNavigationProp } from "@react-navigation/stack";
-import CaptureChart from "../Capture/CaptureChart";
+import CaptureChart from "../capture/CaptureChart";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import ModeSwitcher from "../Capture/ModeSwitcher";
+import ModeSwitcher from "../capture/ModeSwitcher";
 import ReviewList from "./ReviewList";
 import { SafeAreaView } from "react-native";
-import CameraView from "../Camera/CameraView";
+import CameraView from "../camera/CameraView";
 
 import { useDispatch, useSelector } from "react-redux";
 import {

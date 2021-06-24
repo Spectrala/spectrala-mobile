@@ -1,15 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { StyleSheet, ScrollView } from "react-native";
-import {
-  Text,
-  View,
-  Slider,
-  ExpandableSection,
-  Colors,
-  Card,
-} from "react-native-ui-lib";
-
-import { StackNavigationProp } from "@react-navigation/stack";
+import { Text, View, Slider, Colors } from "react-native-ui-lib";
 import DraggablePointsContainer from "./DraggablePointsContainer";
 import CameraView from "./CameraView";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,73 +8,48 @@ import {
   selectReaderWidth,
   updateReaderWidth,
 } from "../../redux/reducers/video";
-import { AntDesign } from "@expo/vector-icons";
+import BottomHelper from "../../components/BottomHelper";
 
-// TODO: stop using expo in order to figure out the camera stuff
 export default function CameraScreen({ navigation }) {
   const readerWidth = useSelector(selectReaderWidth);
   const initialWidth = useRef(readerWidth).current;
-  const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
-  const [helperExpanded, setExpanded] = useState(true);
 
-  const Divider = () => {
-    return <View style={styles.divider} />;
-  };
   const helperHeader = useCallback(
     () => (
-      <View style={styles.helperHeader}>
-        <Text>Reader box</Text>
-        <AntDesign
-          name={helperExpanded ? "downcircleo" : "upcircleo"}
-          size={24}
-          color={Colors.background}
+      <View style={styles.helperBody}>
+        <Text>Width: {readerWidth}</Text>
+        <Slider
+          containerStyle={styles.slider}
+          value={initialWidth}
+          onValueChange={(value) => dispatch(updateReaderWidth({ value }))}
+          minimumValue={10}
+          maximumValue={200}
+          step={5}
+          minimumTrackTintColor={Colors.primary}
+          thumbTintColor={Colors.primary}
         />
       </View>
     ),
-    [helperExpanded]
-  );
-
-  const helperView = () => (
-    <View style={styles.helperBody}>
-      <Divider />
-      <Text>Width: {readerWidth}</Text>
-      <Slider
-        containerStyle={styles.slider}
-        value={initialWidth}
-        onValueChange={(value) => dispatch(updateReaderWidth({ value }))}
-        minimumValue={10}
-        maximumValue={200}
-        step={5}
-        minimumTrackTintColor={Colors.primary}
-        thumbTintColor={Colors.primary}
-      />
-    </View>
+    []
   );
 
   return (
     <View style={styles.container}>
       <CameraView captureIntervalSeconds={5} isActive={true} />
       <DraggablePointsContainer width={readerWidth} />
-
-      <View style={styles.scrollMaster}>
-        <ScrollView
-          style={styles.scroll}
-          contentContainerStyle={styles.scrollContainer}
-          scrollEnabled={false}
-        >
-          <Card>
-            <ExpandableSection
-              expanded={helperExpanded}
-              onPress={() => setExpanded(!helperExpanded)}
-              sectionHeader={helperHeader()}
-              top={false}
-            >
-              {helperView()}
-            </ExpandableSection>
-          </Card>
-        </ScrollView>
-      </View>
+      <BottomHelper
+        utilityComponents={helperHeader}
+        bodyText={
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur in\
+nisi maximus, vehicula nibh pulvinar, pulvinar massa. Maecenas quis\
+lectus elit. Aliquam tempus felis rutrum ex blandit, eu laoreet sapien\
+tincidunt. Nam convallis, velit at rutrum rutrum, mauris nunc\
+vestibulum velit, et mollis sapien elit eu nibh. Sed eget nulla orci.\
+Etiam a lorem rhoncus, tempus erat nec, lobortis odio. Maecenas semper\
+sagittis auctor."
+        }
+      />
     </View>
   );
 }
@@ -93,67 +59,11 @@ const styles = StyleSheet.create({
     flex: 1,
     height: "100%",
   },
-
-  scrollMaster: {
-    position: "absolute",
-    zIndex: 40,
-    elevation: 40,
-    width: "100%",
-    bottom: 24,
-    paddingHorizontal: 16,
-    justifyContent: "flex-end",
-    flexDirection: "row",
-  },
-
-  scrollContainer: {
-    width: "100%",
-  },
-  scroll: {
-    alignSelf: "flex-end",
-  },
-  helperHeader: {
-    padding: 16,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
   helperBody: {
     padding: 16,
     paddingTop: 0,
   },
-  divider: {
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: "gray",
-    width: "100%",
-  },
-
-  modalView: {
-    flex: 1,
-    width: "90%",
-    margin: 20,
-    padding: 20,
-    alignItems: "center",
-
-    backgroundColor: "white",
-
-    borderRadius: 20,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  modalRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    width: "90%",
-  },
   slider: {
     flex: 1,
-    height: 300,
   },
 });

@@ -4,12 +4,12 @@ import {
   StackNavigationProp,
 } from "@react-navigation/stack";
 import * as React from "react";
-import CaptureScreen from "../screens/Capture/CaptureScreen";
-import CameraScreen from "../screens/Camera/CameraScreen";
-import CalibrationScreen from "../screens/Calibration/CalibrationScreen";
-import ReviewScreen from "../screens/Review/ReviewScreen";
+import CaptureScreen from "../screens/capture/CaptureScreen";
+import CameraScreen from "../screens/camera/CameraScreen";
+import CalibrationScreen from "../screens/calibration/CalibrationScreen";
+import ReviewScreen from "../screens/review/ReviewScreen";
 import SettingsScreen from "../screens/SettingsScreen";
-import HomeScreen from "../screens/Home/HomeScreen";
+import HomeScreen from "../screens/home/HomeScreen";
 import {
   HeaderButtons,
   HeaderButton,

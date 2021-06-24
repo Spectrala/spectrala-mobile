@@ -9,7 +9,7 @@ import WavelengthList from "./WavelengthList";
 import { Svg, Line, Rect } from "react-native-svg";
 import { useDispatch, useSelector } from "react-redux";
 import * as CalibPt from "../../redux/reducers/calibration/calibration_point";
-import CameraView from "../Camera/CameraView";
+import CameraView from "../camera/CameraView";
 import {
   selectCalibrationPoints,
   modifyWavelength,
