@@ -35,7 +35,7 @@ export default function CameraScreen({ navigation }) {
       <View style={styles.helperHeader}>
         <Text>Reader box</Text>
         <AntDesign
-          name={helperExpanded ? "upcircleo" : "downcircleo"}
+          name={helperExpanded ? "downcircleo" : "upcircleo"}
           size={24}
           color={Colors.background}
         />
@@ -65,18 +65,25 @@ export default function CameraScreen({ navigation }) {
     <View style={styles.container}>
       <CameraView captureIntervalSeconds={5} isActive={true} />
       <DraggablePointsContainer width={readerWidth} />
-      <ScrollView>
-        <Card>
-          <ExpandableSection
-            expanded={helperExpanded}
-            onPress={() => setExpanded(!helperExpanded)}
-            sectionHeader={helperHeader()}
-            top={false}
-          >
-            {helperView()}
-          </ExpandableSection>
-        </Card>
-      </ScrollView>
+
+      <View style={styles.scrollMaster}>
+        <ScrollView
+          style={styles.scroll}
+          contentContainerStyle={styles.scrollContainer}
+          scrollEnabled={false}
+        >
+          <Card>
+            <ExpandableSection
+              expanded={helperExpanded}
+              onPress={() => setExpanded(!helperExpanded)}
+              sectionHeader={helperHeader()}
+              top={false}
+            >
+              {helperView()}
+            </ExpandableSection>
+          </Card>
+        </ScrollView>
+      </View>
     </View>
   );
 }
@@ -87,6 +94,23 @@ const styles = StyleSheet.create({
     height: "100%",
   },
 
+  scrollMaster: {
+    position: "absolute",
+    zIndex: 40,
+    elevation: 40,
+    width: "100%",
+    bottom: 24,
+    paddingHorizontal: 16,
+    justifyContent: "flex-end",
+    flexDirection: "row",
+  },
+
+  scrollContainer: {
+    width: "100%",
+  },
+  scroll: {
+    alignSelf: "flex-end",
+  },
   helperHeader: {
     padding: 16,
     flexDirection: "row",
@@ -129,6 +153,7 @@ const styles = StyleSheet.create({
     width: "90%",
   },
   slider: {
-    width: "90%",
+    flex: 1,
+    height: 300,
   },
 });

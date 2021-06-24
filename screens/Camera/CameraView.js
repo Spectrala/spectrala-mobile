@@ -37,7 +37,7 @@ void main() {
   fragColor = vec4(texture(cameraTexture, uv).rgb, 1.0);
 }`;
 
-const FRAME_INTERVAL_MS = 500;
+const FRAME_INTERVAL_MS = 5000;
 
 // png or jpeg. Jpeg is faster but creates (bad) innacuracies.
 const IMG_FORMAT = "png";
