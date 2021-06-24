@@ -1,30 +1,20 @@
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 import { Button, StyleSheet } from "react-native";
-import { Text, View } from "react-native-ui-lib";
-import { StackNavigationProp } from "@react-navigation/stack";
+import { View, Card } from "react-native-ui-lib";
 import CalibrationChart from "./CalibrationChart";
 import CalibrationModePicker from "./CalibrationModePicker";
 import TickContainer from "./TickContainer";
 import WavelengthList from "./WavelengthList";
-import { Svg, Line, Rect } from "react-native-svg";
 import { useDispatch, useSelector } from "react-redux";
 import * as CalibPt from "../../redux/reducers/calibration/calibration_point";
 import CameraView from "../camera/CameraView";
 import {
   selectCalibrationPoints,
-  modifyWavelength,
-  removePoint,
   addOption,
-  beginPlace,
-  cancelPlace,
-  editPlacement,
   setCalibrationPoints,
-  setPreset,
 } from "../../redux/reducers/calibration/calibration";
 import { MAX_POINTS } from "../../redux/reducers/calibration/calibration_constants";
 import { Dimensions } from "react-native";
-
-import { TouchableOpacity } from "react-native";
 
 const CHART_HEIGHT = 200;
 const CHART_MARGIN = 16;
@@ -65,37 +55,40 @@ export default function CalibrationScreen({ navigation }) {
 
   const screenWidth = Dimensions.get("window").width;
   const calibrationWidth = screenWidth - 2 * CHART_INSET;
-  const chartXFromCalibX = (calibX) => CHART_INSET + (calibX * calibrationWidth);
+  const chartXFromCalibX = (calibX) => CHART_INSET + calibX * calibrationWidth;
   // TODO: beyond min behaves differently than beyond max.
-  const calibXFromChartX = (chartX) => Math.max(Math.min(1, (chartX - CHART_INSET) / calibrationWidth), 0);
+  const calibXFromChartX = (chartX) =>
+    Math.max(Math.min(1, (chartX - CHART_INSET) / calibrationWidth), 0);
 
   return (
     <View style={styles.container}>
-      <View style={styles.chart}>
+      <Card style={styles.chart}>
         <CalibrationChart margin={CHART_MARGIN} horizontalInset={CHART_INSET} />
-      </View>
-      <View
-        style={{
-          ...styles.chart,
-          ...styles.ticks,
-        }}
-      >
-        <TickContainer
-          activeWavelength={activeWavelength}
-          pointIsBeingPlaced={pointIsBeingPlaced}
-          chartHeight={CHART_HEIGHT}
-          tickHeight={TICK_HEIGHT}
-          tickMargin={TICK_MARGIN}
-          tickWidth={TICK_WIDTH}
-          chartMargin={CHART_MARGIN}
-          chartInset={CHART_INSET}
-          setActiveXPosition={setActiveX}
-          activeXPosition={activeX}
-          initialXPosition={initialX}
-          previouslySetPoints={calibrationPoints.filter(CalibPt.hasBeenPlaced)}
-          chartXFromCalibX={chartXFromCalibX}
-        />
-      </View>
+        <View
+          style={{
+            ...styles.chart,
+            ...styles.ticks,
+          }}
+        >
+          <TickContainer
+            activeWavelength={activeWavelength}
+            pointIsBeingPlaced={pointIsBeingPlaced}
+            chartHeight={CHART_HEIGHT}
+            tickHeight={TICK_HEIGHT}
+            tickMargin={TICK_MARGIN}
+            tickWidth={TICK_WIDTH}
+            chartMargin={CHART_MARGIN}
+            chartInset={CHART_INSET}
+            setActiveXPosition={setActiveX}
+            activeXPosition={activeX}
+            initialXPosition={initialX}
+            previouslySetPoints={calibrationPoints.filter(
+              CalibPt.hasBeenPlaced
+            )}
+            chartXFromCalibX={chartXFromCalibX}
+          />
+        </View>
+      </Card>
       <View style={styles.picker}>
         <CalibrationModePicker open={open} setOpen={setOpen} />
       </View>
@@ -111,10 +104,6 @@ export default function CalibrationScreen({ navigation }) {
       </View>
       {addNewPointButton()}
 
-      <CameraView
-        captureIntervalSeconds={8}
-        isActive={false}
-      />
     </View>
   );
 }
@@ -125,7 +114,7 @@ const styles = StyleSheet.create({
   },
   chart: {
     width: "100%",
-    height: CHART_HEIGHT,
+    height: TICK_HEIGHT + CHART_HEIGHT,
   },
   ticks: {
     position: "absolute",

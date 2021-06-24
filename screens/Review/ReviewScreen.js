@@ -69,11 +69,6 @@ export default function ReviewScreen({ navigation }) {
         <ReviewList />
       </View>
 
-      {/* <CameraView
-        captureIntervalSeconds={5}
-        isActive={false}
-        style={{ height: 0 }}
-      /> */}
     </>
   );
 }

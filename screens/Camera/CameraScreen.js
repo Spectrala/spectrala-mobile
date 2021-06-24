@@ -36,7 +36,7 @@ export default function CameraScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <CameraView captureIntervalSeconds={5} isActive={true} />
+      <CameraView/>
       <DraggablePointsContainer width={readerWidth} />
       <BottomHelper
         utilityComponents={helperHeader}

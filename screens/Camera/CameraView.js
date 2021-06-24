@@ -42,11 +42,10 @@ const FRAME_INTERVAL_MS = 5000;
 // png or jpeg. Jpeg is faster but creates (bad) innacuracies.
 const IMG_FORMAT = "png";
 
-function CameraView(props) {
+function CameraView() {
   // Camera mode. Either front or rear camera.
   const type = Camera.Constants.Type.rear;
 
-  // Class variables for
   let _rafID, camera, glView, texture;
 
   const [glContext, setGlContext] = useState(undefined);
@@ -325,24 +324,6 @@ const styles = StyleSheet.create({
   },
   canvas: {
     opacity: 0,
-  },
-  buttons: {
-    flex: 1,
-    paddingHorizontal: 10,
-    marginBottom: 20,
-    backgroundColor: "transparent",
-    flexDirection: "row",
-    alignItems: "flex-end",
-    justifyContent: "space-around",
-  },
-  button: {
-    flex: 1,
-    height: 40,
-    margin: 10,
-    backgroundColor: "white",
-    borderRadius: 8,
-    alignItems: "center",
-    justifyContent: "center",
   },
   image: {
     paddingHorizontal: 10,

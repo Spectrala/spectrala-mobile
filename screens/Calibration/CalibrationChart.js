@@ -1,29 +1,29 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Text, Colors} from "react-native-ui-lib";
+import { Text, Colors } from "react-native-ui-lib";
 import { AreaChart, Grid } from "react-native-svg-charts";
-import {  useSelector } from 'react-redux';
-import { selectChartData } from '../../redux/reducers/video';
+import { useSelector } from "react-redux";
+import { selectChartData } from "../../redux/reducers/video";
 import * as shape from "d3-shape";
 
-function CalibrationChart(props) {
+function CalibrationChart({ margin, horizontalInset }) {
   const data = useSelector(selectChartData);
 
   if (!data) {
-    return (<Text>Loading...</Text>)
+    return <Text>Loading...</Text>;
   }
 
   return (
     <AreaChart
-      style={{ height: 200 }}
+      style={{ height: 200}}
       data={data[0].data}
-      yAccessor={({item}) => item.y}
-      xAccessor={({item}) => item.x}
+      yAccessor={({ item }) => item.y}
+      xAccessor={({ item }) => item.x}
       contentInset={{
         top: 0,
         bottom: 0,
-        left: props.horizontalInset,
-        right: props.horizontalInset,
+        left: horizontalInset,
+        right: horizontalInset,
       }}
       curve={shape.curveBasis}
       svg={{
