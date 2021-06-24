@@ -4,16 +4,19 @@ import * as React from "react";
 import { OverflowMenuProvider } from "react-navigation-header-buttons";
 import NotFoundScreen from "../screens/NotFoundScreen";
 import HomeStack from "./HomeStack";
-import { Colors, Typography, Spacings } from "react-native-ui-lib";
-import { ThemeManager } from "react-native-ui-lib";
+import {
+  Colors,
+  Typography,
+  Spacings,
+  ThemeManager,
+} from "react-native-ui-lib";
 // Using React Native UI for theme: https://wix.github.io/react-native-ui-lib/
 
 // Generate colors here: https://colors.eva.design
 Colors.loadColors({
-  primaryColor: "#FD893A",
   primary: "#FD893A",
-  backgroundColor: "#161316",
-  textColor: "#E7EDEE",
+  background: "#161316",
+  text: "#E7EDEE",
   successColor: "#63ED8C",
   infoColor: "#0790F9",
   warningColor: "#F4C433",
@@ -24,8 +27,8 @@ const reactNavigationTheme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    primary: Colors.primaryColor,
-    background: Colors.backgroundColor,
+    primary: Colors.primary,
+    background: Colors.background,
   },
 };
 
@@ -41,6 +44,13 @@ Spacings.loadSpacings({
   gridGutter: 16,
 });
 
+ThemeManager.setComponentTheme("Text", (props, context) => {
+  return {
+    style: {
+      fontFamily: "Heebo",
+    },
+  };
+});
 
 // Docs: https://reactnavigation.org/docs/getting-started
 export default function Navigation({ colorScheme }) {

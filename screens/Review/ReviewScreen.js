@@ -1,6 +1,6 @@
 import * as React from "react";
-import { Button, StyleSheet, Text, View } from "react-native";
-
+import { Button, StyleSheet } from "react-native";
+import { Text, View } from "react-native-ui-lib";
 import { StackNavigationProp } from "@react-navigation/stack";
 import CaptureChart from "../Capture/CaptureChart";
 import { TouchableOpacity } from "react-native-gesture-handler";

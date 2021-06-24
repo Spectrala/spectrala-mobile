@@ -1,10 +1,6 @@
 import React from "react";
-import PropTypes from "prop-types";
-import { TouchableWithoutFeedback, Text, View, StyleSheet } from "react-native";
-import { TouchableOpacity } from "react-native";
-import { format } from "date-fns";
-import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
+import { StyleSheet } from "react-native";
 import { StackedAreaChart } from "react-native-svg-charts";
 import * as shape from "d3-shape";
 /**

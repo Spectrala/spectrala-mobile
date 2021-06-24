@@ -11,9 +11,7 @@ import {
   ActivityIndicator,
   RefreshControl,
   SafeAreaView,
-  View,
   BackHandler,
-  Text,
   StyleSheet,
   Animated,
   PanResponder,
@@ -28,7 +26,7 @@ import {
   updateReaderBoxData,
   selectCorners,
 } from "../../redux/reducers/video";
-import { Colors, Typography, Spacings } from "react-native-ui-lib";
+import { Colors, Typography, Spacings, Text, View } from "react-native-ui-lib";
 
 const CIRCLE_RADIUS = 20;
 
@@ -158,7 +156,7 @@ function DraggablePointsContainer({ width }) {
             {...panResponder.panHandlers}
           >
             <View
-              style={{ ...styles.circle, backgroundColor: Colors.primaryColor }}
+              style={{ ...styles.circle, backgroundColor: Colors.primary }}
             />
           </Animated.View>
         )

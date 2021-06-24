@@ -4,7 +4,6 @@ import {
   StackNavigationProp,
 } from "@react-navigation/stack";
 import * as React from "react";
-import { Button, Text, View, StyleSheet } from "react-native";
 import CaptureScreen from "../screens/Capture/CaptureScreen";
 import CameraScreen from "../screens/Camera/CameraScreen";
 import CalibrationScreen from "../screens/Calibration/CalibrationScreen";
@@ -43,7 +42,7 @@ export default function HomeNavigator({ navigation }) {
     // TODO: MARK: Make this "HomeScreen"
     <HomeStack.Navigator
       initialRouteName="CameraScreen"
-      options={{ headerTintColor: Colors.backgroundColor }}
+      options={{ headerTintColor: Colors.background }}
     >
       <HomeStack.Screen
         name="HomeScreen"
@@ -63,9 +62,9 @@ export default function HomeNavigator({ navigation }) {
           ),
 
           headerStyle: {
-            backgroundColor: Colors.backgroundColor,
+            backgroundColor: Colors.background,
           },
-          headerTintColor: Colors.textColor,
+          headerTintColor: Colors.text,
           headerRight: () => (
             <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
               <Item
@@ -91,9 +90,9 @@ export default function HomeNavigator({ navigation }) {
         options={{
           title: "Setup (1/2)",
           headerStyle: {
-            backgroundColor: Colors.backgroundColor,
+            backgroundColor: Colors.background,
           },
-          headerTintColor: Colors.textColor,
+          headerTintColor: Colors.text,
           headerRight: () => (
             <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
               <NextPageButton
@@ -109,9 +108,9 @@ export default function HomeNavigator({ navigation }) {
         options={{
           title: "Setup (2/2)",
           headerStyle: {
-            backgroundColor: Colors.backgroundColor,
+            backgroundColor: Colors.background,
           },
-          headerTintColor: Colors.textColor,
+          headerTintColor: Colors.text,
           headerRight: () => (
             <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
               <NextPageButton
@@ -128,9 +127,9 @@ export default function HomeNavigator({ navigation }) {
           title: "Capture",
 
           headerStyle: {
-            backgroundColor: Colors.backgroundColor,
+            backgroundColor: Colors.background,
           },
-          headerTintColor: Colors.textColor,
+          headerTintColor: Colors.text,
           headerRight: () => (
             <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
               <Item
@@ -151,9 +150,9 @@ export default function HomeNavigator({ navigation }) {
           title: "Review",
           
           headerStyle: {
-            backgroundColor: Colors.backgroundColor,
+            backgroundColor: Colors.background,
           },
-          headerTintColor: Colors.textColor,
+          headerTintColor: Colors.text,
 headerRight: () => (
             <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
               <Item

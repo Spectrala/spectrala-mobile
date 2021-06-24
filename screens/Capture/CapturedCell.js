@@ -1,13 +1,12 @@
 import React, { useState, useCallback } from "react";
 import {
-  View,
   TouchableOpacity,
-  Text,
   StyleSheet,
   SafeAreaView,
   TextInput,
   Button,
 } from "react-native";
+import { Text, View } from "react-native-ui-lib";
 import DraggableFlatList, {
   RenderItemParams,
 } from "react-native-draggable-flatlist";
@@ -39,10 +38,7 @@ export default function CapturedCell(props) {
         ...(props.isActive ? activeProps : {}),
       }}
     >
-      <TouchableOpacity
-        style={styles.buttonStyle}
-        onPress={props.onDelete}
-      >
+      <TouchableOpacity style={styles.buttonStyle} onPress={props.onDelete}>
         <Text style={styles.buttonText}>Delete</Text>
       </TouchableOpacity>
 
@@ -61,10 +57,14 @@ export default function CapturedCell(props) {
           ...(props.isReference ? styles.selectedButton : {}),
         }}
       >
-        <Text style={{
-          ...styles.buttonText,
-          ...(props.isReference ? styles.selectedButtonText : {}),
-        }}>Ref</Text>
+        <Text
+          style={{
+            ...styles.buttonText,
+            ...(props.isReference ? styles.selectedButtonText : {}),
+          }}
+        >
+          Ref
+        </Text>
       </TouchableOpacity>
 
       <View style={styles.rightContainer}>

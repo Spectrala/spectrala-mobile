@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from "react";
-import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
+import { Text, View } from "react-native-ui-lib";
 import DraggableFlatList, {
   RenderItemParams,
 } from "react-native-draggable-flatlist";

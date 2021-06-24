@@ -2,16 +2,13 @@ import React, { useState, useCallback } from "react";
 import PropTypes from "prop-types";
 import {
   TouchableWithoutFeedback,
-  Text,
-  View,
   StyleSheet,
   TextInput,
+  TouchableOpacity
 } from "react-native";
-import { TouchableOpacity } from "react-native";
-import { format } from "date-fns";
+import { Text, View } from "react-native-ui-lib";
 import { FontAwesome, Entypo } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
-import KeyboardSpacer from "react-native-keyboard-spacer";
 import * as CalibPt from "../../redux/reducers/calibration/calibration_point";
 
 /**

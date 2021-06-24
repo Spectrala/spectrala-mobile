@@ -3,7 +3,8 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { GLView } from "expo-gl";
 import * as FileSystem from "expo-file-system";
 import * as ImageManipulator from "expo-image-manipulator";
-import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
+import { StyleSheet, TouchableOpacity, Image } from "react-native";
+import { Text, View } from "react-native-ui-lib";
 import Canvas, { Image as CanvasImage } from "react-native-canvas";
 import { useDispatch, useSelector } from "react-redux";
 import {

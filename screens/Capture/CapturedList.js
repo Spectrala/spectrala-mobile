@@ -1,10 +1,9 @@
 import React, { useState, useCallback } from "react";
-import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import DraggableFlatList, {
   RenderItemParams,
 } from "react-native-draggable-flatlist";
-import PropTypes from "prop-types";
-import { MaterialIcons } from "@expo/vector-icons";
+import { Text, View } from "react-native-ui-lib";
 import CapturedCell from "./CapturedCell";
 import { useTheme } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";

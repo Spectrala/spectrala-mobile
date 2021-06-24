@@ -8,6 +8,8 @@ export const SourceEnum = {
   MOBILE_STREAM: "SOURCE_MOBILE_STREAM",
 };
 
+let debug_horizontal_warning_count = 0;
+
 // Samples included in the moving average
 const PIXEL_LINE_HISTORY_DEPTH = 5;
 
@@ -47,10 +49,13 @@ const reduceHorizontal = (intensities) => {
   if (intensities.length == 0) return 0;
   const noExtremes = intensities.filter((i) => i < 100);
   if (noExtremes.length == 0) {
-    console.log(
-      "Issue: All of a horizontal were extreme values (intensity of 100)."
-    );
+    debug_horizontal_warning_count += 1;
     return intensities[0];
+  } else if (debug_horizontal_warning_count > 0) {
+    console.log(
+      `Issue: All of a horizontal were extreme values (intensity of 100). Happened for ${debug_horizontal_warning_count} frames.` 
+    );
+    debug_horizontal_warning_count = 0;
   }
   return Math.max(...noExtremes);
 };

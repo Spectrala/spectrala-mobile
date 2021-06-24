@@ -10,11 +10,12 @@ export default function useCachedResources() {
   React.useEffect(() => {
     async function loadResourcesAndDataAsync() {
       try {
-        // TODO: Understand what commented splash screen lines are meant for
+        // TODO: Understand what commented splash screen lines are meant to do
         // SplashScreen.preventAutoHideAsync();
 
+
         await Font.loadAsync({
-          Lexend: require('../assets/fonts/Heebo/static/Heebo-Regular.ttf'),
+          Heebo: require('../assets/fonts/Heebo/static/Heebo-Regular.ttf'),
           'Heebo-SemiBold': {
             uri: require('../assets/fonts/Heebo/static/Heebo-SemiBold.ttf'),
             display: Font.FontDisplay.FALLBACK,

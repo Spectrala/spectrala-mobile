@@ -5,13 +5,12 @@ import {
   ActivityIndicator,
   RefreshControl,
   SafeAreaView,
-  View,
   BackHandler,
-  Text,
   StyleSheet,
   Animated,
   PanResponder,
 } from "react-native";
+import { Text, View } from "react-native-ui-lib";
 import { useTheme } from "@react-navigation/native";
 import { Svg, Line, Rect } from "react-native-svg";
 import * as CalibPt from "../../redux/reducers/calibration/calibration_point";
@@ -70,6 +69,7 @@ function TickContainer(props) {
           }}
         >
           <Text style={styles.tickText}>{props.activeWavelength}</Text>
+          
         </View>
       </Animated.View>
     ) : null;

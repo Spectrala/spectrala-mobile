@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from "react";
-import { Button, StyleSheet, Text, View } from "react-native";
+import { Button, StyleSheet } from "react-native";
+import { Text, View } from "react-native-ui-lib";
 import { StackNavigationProp } from "@react-navigation/stack";
 import CalibrationChart from "./CalibrationChart";
 import CalibrationModePicker from "./CalibrationModePicker";

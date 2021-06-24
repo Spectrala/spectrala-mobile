@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { Button, StyleSheet, Text, View  } from 'react-native';
+import { Button, StyleSheet } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
-
+import { Text, View } from "react-native-ui-lib";
 
 export default function SettingsScreen({ navigation }) {
   return (

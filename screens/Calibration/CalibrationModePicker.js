@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { TouchableWithoutFeedback, Text, View, StyleSheet } from "react-native";
+import { TouchableWithoutFeedback, StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native";
 import { format } from "date-fns";
 import { Ionicons } from "@expo/vector-icons";
