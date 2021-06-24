@@ -69,7 +69,6 @@ function TickContainer(props) {
           }}
         >
           <Text style={styles.tickText}>{props.activeWavelength}</Text>
-          
         </View>
       </Animated.View>
     ) : null;

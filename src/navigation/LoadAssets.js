@@ -15,9 +15,9 @@ export default function useCachedResources() {
 
 
         await Font.loadAsync({
-          Heebo: require('../assets/fonts/Heebo/static/Heebo-Regular.ttf'),
+          Heebo: require('../../assets/fonts/Heebo/static/Heebo-Regular.ttf'),
           'Heebo-SemiBold': {
-            uri: require('../assets/fonts/Heebo/static/Heebo-SemiBold.ttf'),
+            uri: require('../../assets/fonts/Heebo/static/Heebo-SemiBold.ttf'),
             display: Font.FontDisplay.FALLBACK,
           },
         });

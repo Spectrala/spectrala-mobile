@@ -63,32 +63,9 @@ export default function CalibrationScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Card style={styles.chart}>
-        <CalibrationChart margin={CHART_MARGIN} horizontalInset={CHART_INSET} />
-        <View
-          style={{
-            ...styles.chart,
-            ...styles.ticks,
-          }}
-        >
-          <TickContainer
-            activeWavelength={activeWavelength}
-            pointIsBeingPlaced={pointIsBeingPlaced}
-            chartHeight={CHART_HEIGHT}
-            tickHeight={TICK_HEIGHT}
-            tickMargin={TICK_MARGIN}
-            tickWidth={TICK_WIDTH}
-            chartMargin={CHART_MARGIN}
-            chartInset={CHART_INSET}
-            setActiveXPosition={setActiveX}
-            activeXPosition={activeX}
-            initialXPosition={initialX}
-            previouslySetPoints={calibrationPoints.filter(
-              CalibPt.hasBeenPlaced
-            )}
-            chartXFromCalibX={chartXFromCalibX}
-          />
-        </View>
+        <CalibrationChart />
       </Card>
+
       <View style={styles.picker}>
         <CalibrationModePicker open={open} setOpen={setOpen} />
       </View>
@@ -98,12 +75,10 @@ export default function CalibrationScreen({ navigation }) {
           calibrationPoints={calibrationPoints}
           setWavelengths={setCalibrationPoints}
           inputEnabled={!open}
-          activeXPosition={activeX}
           calibXFromChartX={calibXFromChartX}
         />
       </View>
       {addNewPointButton()}
-
     </View>
   );
 }
@@ -114,14 +89,8 @@ const styles = StyleSheet.create({
   },
   chart: {
     width: "100%",
-    height: TICK_HEIGHT + CHART_HEIGHT,
-  },
-  ticks: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    height: TICK_HEIGHT + CHART_HEIGHT,
-    marginEnd: TICK_HEIGHT + CHART_HEIGHT,
+    height: 300,
+    marginBottom: 20,
   },
   title: {
     fontSize: 20,
@@ -133,7 +102,6 @@ const styles = StyleSheet.create({
     width: "80%",
   },
   picker: {
-    marginTop: TICK_HEIGHT,
     zIndex: 30, // works on ios
     elevation: 30, // works on android
   },

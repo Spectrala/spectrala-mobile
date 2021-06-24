@@ -15,7 +15,7 @@ function CalibrationChart({ margin, horizontalInset }) {
 
   return (
     <AreaChart
-      style={{ height: 200}}
+      style={{ height: 200 }}
       data={data[0].data}
       yAccessor={({ item }) => item.y}
       xAccessor={({ item }) => item.x}

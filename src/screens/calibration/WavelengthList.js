@@ -141,7 +141,6 @@ const styles = StyleSheet.create({
   separator: {
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
-
 });
 
 export default WavelengthList;

@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   selectReaderWidth,
   updateReaderWidth,
-} from "../../redux/reducers/video";
+} from "../../redux/reducers/video"
 import BottomHelper from "../../components/BottomHelper";
 
 export default function CameraScreen({ navigation }) {

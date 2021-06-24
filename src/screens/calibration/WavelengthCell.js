@@ -4,7 +4,7 @@ import {
   TouchableWithoutFeedback,
   StyleSheet,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
 } from "react-native";
 import { Text, View } from "react-native-ui-lib";
 import { FontAwesome, Entypo } from "@expo/vector-icons";
