@@ -16,42 +16,26 @@ export default function CameraScreen({ navigation }) {
       <CameraView captureIntervalSeconds={5} isActive={true} />
       <DraggablePointsContainer width={width} />
 
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <View style={styles.modalRow}>
-              <Text>Width: {width}</Text>
-              <Pressable
-                style={[styles.button, styles.buttonClose]}
-                onPress={() => setModalVisible(!modalVisible)}
-              >
-                <Text style={styles.textStyle}>Hide</Text>
-              </Pressable>
-            </View>
-            <Slider
-              style={styles.slider}
-              value={width}
-              onValueChange={setWidth}
-              minimumValue={10}
-              maximumValue={200}
-              step={5}
-            />
+      <View style={styles.centeredView}>
+        <View style={styles.modalView}>
+          <View style={styles.modalRow}>
+            <Text>Width: {width}</Text>
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => setModalVisible(!modalVisible)}
+            >
+              <Text style={styles.textStyle}>Hide</Text>
+            </Pressable>
           </View>
+          <Slider
+            style={styles.slider}
+            value={width}
+            onValueChange={setWidth}
+            minimumValue={10}
+            maximumValue={200}
+            step={5}
+          />
         </View>
-      </Modal>
-
-      <View style={styles.buttons}>
-        <Pressable style={styles.button} onPress={() => setModalVisible(true)}>
-          <Text>Adjust Width</Text>
-        </Pressable>
       </View>
     </View>
   );
@@ -90,17 +74,21 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   centeredView: {
-    flex: 1,
     justifyContent: "flex-end",
     alignItems: "center",
-    marginTop: 22,
+    flex: 1,
   },
   modalView: {
+    flex: 1,
+    width: "90%",
     margin: 20,
-    backgroundColor: "white",
-    borderRadius: 20,
     padding: 20,
     alignItems: "center",
+
+
+    backgroundColor: "white",
+
+    borderRadius: 20,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -109,7 +97,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-    width: "80%",
   },
   modalRow: {
     flexDirection: "row",

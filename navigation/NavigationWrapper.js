@@ -11,7 +11,7 @@ import { ThemeManager } from "react-native-ui-lib";
 // Generate colors here: https://colors.eva.design
 Colors.loadColors({
   primaryColor: "#FD893A",
-  backgroundColor: "#221D23",
+  backgroundColor: "#161316",
   textColor: "#E7EDEE",
   successColor: "#63ED8C",
   infoColor: "#0790F9",

@@ -47,7 +47,7 @@ const reduceHorizontal = (intensities) => {
   if (intensities.length == 0) return 0;
   const noExtremes = intensities.filter((i) => i < 100);
   if (noExtremes.length == 0) {
-    console.warn("All of a horizontal were extreme values (intensity of 100).")
+    console.log("Issue: All of a horizontal were extreme values (intensity of 100).")
     return intensities[0];
   }
   return Math.max(...noExtremes);

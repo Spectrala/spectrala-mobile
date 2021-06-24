@@ -20,7 +20,6 @@ import {
   Pressable,
   Modal,
 } from "react-native";
-import { useTheme } from "@react-navigation/native";
 import { Svg, Line, Rect, Circle } from "react-native-svg";
 import Victor from "victor";
 import { useDispatch, useSelector } from "react-redux";
@@ -29,11 +28,11 @@ import {
   updateReaderBoxData,
   selectCorners,
 } from "../../redux/reducers/video";
+import { Colors, Typography, Spacings } from "react-native-ui-lib";
 
 const CIRCLE_RADIUS = 20;
 
 function DraggablePointsContainer({ width }) {
-  const { colors } = useTheme();
   const lineCoords = useSelector(
     selectLineCoords,
     (a, b) => false // TODO: fix hack
@@ -77,7 +76,7 @@ function DraggablePointsContainer({ width }) {
     });
 
     // Follow same steps as here: https://github.com/leimao/Rotated-Rectangle-Crop-OpenCV
-    // These constants for secondCropBox compute the bounds of the 
+    // These constants for secondCropBox compute the bounds of the
     // rectangle for the(Crop the "rotated rectangle") step
     const degreesToRadians = Math.PI / 180;
     const scaleFactor = 0.5 * Math.abs(Math.sin(2 * degreesToRadians * theta));
@@ -114,8 +113,6 @@ function DraggablePointsContainer({ width }) {
 
   const createCircle = useCallback(
     (point, setter) => {
-      const circleStyle = { ...styles.circle, backgroundColor: colors.background };
-
       const pan = useRef(new Animated.ValueXY()).current;
       const initial = useRef(point).current;
 
@@ -160,7 +157,9 @@ function DraggablePointsContainer({ width }) {
             }}
             {...panResponder.panHandlers}
           >
-            <View style={circleStyle} />
+            <View
+              style={{ ...styles.circle, backgroundColor: Colors.primaryColor }}
+            />
           </Animated.View>
         )
       );
@@ -172,25 +171,25 @@ function DraggablePointsContainer({ width }) {
     return (
       !viewDims || (
         <Svg height="100%" width="100%">
-        <Line
-          x1={p1.x * viewDims.width}
-          y1={p1.y * viewDims.height}
-          x2={p2.x * viewDims.width}
-          y2={p2.y * viewDims.height}
-          stroke="white"
-          opacity={0.1}
-          strokeWidth={width}
-          strokeLinecap="round"
-        />
-        <Line
-          x1={p1.x * viewDims.width}
-          y1={p1.y * viewDims.height}
-          x2={p2.x * viewDims.width}
-          y2={p2.y * viewDims.height}
-          stroke="white"
-          opacity={0.3}
-          strokeWidth={width}
-        />
+          <Line
+            x1={p1.x * viewDims.width}
+            y1={p1.y * viewDims.height}
+            x2={p2.x * viewDims.width}
+            y2={p2.y * viewDims.height}
+            stroke="white"
+            opacity={0.05}
+            strokeWidth={width}
+            strokeLinecap="round"
+          />
+          <Line
+            x1={p1.x * viewDims.width}
+            y1={p1.y * viewDims.height}
+            x2={p2.x * viewDims.width}
+            y2={p2.y * viewDims.height}
+            stroke="white"
+            opacity={0.3}
+            strokeWidth={width}
+          />
         </Svg>
       )
     );
@@ -236,7 +235,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     width: "100%",
-    aspectRatio: 3/4,
+    aspectRatio: 3 / 4,
   },
   titleText: {
     fontSize: 14,
@@ -247,6 +246,14 @@ const styles = StyleSheet.create({
     height: CIRCLE_RADIUS * 2,
     width: CIRCLE_RADIUS * 2,
     borderRadius: CIRCLE_RADIUS,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 8,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 10.32,
+    elevation: 16,
   },
   sliderContainer: {
     position: "relative",

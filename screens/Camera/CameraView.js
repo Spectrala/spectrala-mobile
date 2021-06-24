@@ -16,7 +16,7 @@ import {
 } from "../../redux/reducers/video";
 
 // When true, the preview of the selected area is visible.
-const IN_DEBUG_MODE = true;
+const IN_DEBUG_MODE = false;
 
 const vertShaderSource = `#version 300 es
 precision highp float;
