@@ -137,10 +137,10 @@ export const {
 } = calibrationSlice.actions;
 
 export const selectCalibrationPoints = (state) => {
-  // return state.calibration.calibrationPoints.value;
+  return state.calibration.calibrationPoints.value;
 
   // TODO: MARK: uncomment this to get out of debug points
-  return [{"key":1,"wavelength":436,"placement":0.08644067796610169,"isBeingPlaced":false},{"key":2,"wavelength":546,"placement":0.48050847457627116,"isBeingPlaced":false},{"key":3,"wavelength":604,"placement":0.8265536723163842,"isBeingPlaced":false}]
+  // return [{"key":1,"wavelength":436,"placement":0.08644067796610169,"isBeingPlaced":false},{"key":2,"wavelength":546,"placement":0.48050847457627116,"isBeingPlaced":false},{"key":3,"wavelength":604,"placement":0.8265536723163842,"isBeingPlaced":false}]
 };
 
 export const selectTooltipLabel = (state) => {

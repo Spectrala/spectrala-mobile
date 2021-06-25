@@ -25,7 +25,9 @@ export const defaultCalibration = calibrationPresets[2];
 export const expandPreset = (preset) => {
   return {
     title: preset.title,
-    value: preset.value.map((w) => CalibPt.construct(w, null, false)),
+    value: preset.value.map((w, idx) =>
+      CalibPt.construct(w, idx / preset.value.length, false)
+    ),
   };
 };
 

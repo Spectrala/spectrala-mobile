@@ -112,7 +112,7 @@ function Tick({
           const currentX = getPlacementX(gesture.moveX);
           let inBounds = bounds.min <= currentX && currentX <= bounds.max;
 
-          // TODO: troubleshoot bounds.
+          // TODO: troubleshoot bounds. Difficulty is currently with the gesture.
           inBounds = true;
 
           if (inBounds) {
@@ -126,7 +126,7 @@ function Tick({
           dispatch(setPlacement({ placement: localX, targetIndex: targetIdx }));
         },
       }),
-    [viewDims]
+    [viewDims, bounds]
   );
 
   // console.log(targetIdx, bounds);
