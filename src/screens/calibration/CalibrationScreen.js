@@ -3,7 +3,6 @@ import { Button, StyleSheet } from "react-native";
 import { View, Card } from "react-native-ui-lib";
 import CalibrationChart from "./CalibrationChart";
 import CalibrationModePicker from "./CalibrationModePicker";
-import TickContainer from "./TickContainer";
 import WavelengthList from "./WavelengthList";
 import { useDispatch, useSelector } from "react-redux";
 import * as CalibPt from "../../redux/reducers/calibration/calibration_point";
@@ -63,7 +62,7 @@ export default function CalibrationScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Card style={styles.chart}>
-        <CalibrationChart />
+        <CalibrationChart/>
       </Card>
 
       <View style={styles.picker}>

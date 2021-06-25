@@ -18,7 +18,7 @@ export default function CameraScreen({ navigation }) {
   const helperHeader = useCallback(
     () => (
       <View style={styles.helperBody}>
-        <Text>Width: {readerWidth}</Text>
+        <Text>Width</Text>
         <Slider
           containerStyle={styles.slider}
           value={initialWidth}

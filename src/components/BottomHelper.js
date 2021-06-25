@@ -10,7 +10,7 @@ import {
 import { AntDesign } from "@expo/vector-icons";
 
 export default function BottomHelper({ utilityComponents, bodyText }) {
-  const [helperExpanded, setExpanded] = useState(true);
+  const [helperExpanded, setExpanded] = useState(false);
 
   const Divider = () => {
     return <View style={styles.divider} />;
