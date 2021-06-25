@@ -39,6 +39,7 @@ function CalibrationChart({ horizontalInset }) {
             console.log(idx);
           }}
           viewDims={tickViewDims}
+          horizontalInset={ HORIZONTAL_INSET}
         />
       );
     });

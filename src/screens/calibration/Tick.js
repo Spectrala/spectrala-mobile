@@ -23,6 +23,7 @@ import { useTheme } from "@react-navigation/native";
 import { Svg, Line, Rect } from "react-native-svg";
 import * as CalibPt from "../../redux/reducers/calibration/calibration_point";
 import { setPlacement } from "../../redux/reducers/calibration/calibration";
+import { lessThan } from "react-native-reanimated";
 
 const TICK_WIDTH = 40;
 const VERTICAL_SLOP = 20;
@@ -34,6 +35,7 @@ function Tick({
   isBottom,
   onPress,
   viewDims,
+  horizontalInset,
 }) {
   const pan = useRef(new Animated.ValueXY()).current;
   const [bounds, setBounds] = useState({ min: undefined, max: undefined });
@@ -49,7 +51,19 @@ function Tick({
   // Make sure the lines from the bottom ones don't cross the top ones
   const zPosition = isBottom ? 10 : 20;
 
-  const getScreenX = (x) => (viewDims ? x * viewDims.width : 0);
+  const getScreenX = (placementX) => {
+    if (!viewDims) return 0;
+    const deadHorizontalSpace = 2 * horizontalInset;
+    const freeWidth = viewDims.width - deadHorizontalSpace;
+    return placementX * freeWidth;
+  };
+
+  const getPlacementX = (screenX) => {
+    if (!viewDims) return 0;
+    const deadHorizontalSpace = 2 * horizontalInset;
+    const freeWidth = viewDims.width - deadHorizontalSpace;
+    return screenX / freeWidth;
+  };
 
   const getLeft = useCallback(() => getScreenX(localX), [viewDims, localX]);
 
@@ -58,8 +72,8 @@ function Tick({
     const screenPos = getLeft();
     const screenMax = getScreenX(bounds.max);
     return {
-      left: screenPos - screenMin,
-      right: screenMax - screenPos,
+      left: (screenPos - screenMin) / 2,
+      right: (screenMax - screenPos) / 2,
       top: isBottom ? 0 : VERTICAL_SLOP,
       bottom: isBottom ? VERTICAL_SLOP : 0,
     };
@@ -68,12 +82,12 @@ function Tick({
   useEffect(() => {
     let _bounds = { min: undefined, max: undefined };
     if (targetIdx === 0) {
-      _bounds.min = TICK_WIDTH / 2;
+      _bounds.min = 0;
     } else {
       _bounds.min = calibrationPoints[targetIdx - 1].placement;
     }
     if (targetIdx === calibrationPoints.length - 1) {
-      _bounds.max = viewDims ? viewDims.width - TICK_WIDTH / 2 : undefined;
+      _bounds.max = 1;
     } else {
       _bounds.max = calibrationPoints[targetIdx + 1].placement;
     }
@@ -94,9 +108,19 @@ function Tick({
           const dx = pan.x._value;
           pan.setOffset({ x: dx });
         },
-        onPanResponderMove: Animated.event([null, { dx: pan.x }], {
-          useNativeDriver: false,
-        }),
+        onPanResponderMove: (e, gesture) => {
+          const currentX = getPlacementX(gesture.moveX);
+          let inBounds = bounds.min <= currentX && currentX <= bounds.max;
+
+          // TODO: troubleshoot bounds.
+          inBounds = true;
+
+          if (inBounds) {
+            return Animated.event([null, { dx: pan.x }], {
+              useNativeDriver: false,
+            })(e, gesture);
+          }
+        },
         onPanResponderRelease: () => {
           pan.flattenOffset();
           dispatch(setPlacement({ placement: localX, targetIndex: targetIdx }));
@@ -105,6 +129,7 @@ function Tick({
     [viewDims]
   );
 
+  // console.log(targetIdx, bounds);
   return (
     <>
       <Animated.View
@@ -124,12 +149,8 @@ function Tick({
 
       <View
         style={{
-          borderColor: "black",
-          borderWidth: StyleSheet.hairlineWidth,
+          ...styles.tickLine,
           height: yPosition,
-          position: "absolute",
-          top: 0,
-          width: 0,
           left: getLeft() + TICK_WIDTH / 2,
         }}
       />
@@ -143,6 +164,7 @@ Tick.propTypes = {
   yPosition: PropTypes.number,
   isBottom: PropTypes.bool,
   onPress: PropTypes.func,
+  horizontalInset: PropTypes.number,
 };
 
 const styles = StyleSheet.create({
@@ -167,6 +189,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowRadius: 5,
     elevation: 6,
+  },
+  tickLine: {
+    borderColor: "black",
+    borderWidth: StyleSheet.hairlineWidth,
+    position: "absolute",
+    top: 0,
+    width: 0,
   },
 });
 
