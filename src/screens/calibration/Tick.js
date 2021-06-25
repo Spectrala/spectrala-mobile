@@ -15,17 +15,26 @@ import {
   StyleSheet,
   Animated,
   PanResponder,
+  Pressable,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { Text, View } from "react-native-ui-lib";
+import { Button, Text, View } from "react-native-ui-lib";
 import { useTheme } from "@react-navigation/native";
 import { Svg, Line, Rect } from "react-native-svg";
 import * as CalibPt from "../../redux/reducers/calibration/calibration_point";
-import { setCalibrationPoints } from "../../redux/reducers/calibration/calibration";
+import { setPlacement } from "../../redux/reducers/calibration/calibration";
 
 const TICK_WIDTH = 40;
+const VERTICAL_SLOP = 20;
 
-function Tick({ targetIdx, calibrationPoints, yPosition, onPress, viewDims }) {
+function Tick({
+  targetIdx,
+  calibrationPoints,
+  yPosition,
+  isBottom,
+  onPress,
+  viewDims,
+}) {
   const pan = useRef(new Animated.ValueXY()).current;
   const [bounds, setBounds] = useState({ min: undefined, max: undefined });
   const dispatch = useDispatch();
@@ -37,15 +46,24 @@ function Tick({ targetIdx, calibrationPoints, yPosition, onPress, viewDims }) {
 
   const [localX, setLocalX] = useState(placement());
 
-  const getLeft = useCallback(() => {
-    return viewDims ? localX * viewDims.width : 0;
-  }, [viewDims, localX]);
+  // Make sure the lines from the bottom ones don't cross the top ones
+  const zPosition = isBottom ? 10 : 20;
 
-  const dispatchX = () => {
-    let pts = [...calibrationPoints];
-    pts[targetIdx] = { ...pts[targetIdx], placement: localX };
-    dispatch(setCalibrationPoints({ value: pts }));
-  };
+  const getScreenX = (x) => (viewDims ? x * viewDims.width : 0);
+
+  const getLeft = useCallback(() => getScreenX(localX), [viewDims, localX]);
+
+  const getSlop = useCallback(() => {
+    const screenMin = getScreenX(bounds.min);
+    const screenPos = getLeft();
+    const screenMax = getScreenX(bounds.max);
+    return {
+      left: screenPos - screenMin,
+      right: screenMax - screenPos,
+      top: isBottom ? 0 : VERTICAL_SLOP,
+      bottom: isBottom ? VERTICAL_SLOP : 0,
+    };
+  }, [bounds]);
 
   useEffect(() => {
     let _bounds = { min: undefined, max: undefined };
@@ -55,7 +73,7 @@ function Tick({ targetIdx, calibrationPoints, yPosition, onPress, viewDims }) {
       _bounds.min = calibrationPoints[targetIdx - 1].placement;
     }
     if (targetIdx === calibrationPoints.length - 1) {
-      _bounds.max = viewDims.width - TICK_WIDTH / 2;
+      _bounds.max = viewDims ? viewDims.width - TICK_WIDTH / 2 : undefined;
     } else {
       _bounds.max = calibrationPoints[targetIdx + 1].placement;
     }
@@ -81,7 +99,7 @@ function Tick({ targetIdx, calibrationPoints, yPosition, onPress, viewDims }) {
         }),
         onPanResponderRelease: () => {
           pan.flattenOffset();
-          dispatchX();
+          dispatch(setPlacement({ placement: localX, targetIndex: targetIdx }));
         },
       }),
     [viewDims]
@@ -94,10 +112,14 @@ function Tick({ targetIdx, calibrationPoints, yPosition, onPress, viewDims }) {
           ...styles.thumb,
           left: getLeft(),
           top: yPosition,
+          zIndex: zPosition, // works on ios
+          elevation: zPosition, // works on android
         }}
         {...panResponder.panHandlers}
       >
-        <Text text70>{wavelength()}</Text>
+        <Pressable onPress={onPress} hitSlop={getSlop()}>
+          <Text text70>{wavelength()}</Text>
+        </Pressable>
       </Animated.View>
 
       <View
@@ -119,6 +141,7 @@ Tick.propTypes = {
   targetIdx: PropTypes.number,
   calibrationPoints: PropTypes.array,
   yPosition: PropTypes.number,
+  isBottom: PropTypes.bool,
   onPress: PropTypes.func,
 };
 

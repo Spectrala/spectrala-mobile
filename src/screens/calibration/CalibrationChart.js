@@ -1,4 +1,4 @@
-import React, { useState} from "react";
+import React, { useState, useCallback } from "react";
 import PropTypes from "prop-types";
 import { StyleSheet } from "react-native";
 import { Text, View, Colors } from "react-native-ui-lib";
@@ -9,6 +9,10 @@ import * as shape from "d3-shape";
 // import TickContainer from "./TickContainer";
 import Tick from "./Tick";
 import { selectCalibrationPoints } from "../../redux/reducers/calibration/calibration";
+
+const CHART_HEIGHT = 200;
+const TOP_TICK_Y = 215;
+const BOTTOM_TICK_Y = 255;
 
 function CalibrationChart({ horizontalInset }) {
   const data = useSelector(selectChartData);
@@ -21,10 +25,29 @@ function CalibrationChart({ horizontalInset }) {
     return <Text>Loading...</Text>;
   }
 
+  const getTicks = () => {
+    return calibrationPoints.map((_, idx) => {
+      const isBottom = idx % 2 === 1;
+      return (
+        <Tick
+          key={idx}
+          targetIdx={idx}
+          calibrationPoints={calibrationPoints}
+          yPosition={isBottom ? BOTTOM_TICK_Y : TOP_TICK_Y}
+          isBottom={isBottom}
+          onPress={() => {
+            console.log(idx);
+          }}
+          viewDims={tickViewDims}
+        />
+      );
+    });
+  };
+
   return (
     <View>
       <AreaChart
-        style={{ height: 200 }}
+        style={{ height: CHART_HEIGHT }}
         data={data[0].data}
         yAccessor={({ item }) => item.y}
         xAccessor={({ item }) => item.x}
@@ -47,24 +70,7 @@ function CalibrationChart({ horizontalInset }) {
         style={styles.tickContainer}
         onLayout={(e) => setTickDims(e.nativeEvent.layout)}
       >
-      <Tick
-        targetIdx={0}
-        calibrationPoints={calibrationPoints}
-        yPosition={210}
-        onPress={() => {
-          console.warn("I felt that.");
-        }}
-        viewDims={tickViewDims}
-      />
-      <Tick
-        targetIdx={1}
-        calibrationPoints={calibrationPoints}
-        yPosition={250}
-        onPress={() => {
-          console.warn("I felt that.");
-        }}
-        viewDims={tickViewDims}
-      />
+        {getTicks()}
       </View>
     </View>
   );
