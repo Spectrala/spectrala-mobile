@@ -16,6 +16,12 @@ import {
   selectSecondCropBox,
 } from "../../redux/reducers/video";
 
+
+export const CAMERA_VISIBILITY_OPTIONS = {
+  full: "full",
+  none: "none",
+};
+
 // When true, the preview of the selected area is visible.
 const IN_DEBUG_MODE = false;
 

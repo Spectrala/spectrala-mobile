@@ -18,6 +18,26 @@ import {
   OverflowMenu,
 } from "react-navigation-header-buttons";
 import { Colors, Typography, Spacings, ProgressBar } from "react-native-ui-lib";
+import { CAMERA_VISIBILITY_OPTIONS } from "../screens/camera/CameraView"
+import SessionScreen from "../screens/SessionScreen";
+
+export const SESSION_SCREENS = {
+  camera: {
+    name: "camera",
+    header: "Setup (1/2)",
+    cameraVisibility: CAMERA_VISIBILITY_OPTIONS.full,
+  },
+  calibration: {
+    name: "calibration",
+    header: "Setup (2/2)",
+    cameraVisibility: CAMERA_VISIBILITY_OPTIONS.none,
+  },
+  capture: {
+    name: "capture",
+    header: "Capture",
+    cameraVisibility: CAMERA_VISIBILITY_OPTIONS.none,
+  },
+};
 
 const NextPageButton = ({ onPress }) => <Item title="Next" onPress={onPress} />;
 
@@ -87,9 +107,10 @@ export default function HomeNavigator({ navigation }) {
       />
       <HomeStack.Screen
         name="CameraScreen"
-        component={CameraScreen}
+        component={SessionScreen}
+        initialParams={{ screenOptions: SESSION_SCREENS.camera }}
         options={{
-          title: "Setup (1/2)",
+          title: SESSION_SCREENS.camera.header,
           headerStyle: {
             backgroundColor: Colors.background,
           },
@@ -105,9 +126,10 @@ export default function HomeNavigator({ navigation }) {
       />
       <HomeStack.Screen
         name="CalibrationScreen"
-        component={CalibrationScreen}
+        component={SessionScreen}
+        initialParams={{ screenOptions: SESSION_SCREENS.calibration }}
         options={{
-          title: "Setup (2/2)",
+          title: SESSION_SCREENS.calibration.header,
           headerStyle: {
             backgroundColor: Colors.background,
           },
@@ -123,10 +145,10 @@ export default function HomeNavigator({ navigation }) {
       />
       <HomeStack.Screen
         name="CaptureScreen"
-        component={CaptureScreen}
+        component={SessionScreen}
+        initialParams={{ screenOptions: SESSION_SCREENS.capture }}
         options={{
-          title: "Capture",
-
+          title: SESSION_SCREENS.capture.header,
           headerStyle: {
             backgroundColor: Colors.background,
           },
