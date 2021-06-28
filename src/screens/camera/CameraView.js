@@ -64,22 +64,30 @@ function CameraView() {
 
   const dispatch = useDispatch();
 
-  /**
-   * Clean up the screen. Returning from useEffect is equivalent to
-   * onComponentUnmount for a class component.
-   */
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestPermissionsAsync();
       setHasPermission(status === "granted");
     })();
+  }, [hasPermission]);
 
+  /**
+   * Clean up the screen. Returning from useEffect is equivalent to
+   * onComponentUnmount for a class component.
+   */
+  useEffect(() => {
     return () => {
       if (_rafID !== undefined) {
         cancelAnimationFrame(_rafID);
       }
+      if (glContext) {
+        GLView.destroyContextAsync(glContext);
+      }
+      glView = null;
+      camera = null;
+      setGlContext(null);
     };
-  }, [hasPermission]);
+  }, []);
 
   // Function used in the expo demo
   const createCameraTexture = async () => {

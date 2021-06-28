@@ -7,23 +7,14 @@ import React, {
 } from "react";
 import PropTypes from "prop-types";
 import {
-  FlatList,
-  ActivityIndicator,
-  RefreshControl,
-  SafeAreaView,
-  BackHandler,
   StyleSheet,
   Animated,
   PanResponder,
   Pressable,
 } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
-import { Button, Text, View } from "react-native-ui-lib";
-import { useTheme } from "@react-navigation/native";
-import { Svg, Line, Rect } from "react-native-svg";
-import * as CalibPt from "../../redux/reducers/calibration/calibration_point";
+import { useDispatch } from "react-redux";
+import { Text, View } from "react-native-ui-lib";
 import { setPlacement } from "../../redux/reducers/calibration/calibration";
-import { lessThan } from "react-native-reanimated";
 
 const TICK_WIDTH = 40;
 const VERTICAL_SLOP = 20;
