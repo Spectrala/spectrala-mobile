@@ -4,13 +4,16 @@ import * as tf from "@tensorflow/tfjs";
 import React, { useEffect, useState } from "react";
 import { Camera } from "expo-camera";
 
-export default function Loader() {
+/**
+ * Initializes asynchronous app elements
+ * @returns boolean, true if all elements are loaded.
+ */
+
+export default function loadAssets() {
   const [tfReady, setTfReady] = useState(false);
-  const [hasCameraPermission, setHasCameraPermission] = useState(false);
   const [localLoadingComplete, setLocalLoadingComplete] = useState(false);
 
-  const loadingIsComplete = () =>
-    tfReady && hasCameraPermission && localLoadingComplete;
+  const loadingIsComplete = () => tfReady && localLoadingComplete;
 
   const loadLocalFonts = async () => {
     await Font.loadAsync({
@@ -28,16 +31,10 @@ export default function Loader() {
     setTfReady(true);
   };
 
-  const requestCameraPermission = async () => {
-    const { status } = await Camera.requestPermissionsAsync();
-    setHasCameraPermission(status === "granted");
-  };
-
   // Load any resources or data that we need prior to rendering the app
   useEffect(() => {
     loadLocalFonts();
     loadTensorflow();
-    requestCameraPermission();
   }, []);
 
   return loadingIsComplete();

@@ -6,7 +6,7 @@ import { Text, View } from "react-native-ui-lib";
 export default function SettingsScreen({ navigation }) {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Are yall ready to do some settings</Text>
+      <Text style={styles.title}>Settings Screen</Text>
     </View>
   );
 }
