@@ -45,7 +45,15 @@
     "react-navigation-header-buttons": "^7.0.0",
     "react-redux": "^7.2.4",
     "redux": "^4.0.5",
-    "victor": "^1.1.0"
+    "victor": "^1.1.0",
+
+    "@react-native-async-storage/async-storage": "^1.13.0",
+    "@tensorflow/tfjs": "^3.7.0",
+    "@tensorflow/tfjs-react-native": "^0.6.0",
+    "expo-gl-cpp": "~10.1.0",
+    "react-dom": "16.13.1",
+    "react-native-fs": "^2.18.0",
+    "react-native-web": "~0.13.12"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",
