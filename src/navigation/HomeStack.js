@@ -18,7 +18,7 @@ import {
   OverflowMenu,
 } from "react-navigation-header-buttons";
 import { Colors, Typography, Spacings, ProgressBar } from "react-native-ui-lib";
-import { CAMERA_VISIBILITY_OPTIONS } from "../screens/camera/CameraView"
+import { CAMERA_VISIBILITY_OPTIONS } from "../screens/camera/CameraLoader"
 import SessionScreen from "../screens/SessionScreen";
 
 export const SESSION_SCREENS = {

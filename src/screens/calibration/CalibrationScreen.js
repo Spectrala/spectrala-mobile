@@ -6,7 +6,6 @@ import CalibrationModePicker from "./CalibrationModePicker";
 import WavelengthList from "./WavelengthList";
 import { useDispatch, useSelector } from "react-redux";
 import * as CalibPt from "../../redux/reducers/calibration/calibration_point";
-import CameraView from "../camera/CameraView";
 import {
   selectCalibrationPoints,
   addOption,

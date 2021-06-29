@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { StyleSheet, ScrollView } from "react-native";
 import { Text, View, Slider, Colors } from "react-native-ui-lib";
 import DraggablePointsContainer from "./DraggablePointsContainer";
-import CameraLoader from "./CameraLoader";
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectReaderWidth,
@@ -36,7 +35,6 @@ export default function CameraScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <CameraLoader/>
       <DraggablePointsContainer width={readerWidth} />
       <BottomHelper
         utilityComponents={helperHeader}

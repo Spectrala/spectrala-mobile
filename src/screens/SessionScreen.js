@@ -4,7 +4,7 @@ import CameraScreen from "./camera/CameraScreen";
 import CaptureScreen from "./capture/CaptureScreen";
 import CalibrationScreen from "./calibration/CalibrationScreen";
 import { StyleSheet } from "react-native";
-import CameraView from "./camera/CameraView";
+import CameraLoader from "./camera/CameraLoader";
 
 export default function SessionScreen({ route }) {
   const screenOptions = route.params?.screenOptions;
@@ -26,9 +26,9 @@ export default function SessionScreen({ route }) {
   return (
     <View style={styles.container}>
       <View style={styles.cameraContainer}>
-        <CameraView visibility={screenOptions.cameraVisibility} />
+        <CameraLoader visibility={screenOptions.cameraVisibility} />
       </View>
-      {getBody()}
+      <View style={styles.cameraContainer}>{getBody()}</View>
     </View>
   );
 }
@@ -37,6 +37,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     height: "100%",
+    // width: "100%",
   },
   cameraContainer: {
     position: "absolute",

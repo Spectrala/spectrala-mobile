@@ -8,7 +8,6 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import ModeSwitcher from "./ModeSwitcher";
 import CapturedList from "./CapturedList";
 import { SafeAreaView } from "react-native";
-import CameraView from "../camera/CameraView";
 
 import { useDispatch, useSelector } from "react-redux";
 import {

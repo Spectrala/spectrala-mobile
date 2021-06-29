@@ -5,7 +5,10 @@ import { Camera } from "expo-camera";
 import * as tf from "@tensorflow/tfjs";
 import { cameraWithTensors } from "@tensorflow/tfjs-react-native";
 
-const TensorCamera = cameraWithTensors(Camera);
+export const CAMERA_VISIBILITY_OPTIONS = {
+  full: "full",
+  none: "none",
+};
 
 const getTextureDimensions = (scale) => {
   if (Platform.OS === "ios") {
@@ -25,7 +28,22 @@ const SCALE = 0.1;
 
 const dimensions = getTextureDimensions(SCALE);
 
+/**
+ * Get image tensors from the camera using tfjs-react-native:
+ * https://js.tensorflow.org/api_react_native/latest/#cameraWithTensors
+ *
+ * A slightly outdated example implementation can be found here:
+ * https://github.com/tafsiri/tfjs-expo-managed-example
+ *
+ * @returns camera view which feeds a stream to redux.
+ */
+
+const TensorCamera = cameraWithTensors(Camera);
+
 export default function CameraLoader() {
+  const [tfReady, setTfReady] = useState(false);
+  console.log("USE TF");
+
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const [cameraType, setCameraType] = useState(Camera.Constants.Type.front);
 
@@ -34,28 +52,39 @@ export default function CameraLoader() {
     setHasCameraPermission(status === "granted");
   };
 
+  const loadTensorflow = async () => {
+    await tf.ready();
+    setTfReady(true);
+    console.log("TF IS READY");
+  };
+
   useEffect(() => {
     requestCameraPermission();
+    loadTensorflow();
   }, []);
 
+  const handleTensor = async (tensor) => {
+    // console.log(tensor);
+    
 
-  const handleTensor = (tensor) => {
-
-    console.log(tensor);
-  }
+    
+  };
   const handleCameraStream = (images, updatePreview, gl) => {
     const loop = async () => {
       const nextImageTensor = images.next().value;
       if (nextImageTensor) {
-        handleTensor(nextImageTensor)
+        handleTensor(nextImageTensor);
       }
       requestAnimationFrame(loop);
     };
     loop();
   };
 
+  // console.log(dimensions);
+
   return (
-    hasCameraPermission && (
+    hasCameraPermission &&
+    tfReady && (
       <TensorCamera
         style={styles.camera}
         type={cameraType}
@@ -70,31 +99,20 @@ export default function CameraLoader() {
       />
     )
   );
+
+  return (
+    hasCameraPermission && (
+      <View style={{ ...styles.camera, backgroundColor: "lime" }} />
+    )
+  );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    height: "100%",
-    width: "100%",
-  },
-  cameraContainer: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-    height: "60%",
-    backgroundColor: "#fff",
-  },
   camera: {
-    position: "absolute",
-    left: 0,
-    top: 0,
+    // position: "absolute",
+    // left: 0,
+    // top: 0,
     width: "100%",
     aspectRatio: dimensions.width / dimensions.height,
-    zIndex: 1,
-    borderWidth: 1,
-    borderColor: "black",
-    borderRadius: 0,
   },
 });
