@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Camera } from "expo-camera";
 import * as tf from "@tensorflow/tfjs";
-import { cameraWithTensors } from "@tensorflow/tfjs-react-native";
+import PropTypes from "prop-types";
 
 export const CAMERA_VISIBILITY_OPTIONS = {
   full: "full",
@@ -38,12 +38,7 @@ const dimensions = getTextureDimensions(SCALE);
  * @returns camera view which feeds a stream to redux.
  */
 
-const TensorCamera = cameraWithTensors(Camera);
-
-export default function CameraLoader() {
-  const [tfReady, setTfReady] = useState(false);
-  console.log("USE TF");
-
+export default function CameraLoader({ visibility, TensorCamera }) {
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const [cameraType, setCameraType] = useState(Camera.Constants.Type.front);
 
@@ -52,22 +47,12 @@ export default function CameraLoader() {
     setHasCameraPermission(status === "granted");
   };
 
-  const loadTensorflow = async () => {
-    await tf.ready();
-    setTfReady(true);
-    console.log("TF IS READY");
-  };
-
   useEffect(() => {
     requestCameraPermission();
-    loadTensorflow();
   }, []);
 
   const handleTensor = async (tensor) => {
     // console.log(tensor);
-    
-
-    
   };
   const handleCameraStream = (images, updatePreview, gl) => {
     const loop = async () => {
@@ -83,8 +68,7 @@ export default function CameraLoader() {
   // console.log(dimensions);
 
   return (
-    hasCameraPermission &&
-    tfReady && (
+    hasCameraPermission && (
       <TensorCamera
         style={styles.camera}
         type={cameraType}
@@ -106,6 +90,10 @@ export default function CameraLoader() {
     )
   );
 }
+
+CameraLoader.propTypes = {
+  TensorCamera: PropTypes.any.isRequired,
+};
 
 const styles = StyleSheet.create({
   camera: {

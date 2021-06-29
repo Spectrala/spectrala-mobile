@@ -18,8 +18,12 @@ import {
   OverflowMenu,
 } from "react-navigation-header-buttons";
 import { Colors, Typography, Spacings, ProgressBar } from "react-native-ui-lib";
-import { CAMERA_VISIBILITY_OPTIONS } from "../screens/camera/CameraLoader"
+import { CAMERA_VISIBILITY_OPTIONS } from "../screens/camera/CameraLoader";
 import SessionScreen from "../screens/SessionScreen";
+import { Camera } from "expo-camera";
+import { cameraWithTensors } from "@tensorflow/tfjs-react-native";
+
+const TensorCamera = cameraWithTensors(Camera);
 
 export const SESSION_SCREENS = {
   camera: {
@@ -108,7 +112,10 @@ export default function HomeNavigator({ navigation }) {
       <HomeStack.Screen
         name="CameraScreen"
         component={SessionScreen}
-        initialParams={{ screenOptions: SESSION_SCREENS.camera }}
+        initialParams={{
+          screenOptions: SESSION_SCREENS.camera,
+          cameraComponent: TensorCamera,
+        }}
         options={{
           title: SESSION_SCREENS.camera.header,
           headerStyle: {
@@ -127,7 +134,10 @@ export default function HomeNavigator({ navigation }) {
       <HomeStack.Screen
         name="CalibrationScreen"
         component={SessionScreen}
-        initialParams={{ screenOptions: SESSION_SCREENS.calibration }}
+        initialParams={{
+          screenOptions: SESSION_SCREENS.calibration,
+          cameraComponent: TensorCamera,
+        }}
         options={{
           title: SESSION_SCREENS.calibration.header,
           headerStyle: {
@@ -146,7 +156,10 @@ export default function HomeNavigator({ navigation }) {
       <HomeStack.Screen
         name="CaptureScreen"
         component={SessionScreen}
-        initialParams={{ screenOptions: SESSION_SCREENS.capture }}
+        initialParams={{
+          screenOptions: SESSION_SCREENS.capture,
+          cameraComponent: TensorCamera,
+        }}
         options={{
           title: SESSION_SCREENS.capture.header,
           headerStyle: {

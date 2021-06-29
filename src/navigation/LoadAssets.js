@@ -10,11 +10,11 @@ import { Camera } from "expo-camera";
  */
 
 export default function loadAssets() {
-  // const [tfReady, setTfReady] = useState(false);
+  const [tfReady, setTfReady] = useState(false);
   const [localLoadingComplete, setLocalLoadingComplete] = useState(false);
 
-  // const loadingIsComplete = () => tfReady && localLoadingComplete;
-  const loadingIsComplete = () => localLoadingComplete;
+  const loadingIsComplete = () => tfReady && localLoadingComplete;
+  // const loadingIsComplete = () => localLoadingComplete;
 
   const loadLocalFonts = async () => {
     await Font.loadAsync({
@@ -36,7 +36,7 @@ export default function loadAssets() {
   // Load any resources or data that we need prior to rendering the app
   useEffect(() => {
     loadLocalFonts();
-    // loadTensorflow();
+    loadTensorflow();
   }, []);
 
   return loadingIsComplete();
