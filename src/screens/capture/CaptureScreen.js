@@ -20,6 +20,7 @@ import {
   recordSpectrum,
 } from "../../redux/reducers/spectrum";
 
+
 const CHART_HEIGHT = 200;
 const CHART_MARGIN = 16;
 const MODE_BUTTON_HEIGHT = 24;
@@ -30,7 +31,10 @@ export default function CaptureScreen({ navigation }) {
   const viewSpect = useSelector(selectPreferredSpectrumOption);
   const hasReference = useSelector(selectHasReference);
   const intensities = useSelector(selectIntensity);
+
+
   const dispatch = useDispatch();
+  
 
   const spectrumViewOptions = [
     SPECTRUM_OPTIONS.INTENSITY,

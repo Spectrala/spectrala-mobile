@@ -215,6 +215,7 @@ export const selectCorners = (state) => state.video.readerBoxData.corners;
 export const selectAngle = (state) => state.video.readerBoxData.angle;
 
 export const selectReaderWidth = (state) => state.video.readerBoxData.width;
+export const selectReaderLength = (state) => state.video.readerBoxData.length;
   
 export const selectSecondCropBox = (state) =>
   state.video.readerBoxData.secondCropBox;
