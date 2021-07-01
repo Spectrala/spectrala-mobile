@@ -68,10 +68,15 @@ export default function CameraLoader({ visibility, TensorCamera }) {
     requestCameraPermission();
   }, []);
 
-  const handleTensor = async (tensor) => {
+  const handleTensor = (tensor) => {
+    // console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    console.log(tf.memory());
     const img = tensor.mul(1 / 255);
-    const imgWidth = tensor.shape[0];
-    const imgHeight = tensor.shape[1];
+
+    // Shape is [yIndex, xIndex, 3 for rgb]
+    const imgHeight = tensor.shape[0];
+    const imgWidth = tensor.shape[1];
+    tensor.dispose();
 
     // Array of indicies of corners of reader box
     const cornerIndicies = corners.map(({ x, y }) => [
@@ -84,10 +89,12 @@ export default function CameraLoader({ visibility, TensorCamera }) {
     const sparseVals = Array(sparseIndicies.length).fill(FLAG_PIXEL_OFFSET);
     const flags = tf.sparseToDense(sparseIndicies, sparseVals, tensor.shape);
     const imgFlagged = img.add(flags);
+    img.dispose();
 
     // Get a "crude" take on a cropped image, unaccounting for rotation
     const yVals = cornerIndicies.map((vec) => vec[0]);
     const xVals = cornerIndicies.map((vec) => vec[1]);
+
     const xRng = { min: Math.min(...xVals), max: Math.max(...xVals) };
     const yRng = { min: Math.min(...yVals), max: Math.max(...yVals) };
     const xRngP = {
@@ -100,18 +107,20 @@ export default function CameraLoader({ visibility, TensorCamera }) {
     };
     const sliceBegin = [yRngP.min, xRngP.min, 0];
     const sliceSize = [yRngP.max - yRngP.min, xRngP.max - xRngP.min, 3];
-    console.log(imgFlagged, sliceBegin, sliceSize);
     const imgCrude = imgFlagged.slice(sliceBegin, sliceSize);
-
-    // tensor.print();
+    imgFlagged.dispose();
+    imgCrude.dispose();
+    // console.log(tf.memory());
   };
 
   const handleCameraStream = (images, updatePreview, gl) => {
     const loop = async () => {
-      const nextImageTensor = images.next().value;
-      if (nextImageTensor) {
-        handleTensor(nextImageTensor);
-      }
+      tf.tidy(() => {
+        const nextImageTensor = images.next().value;
+        if (nextImageTensor) {
+          handleTensor(nextImageTensor);
+        }
+      });
       requestAnimationFrame(loop);
     };
     loop();
