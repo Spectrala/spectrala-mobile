@@ -13,7 +13,7 @@ import {
   selectReaderLength,
   selectSecondCropBox,
 } from "../../redux/reducers/video";
-import * as jpeg from 'jpeg-js';
+import * as jpeg from "jpeg-js";
 
 export const CAMERA_VISIBILITY_OPTIONS = {
   full: "full",
@@ -36,7 +36,8 @@ const getTextureDimensions = (scale) => {
 
 const SCALE = 0.1;
 
-const dimensions = getTextureDimensions(SCALE);
+const fullDims = getTextureDimensions(1);
+const scaledDims = getTextureDimensions(SCALE);
 
 /**
  * Get image tensors from the camera using tfjs-react-native:
@@ -93,7 +94,7 @@ export default function CameraLoader({ visibility, TensorCamera }) {
   async function tensorToImageUrl(imageTensor) {
     const [height, width] = imageTensor.shape;
 
-    const buffer = await imageTensor.mul(255).toInt().data();
+    const buffer = await imageTensor.toInt().data();
     const frameData = new Uint8Array(width * height * 4);
 
     let offset = 0;
@@ -115,6 +116,13 @@ export default function CameraLoader({ visibility, TensorCamera }) {
     const base64Encoding = tf.util.decodeString(jpegImageData.data, "base64");
     return base64Encoding;
   }
+
+  const showTensor = async (tensor) => {
+    
+    const url = await tensorToImageUrl(tensor);//.mul(255));
+    // console.log("data:image/jpeg;base64," + url);
+    setPreviewImg(`data:image/jpeg;base64,${url}`);
+  };
 
   const getRotatedFlaggedImage = (tensor) => {
     // Convert from 0-255 to 0-1
@@ -139,6 +147,8 @@ export default function CameraLoader({ visibility, TensorCamera }) {
     // Get a "crude" take on a cropped image, unaccounting for rotation
     const imgCrude = crudeSliceCrop(imgFlagged, cornerIndicies, PADDING);
 
+    showTensor(imgCrude);
+
     // Pad the crude image. This allows enough room (in any case) for the rotation.
     const crudeHeight = imgCrude.shape[0];
     const crudeWidth = imgCrude.shape[1];
@@ -149,7 +159,7 @@ export default function CameraLoader({ visibility, TensorCamera }) {
     // Pad and make tensor 4d because rotateWithOffset requires 4d.
     const imgPad = tf.pad(imgCrude, [padVert, padHoriz, [0, 0]]).expandDims();
 
-    // Rotate the padded image such that the reader box is vertical 
+    // Rotate the padded image such that the reader box is vertical
     // (axis with the dots going up and down)
     const rotateRadians = (boxAngle * Math.PI) / 180;
     const imgRotated = tf.image.rotateWithOffset(imgPad, rotateRadians);
@@ -166,9 +176,6 @@ export default function CameraLoader({ visibility, TensorCamera }) {
     const flagCoordinates = await tf.whereAsync(maskFlags);
     const flagCoordArr = await flagCoordinates.slice([0, 1], [-1, 2]).array();
     const shapedImg = crudeSliceCrop(imgRotated, flagCoordArr, 0);
-    const url = await tensorToImageUrl(shapedImg);
-    console.log("data:image/jpeg;base64," + url);
-    setPreviewImg(`data:image/jpeg;base64,${url}`);
   };
 
   const handleCameraStream = (images, updatePreview, gl) => {
@@ -188,8 +195,6 @@ export default function CameraLoader({ visibility, TensorCamera }) {
     loop();
   };
 
-  // console.log(dimensions);
-
   return (
     <>
       {previewImg && (
@@ -206,10 +211,10 @@ export default function CameraLoader({ visibility, TensorCamera }) {
           style={styles.camera}
           type={cameraType}
           zoom={0}
-          cameraTextureHeight={dimensions.height}
-          cameraTextureWidth={dimensions.width}
-          resizeHeight={dimensions.height}
-          resizeWidth={dimensions.width}
+          cameraTextureHeight={fullDims.height}
+          cameraTextureWidth={fullDims.width}
+          resizeHeight={scaledDims.height}
+          resizeWidth={scaledDims.width}
           resizeDepth={3}
           onReady={handleCameraStream}
           autorender={true}
@@ -229,13 +234,13 @@ const styles = StyleSheet.create({
     // left: 0,
     // top: 0,
     width: "100%",
-    aspectRatio: dimensions.width / dimensions.height,
+    aspectRatio: scaledDims.width / scaledDims.height,
   },
   image: {
     paddingHorizontal: 10,
     borderWidth: 2,
     borderColor: "black",
     width: "100%",
-    height: 100,
+    height: 250,
   },
 });
