@@ -170,12 +170,13 @@ export default function CameraLoader({ visibility, TensorCamera }) {
     return imgRotated3d;
   };
 
-  const finishIt = async (imgRotated) => {
+  const finishDataFlow = async (imgRotated) => {
     // Find the flags previously put in the image and crop around them
     const maskFlags = imgRotated.less([0]).asType("bool");
     const flagCoordinates = await tf.whereAsync(maskFlags);
     const flagCoordArr = await flagCoordinates.slice([0, 1], [-1, 2]).array();
     const shapedImg = crudeSliceCrop(imgRotated, flagCoordArr, 0);
+    // showTensor(shapedImg);
   };
 
   const handleCameraStream = (images, updatePreview, gl) => {
@@ -188,7 +189,7 @@ export default function CameraLoader({ visibility, TensorCamera }) {
         return null;
       });
       if (rotatedImg) {
-        finishIt(rotatedImg);
+        finishDataFlow(rotatedImg);
       }
       requestAnimationFrame(loop);
     };
