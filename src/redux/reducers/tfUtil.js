@@ -44,21 +44,21 @@ const tensorToImageUrl = async (imageTensor) => {
     width,
     height,
   };
-  const jpegImageData = jpeg.encode(rawImageData, 75);
+  const jpegImageData = jpeg.encode(rawImageData, 50);
   const base64Encoding = tf.util.decodeString(jpegImageData.data, "base64");
   return base64Encoding;
-}
+};
 
 const getPreviewUri = async (img) => {
   const base64 = await tensorToImageUrl(img.mul(255));
   const imageUri = `data:image/jpeg;base64,${base64}`;
-  return imageUri
+  return imageUri;
 };
 
 const logPreview = async (img) => {
   const url = await getPreviewUri(img);
   console.log(`\n${url}\n`);
-}
+};
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~STEPS~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 const flagAndCrop = (tensor, corners) => {
@@ -81,9 +81,6 @@ const flagAndCrop = (tensor, corners) => {
 
   // Get a "crude" take on a cropped image, unaccounting for rotation
   const crudeImg = crudeSliceCrop(imgFlagged, cornerIndicies, PADDING);
-
-  // logPreview(crudeImg);
-  console.log(corners);
 
   return {
     img: crudeImg,
@@ -115,17 +112,18 @@ const trim = async (imgRotated) => {
   // Find the flags previously put in the image and crop around them
   const maskFlags = imgRotated.less([0]).asType("bool");
   const flagCoordinates = await tf.whereAsync(maskFlags);
-  const flagCoordArr = await flagCoordinates.slice([0, 1], [-1, 2]).array();
+  const flagCoordArr = await flagCoordinates.slice([0, 0], [-1, 2]).array();
   const trimmedImg = crudeSliceCrop(imgRotated, flagCoordArr, 0);
   return trimmedImg;
 };
 
-export const getLineData = (tensor, readerBox, setPreviewImg) => {
-  const { corners, boxAngle } = readerBox;
+export const getLineData = async (tensor, readerBox, setPreviewImg) => {
+  const { corners, angle } = readerBox;
   const rotated = tf.tidy(() => {
     const crude = flagAndCrop(tensor, corners);
-    // const padded = pad(crude);
-    // return rotate(padded, boxAngle);
-  })
-  // const trimmed = trim(rotated);
+    const padded = pad(crude);
+    return rotate(padded, angle);
+  });
+  const trimmed = await trim(rotated);
+  logPreview(trimmed);
 };
