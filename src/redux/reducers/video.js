@@ -1,4 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { getLineData } from "./tfUtil";
+
 const convert = require("color-convert");
 
 export const SourceEnum = {
@@ -53,7 +55,7 @@ const reduceHorizontal = (intensities) => {
     return intensities[0];
   } else if (debug_horizontal_warning_count > 0) {
     console.log(
-      `Issue: All of a horizontal were extreme values (intensity of 100). Happened for ${debug_horizontal_warning_count} frames.` 
+      `Issue: All of a horizontal were extreme values (intensity of 100). Happened for ${debug_horizontal_warning_count} frames.`
     );
     debug_horizontal_warning_count = 0;
   }
@@ -97,6 +99,7 @@ export const videoSlice = createSlice({
     selectedSource: SourceEnum.WEBCAM,
     uploadedImage: undefined,
     selectedWebcam: undefined,
+    previewImage: undefined,
   },
   reducers: {
     updateFeed: (state, action) => {
@@ -156,7 +159,10 @@ export const videoSlice = createSlice({
       state.readerBoxData = { ...state.readerBoxData, ...action.payload.value };
     },
     updateReaderWidth: (state, action) => {
-      state.readerBoxData = { ...state.readerBoxData, width: action.payload.value};
+      state.readerBoxData = {
+        ...state.readerBoxData,
+        width: action.payload.value,
+      };
     },
     setSelectedSource: (state, action) => {
       state.selectedSource = action.payload.value;
@@ -165,6 +171,16 @@ export const videoSlice = createSlice({
     setUploadedImage: (state, action) => {
       // Done because going to data upload makes image blank.
       state.uploadedImage = action.payload.image;
+    },
+    tfUpdateFrame: (state, action) => {
+      const imgTensor = action.payload.tensor;
+      const readerBox = state.readerBoxData;
+      if (imgTensor && readerBox) {
+        getLineData(imgTensor, readerBox);
+      }
+    },
+    debugSetPreviewImage: (state, action) => {
+      state.previewImage = action.payload.value;
     },
   },
 });
@@ -175,6 +191,8 @@ export const {
   setSelectedSource,
   setUploadedImage,
   updateReaderWidth,
+  tfUpdateFrame,
+  debugSetPreviewImage,
 } = videoSlice.actions;
 
 export const selectUploadedImage = (state) => state.video.uploadedImage;
@@ -215,8 +233,9 @@ export const selectCorners = (state) => state.video.readerBoxData.corners;
 export const selectAngle = (state) => state.video.readerBoxData.angle;
 
 export const selectReaderWidth = (state) => state.video.readerBoxData.width;
+
 export const selectReaderLength = (state) => state.video.readerBoxData.length;
-  
+
 export const selectSecondCropBox = (state) =>
   state.video.readerBoxData.secondCropBox;
 
@@ -238,5 +257,7 @@ export const selectChartData = (state) => {
     },
   ];
 };
+
+export const selectPreviewImg = (state) => state.video.previewImage;
 
 export default videoSlice.reducer;

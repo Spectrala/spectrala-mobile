@@ -21,7 +21,14 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "NSCameraUsageDescription": "This app uses the camera to view the spectrometer and record spectrometry data."
+        "NSCameraUsageDescription": "This app uses the camera to view the spectrometer and record spectrometry data.",
+        "NSAppTransportSecurity":{
+          "NSExceptionDomains":{
+            "localhost":{
+              "NSTemporaryExceptionAllowsInsecureHTTPLoads":true
+            }
+          }
+        }
       }
     },
     "android": {
