@@ -102,59 +102,6 @@ export const videoSlice = createSlice({
     previewImage: undefined,
   },
   reducers: {
-    updateFeed: (state, action) => {
-      const { imageData, width } = action.payload;
-
-      // imageData is a 1-d array of [r, g, b, a, r, g, b, a, ...].
-
-      const newline = [];
-
-      const horizontalProcessingFunc = (horizontal) => {
-        const intensities = [];
-        // Each pixel is r, g, b, a
-        for (let j = 0; j < horizontal.length; j += 4) {
-          const chunk = horizontal.slice(j, j + 4);
-          const r = chunk[0];
-          const g = chunk[1];
-          const b = chunk[2];
-          const intensity = rgbToIntensity(r, g, b);
-          intensities.push(intensity);
-        }
-        return reduceHorizontal(intensities);
-      };
-
-      for (let i = 0; i < imageData.length; i += 4 * width) {
-        const chunk = imageData.slice(i, i + 4 * width);
-        newline.push(horizontalProcessingFunc(chunk));
-      }
-
-      let lineHist = state.pixelLineHistory;
-      /**
-       * This maintains a history of a certain length
-       * of pixel values in order to create a moving average of intensities.
-       * There's obvious uncertainty when looking at the static bounce around.
-       * Smoothing this out is better for UX and scientific accuracy.
-       */
-      if (lineHist.length > 0) {
-        if (lineHist[0].length === newline.length) {
-          if (lineHist.length >= PIXEL_LINE_HISTORY_DEPTH)
-            lineHist = lineHist.slice(
-              PIXEL_LINE_HISTORY_DEPTH - lineHist.length + 1
-            );
-          lineHist.push(newline);
-        } else {
-          lineHist = [newline];
-        }
-      } else {
-        lineHist = [newline];
-      }
-      state.pixelLineHistory = lineHist;
-
-      /**
-       * Detect oversaturation
-       */
-      state.isOversaturated = !newline.every(isNotOversaturated);
-    },
     updateReaderBoxData: (state, action) => {
       state.readerBoxData = { ...state.readerBoxData, ...action.payload.value };
     },
@@ -172,12 +119,37 @@ export const videoSlice = createSlice({
       // Done because going to data upload makes image blank.
       state.uploadedImage = action.payload.image;
     },
+    updateLineHistory: (state, action) => {
+      const newLine = action.payload.value;
+      let lineHist = state.pixelLineHistory;
+      /**
+       * This maintains a history of a certain length
+       * of pixel values in order to create a moving average of intensities.
+       * There's obvious uncertainty when looking at the static bounce around.
+       * Smoothing this out is better for UX and scientific accuracy.
+       */
+      if (lineHist.length > 0 && lineHist[0].length === newLine.length) {
+        if (lineHist.length >= PIXEL_LINE_HISTORY_DEPTH)
+          lineHist = lineHist.slice(
+            PIXEL_LINE_HISTORY_DEPTH - lineHist.length + 1
+          );
+        lineHist.push(newLine);
+      } else {
+        lineHist = [newLine];
+      }
+      state.pixelLineHistory = lineHist;
+
+      /**
+       * Detect oversaturation
+       */
+      state.isOversaturated = !newLine.every(isNotOversaturated);
+    },
     tfUpdateFrame: (state, action) => {
       const imgTensor = action.payload.tensor;
       const readerBox = state.readerBoxData;
-      if (imgTensor && readerBox) {
-        getLineData(imgTensor, readerBox);
-      }
+
+      const newLine = await getLineData(imgTensor, readerBox);
+
     },
     debugSetPreviewImage: (state, action) => {
       state.previewImage = action.payload.value;

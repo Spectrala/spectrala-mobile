@@ -1,4 +1,4 @@
-import { StatusBar } from "expo-status-bar";
+import * as tf from "@tensorflow/tfjs";
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Image } from "react-native";
 import { Camera } from "expo-camera";
@@ -52,11 +52,6 @@ export default function CameraLoader({ visibility, TensorCamera }) {
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const [cameraType, setCameraType] = useState(Camera.Constants.Type.front);
 
-  const corners = useSelector(selectCorners, () => false);
-  const boxAngle = useSelector(selectAngle);
-  const width = useSelector(selectReaderWidth);
-  const length = useSelector(selectReaderLength);
-  const previewImage = useSelector(selectPreviewImg);
   const dispatch = useDispatch();
 
   const requestCameraPermission = async () => {
@@ -70,50 +65,29 @@ export default function CameraLoader({ visibility, TensorCamera }) {
 
   const handleCameraStream = (images, updatePreview, gl) => {
     const loop = async () => {
+      // Call when starting a session with tensors to prevent leaks
+      tf.engine().startScope();
       dispatch(tfUpdateFrame({ tensor: images.next().value }));
-
-
-      // const rotatedImg = tf.tidy(() => {
-      //   const nextImageTensor = images.next().value;
-      //   if (nextImageTensor) {
-      //     return getRotatedFlaggedImage(nextImageTensor);
-      //   }
-      //   return null;
-      // });
-      // if (rotatedImg) {
-      //   finishDataFlow(rotatedImg);
-      // }
       requestAnimationFrame(loop);
     };
     loop();
   };
 
   return (
-    <>
-      {previewImage && (
-        <Image
-          style={styles.image}
-          source={{
-            uri: previewImage,
-          }}
-          resizeMode="contain"
-        />
-      )}
-      {hasCameraPermission && (
-        <TensorCamera
-          style={styles.camera}
-          type={cameraType}
-          zoom={0}
-          cameraTextureHeight={fullDims.height}
-          cameraTextureWidth={fullDims.width}
-          resizeHeight={scaledDims.height}
-          resizeWidth={scaledDims.width}
-          resizeDepth={3}
-          onReady={handleCameraStream}
-          autorender={true}
-        />
-      )}
-    </>
+    hasCameraPermission && (
+      <TensorCamera
+        style={styles.camera}
+        type={cameraType}
+        zoom={0}
+        cameraTextureHeight={fullDims.height}
+        cameraTextureWidth={fullDims.width}
+        resizeHeight={scaledDims.height}
+        resizeWidth={scaledDims.width}
+        resizeDepth={3}
+        onReady={handleCameraStream}
+        autorender={true}
+      />
+    )
   );
 }
 
@@ -123,9 +97,6 @@ CameraLoader.propTypes = {
 
 const styles = StyleSheet.create({
   camera: {
-    // position: "absolute",
-    // left: 0,
-    // top: 0,
     width: "100%",
     aspectRatio: scaledDims.width / scaledDims.height,
   },
