@@ -27,6 +27,7 @@ import {
   selectCorners,
 } from "../../redux/reducers/video";
 import { Colors, Typography, Spacings, Text, View } from "react-native-ui-lib";
+import { fullDims } from "./CameraLoader";
 
 const CIRCLE_RADIUS = 20;
 
@@ -214,7 +215,7 @@ DraggablePointsContainer.propTypes = {
 /**
  * NOTE:
  *
- * The entire dimensions of the GLView (rendering the camrea) must be
+ * The entire dimensions of the GLView (rendering the camera) must be
  * covered by the points container.
  *
  */
@@ -233,7 +234,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     width: "100%",
-    aspectRatio: 3 / 4,
+    aspectRatio: fullDims.width / fullDims.height,
   },
   titleText: {
     fontSize: 14,

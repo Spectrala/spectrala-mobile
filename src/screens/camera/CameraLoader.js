@@ -19,7 +19,6 @@ export const CAMERA_VISIBILITY_OPTIONS = {
   full: "full",
   none: "none",
 };
-
 const getTextureDimensions = (scale) => {
   if (Platform.OS === "ios") {
     return {
@@ -36,7 +35,7 @@ const getTextureDimensions = (scale) => {
 
 const SCALE = 0.1;
 
-const fullDims = getTextureDimensions(1);
+export const fullDims = getTextureDimensions(1);
 const scaledDims = getTextureDimensions(SCALE);
 
 /**
