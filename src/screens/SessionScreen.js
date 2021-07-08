@@ -4,11 +4,10 @@ import CameraScreen from "./camera/CameraScreen";
 import CaptureScreen from "./capture/CaptureScreen";
 import CalibrationScreen from "./calibration/CalibrationScreen";
 import { StyleSheet } from "react-native";
-import CameraLoader from "./camera/CameraLoader";
+import CameraLoader from "../screens/camera/CameraLoader";
 
 export default function SessionScreen({ route }) {
   const screenOptions = route.params?.screenOptions;
-  const TensorCamera = route.params?.cameraComponent;
 
   const getBody = useCallback(() => {
     switch (screenOptions.name) {
@@ -27,10 +26,7 @@ export default function SessionScreen({ route }) {
   return (
     <View style={styles.container}>
       <View style={styles.cameraContainer}>
-        <CameraLoader
-          visibility={screenOptions.cameraVisibility}
-          TensorCamera={TensorCamera}
-        />
+        <CameraLoader visibility={screenOptions.cameraVisibility} />
       </View>
       <View style={styles.cameraContainer}>{getBody()}</View>
     </View>

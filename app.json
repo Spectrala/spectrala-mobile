@@ -22,14 +22,8 @@
       "supportsTablet": true,
       "infoPlist": {
         "NSCameraUsageDescription": "This app uses the camera to view the spectrometer and record spectrometry data.",
-        "NSAppTransportSecurity":{
-          "NSExceptionDomains":{
-            "localhost":{
-              "NSTemporaryExceptionAllowsInsecureHTTPLoads":true
-            }
-          }
-        }
-      }
+      },
+      "bundleIdentifier": "com.ifowler.spectrala"
     },
     "android": {
       "adaptiveIcon": {

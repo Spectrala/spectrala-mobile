@@ -1,12 +1,14 @@
 import * as tf from "@tensorflow/tfjs";
 import React, { useState, useEffect } from "react";
 import { StyleSheet } from "react-native";
-import { Camera } from "expo-camera";
 import PropTypes from "prop-types";
 import { useDispatch } from "react-redux";
 import { updateFeed } from "../../redux/reducers/video";
 import { getLineData } from "../../redux/reducers/tfUtil";
 import { store } from "../../redux/store/store";
+import { Camera } from "expo-camera";
+import { cameraWithTensors } from "@tensorflow/tfjs-react-native";
+export const TensorCamera = cameraWithTensors(Camera);
 
 export const CAMERA_VISIBILITY_OPTIONS = {
   full: "full",
@@ -26,7 +28,7 @@ const getTextureDimensions = (scale) => {
   }
 };
 
-const SCALE = 0.5;
+const SCALE = 1;
 
 export const fullDims = getTextureDimensions(1);
 const scaledDims = getTextureDimensions(SCALE);
@@ -41,9 +43,9 @@ const scaledDims = getTextureDimensions(SCALE);
  * @returns camera view which feeds a stream to redux.
  */
 
-export default function CameraLoader({ visibility, TensorCamera }) {
+export default function CameraLoader({ visibility }) {
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
-  const [cameraType, setCameraType] = useState(Camera.Constants.Type.front);
+  const cameraType = Camera.Constants.Type.back;
 
   const dispatch = useDispatch();
 
@@ -68,11 +70,14 @@ export default function CameraLoader({ visibility, TensorCamera }) {
     const loop = async () => {
       // Call when starting a session with tensors to prevent leaks
       tf.engine().startScope();
+      console.log("start");
       updateLineData(images.next().value);
       requestAnimationFrame(loop);
     };
     loop();
   };
+
+  console.log("render");
 
   return (
     hasCameraPermission && (

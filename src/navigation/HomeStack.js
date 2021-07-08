@@ -12,10 +12,6 @@ import {
 import { Colors } from "react-native-ui-lib";
 import { CAMERA_VISIBILITY_OPTIONS } from "../screens/camera/CameraLoader";
 import SessionScreen from "../screens/SessionScreen";
-import { Camera } from "expo-camera";
-import { cameraWithTensors } from "@tensorflow/tfjs-react-native";
-
-const TensorCamera = cameraWithTensors(Camera);
 
 export const SESSION_SCREENS = {
   camera: {
@@ -106,7 +102,6 @@ export default function HomeNavigator({ navigation }) {
         component={SessionScreen}
         initialParams={{
           screenOptions: SESSION_SCREENS.camera,
-          cameraComponent: TensorCamera,
         }}
         options={{
           title: SESSION_SCREENS.camera.header,
@@ -128,7 +123,6 @@ export default function HomeNavigator({ navigation }) {
         component={SessionScreen}
         initialParams={{
           screenOptions: SESSION_SCREENS.calibration,
-          cameraComponent: TensorCamera,
         }}
         options={{
           title: SESSION_SCREENS.calibration.header,
@@ -150,7 +144,6 @@ export default function HomeNavigator({ navigation }) {
         component={SessionScreen}
         initialParams={{
           screenOptions: SESSION_SCREENS.capture,
-          cameraComponent: TensorCamera,
         }}
         options={{
           title: SESSION_SCREENS.capture.header,
