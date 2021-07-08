@@ -2,12 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import {
   FlatList,
-  ActivityIndicator,
-  RefreshControl,
-  SafeAreaView,
   View,
-  BackHandler,
-  useState,
   StyleSheet,
 } from "react-native";
 import SessionCell from "./SessionCell";

@@ -1,23 +1,10 @@
 import * as React from "react";
-import { Button, StyleSheet } from "react-native";
-
+import { StyleSheet } from "react-native";
 import { Text, View } from "react-native-ui-lib";
-
-import { StackNavigationProp } from "@react-navigation/stack";
-import CaptureChart from "./CaptureChart";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import PropTypes from "prop-types";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  selectValidateLiveSpectrum,
-  SPECTRUM_OPTIONS,
-  setPreferredSpectrum,
-  selectPreferredSpectrumOption,
-  selectHasReference,
-} from "../../redux/reducers/spectrum";
 
 const CHART_HEIGHT = 200;
-const CHART_MARGIN = 16;
 const MODE_BUTTON_HEIGHT = 24;
 
 export default function ModeSwitcher(props) {

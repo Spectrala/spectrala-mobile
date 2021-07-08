@@ -92,15 +92,6 @@ function StackedChart(props) {
 
 // TODO: use some real data. 
 
-// StackedChart.propTypes = {
-//   name: PropTypes.string.isRequired,
-//   date: PropTypes.instanceOf(Date).isRequired,
-//   onSelect: PropTypes.func,
-//   inSelectionMode: PropTypes.bool.isRequired,
-//   isUploaded: PropTypes.bool,
-//   isSelected: PropTypes.bool,
-// };
-
 const styles = StyleSheet.create({
   rightBox: {
     width: 140,

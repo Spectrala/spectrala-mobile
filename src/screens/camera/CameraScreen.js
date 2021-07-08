@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { StyleSheet, ScrollView } from "react-native";
+import React, { useRef, useCallback } from "react";
+import { StyleSheet } from "react-native";
 import { Text, View, Slider, Colors } from "react-native-ui-lib";
 import DraggablePointsContainer from "./DraggablePointsContainer";
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectReaderWidth,
   updateReaderWidth,
-} from "../../redux/reducers/video"
+} from "../../redux/reducers/video";
 import BottomHelper from "../../components/BottomHelper";
 
 export default function CameraScreen({ navigation }) {

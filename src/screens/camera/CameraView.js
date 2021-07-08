@@ -1,9 +1,9 @@
 import { Camera } from "expo-camera";
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { GLView } from "expo-gl";
 import * as FileSystem from "expo-file-system";
 import * as ImageManipulator from "expo-image-manipulator";
-import { StyleSheet, TouchableOpacity, Image } from "react-native";
+import { StyleSheet, Image } from "react-native";
 import { Text, View } from "react-native-ui-lib";
 import Canvas, { Image as CanvasImage } from "react-native-canvas";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,11 +11,8 @@ import {
   updateFeed,
   selectCorners,
   selectAngle,
-  selectWidth,
-  selectLength,
   selectSecondCropBox,
 } from "../../redux/reducers/video";
-
 
 export const CAMERA_VISIBILITY_OPTIONS = {
   full: "full",

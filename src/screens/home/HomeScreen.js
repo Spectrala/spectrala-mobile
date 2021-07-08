@@ -1,8 +1,7 @@
 import * as React from "react";
 import { StyleSheet } from "react-native";
-import { Text, View } from "react-native-ui-lib";
+import { View } from "react-native-ui-lib";
 import PropTypes from "prop-types";
-import { StackNavigationProp } from "@react-navigation/stack";
 import SessionList from "./SessionList";
 
 const SESSIONS = [

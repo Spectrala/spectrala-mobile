@@ -1,12 +1,9 @@
 import * as React from "react";
-import { Button, StyleSheet } from "react-native";
-import { Text, View } from "react-native-ui-lib";
-import { StackNavigationProp } from "@react-navigation/stack";
+import { StyleSheet } from "react-native";
+import { View } from "react-native-ui-lib";
 import CaptureChart from "../capture/CaptureChart";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import ModeSwitcher from "../capture/ModeSwitcher";
 import ReviewList from "./ReviewList";
-import { SafeAreaView } from "react-native";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -16,7 +13,6 @@ import {
   setPreferredSpectrum,
   selectPreferredSpectrumOption,
   selectHasReference,
-  recordSpectrum,
 } from "../../redux/reducers/spectrum";
 
 const CHART_HEIGHT = 200;
@@ -67,7 +63,6 @@ export default function ReviewScreen({ navigation }) {
         />
         <ReviewList />
       </View>
-
     </>
   );
 }

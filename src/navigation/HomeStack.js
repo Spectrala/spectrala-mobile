@@ -1,13 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
-import {
-  createStackNavigator,
-  StackNavigationProp,
-} from "@react-navigation/stack";
+import { createStackNavigator } from "@react-navigation/stack";
 import * as React from "react";
-import CaptureScreen from "../screens/capture/CaptureScreen";
-import CameraScreen from "../screens/camera/CameraScreen";
-import CalibrationScreen from "../screens/calibration/CalibrationScreen";
-import ReviewScreen from "../screens/review/ReviewScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import HomeScreen from "../screens/home/HomeScreen";
 import {
@@ -15,9 +8,8 @@ import {
   HeaderButton,
   Item,
   HiddenItem,
-  OverflowMenu,
 } from "react-navigation-header-buttons";
-import { Colors, Typography, Spacings, ProgressBar } from "react-native-ui-lib";
+import { Colors } from "react-native-ui-lib";
 import { CAMERA_VISIBILITY_OPTIONS } from "../screens/camera/CameraLoader";
 import SessionScreen from "../screens/SessionScreen";
 import { Camera } from "expo-camera";

@@ -1,13 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { TouchableWithoutFeedback, StyleSheet } from "react-native";
-import { TouchableOpacity } from "react-native";
-import { format } from "date-fns";
-import { Ionicons } from "@expo/vector-icons";
+import { StyleSheet } from "react-native";
 import { useTheme } from "@react-navigation/native";
-import { StackedAreaChart } from "react-native-svg-charts";
 import DropDownPicker from "react-native-dropdown-picker";
-import * as shape from "d3-shape";
 import { useDispatch, useSelector } from "react-redux";
 
 import {

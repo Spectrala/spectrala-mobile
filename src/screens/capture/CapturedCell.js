@@ -1,15 +1,11 @@
-import React, { useState, useCallback } from "react";
+import React from "react";
 import {
   TouchableOpacity,
   StyleSheet,
   SafeAreaView,
   TextInput,
-  Button,
 } from "react-native";
 import { Text, View } from "react-native-ui-lib";
-import DraggableFlatList, {
-  RenderItemParams,
-} from "react-native-draggable-flatlist";
 import PropTypes from "prop-types";
 import { MaterialIcons } from "@expo/vector-icons";
 import PreviewChart from "./PreviewChart";

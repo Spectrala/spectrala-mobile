@@ -1,11 +1,7 @@
-import React, { useState, useCallback } from "react";
+import React, { useCallback } from "react";
 import { StyleSheet } from "react-native";
-import { Text, View } from "react-native-ui-lib";
-import DraggableFlatList, {
-  RenderItemParams,
-} from "react-native-draggable-flatlist";
-import PropTypes from "prop-types";
-import { MaterialIcons } from "@expo/vector-icons";
+import { View } from "react-native-ui-lib";
+import DraggableFlatList from "react-native-draggable-flatlist";
 import ReviewCell from "./ReviewCell";
 import { useTheme } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
@@ -44,42 +40,45 @@ export default function ReviewList({ navigation }) {
   const recordedSpectra = useSelector(selectRecordedSpectra);
   const { colors } = useTheme();
 
-  const renderItem = useCallback(({ item, index, drag, isActive }) => {
-    const spectrum = item;
+  const renderItem = useCallback(
+    ({ item, index, drag, isActive }) => {
+      const spectrum = item;
 
-    const text = spectrum.name ? spectrum.name : "";
-    const aria = `Saved Spectrum ${index + 1}`;
-    return (
-      <ReviewCell
-        label={text}
-        backgroundColor={item.backgroundColor}
-        isActive={isActive}
-        dragControl={drag}
-        data={spectrum.data}
-        isReference={spectrum.isReference}
-        onSetReference={() => {
-          spectrum.isReference
-            ? dispatch(removeReference())
-            : dispatch(setReference({ targetIndex: index }));
-        }}
-        onDelete={() => {
-          dispatch(
-            removeSpectrum({
-              targetIndex: index,
-            })
-          );
-        }}
-        onRename={(value) => {
-          dispatch(
-            renameSpectrum({
-              targetIndex: index,
-              name: value,
-            })
-          );
-        }}
-      />
-    );
-  }, [recordedSpectra]);
+      const text = spectrum.name ? spectrum.name : "";
+      const aria = `Saved Spectrum ${index + 1}`;
+      return (
+        <ReviewCell
+          label={text}
+          backgroundColor={item.backgroundColor}
+          isActive={isActive}
+          dragControl={drag}
+          data={spectrum.data}
+          isReference={spectrum.isReference}
+          onSetReference={() => {
+            spectrum.isReference
+              ? dispatch(removeReference())
+              : dispatch(setReference({ targetIndex: index }));
+          }}
+          onDelete={() => {
+            dispatch(
+              removeSpectrum({
+                targetIndex: index,
+              })
+            );
+          }}
+          onRename={(value) => {
+            dispatch(
+              renameSpectrum({
+                targetIndex: index,
+                name: value,
+              })
+            );
+          }}
+        />
+      );
+    },
+    [recordedSpectra]
+  );
 
   const onReorder = (list) => {
     dispatch(

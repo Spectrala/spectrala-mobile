@@ -1,21 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { TouchableWithoutFeedback, StyleSheet } from "react-native";
-
+import { StyleSheet } from "react-native";
 import { Text, View } from "react-native-ui-lib";
-import { TouchableOpacity } from "react-native";
-import { format } from "date-fns";
-import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
-import {
-  AreaChart,
-  LineChart,
-  Grid,
-  XAxis,
-  YAxis,
-} from "react-native-svg-charts";
-
-import * as shape from "d3-shape";
+import { AreaChart, Grid, XAxis, YAxis } from "react-native-svg-charts";
 
 const CHART_INSET = 30;
 
@@ -57,14 +45,12 @@ function CaptureChart(props) {
       ? [0, 100]
       : [undefined, undefined];
 
-
   const contentInset = {
     top: 0,
     bottom: 0,
     left: CHART_INSET,
     right: CHART_INSET,
   };
-
 
   const axesSvg = { fontSize: 10, fill: "grey" };
   const verticalContentInset = { top: 10, bottom: 5 };
@@ -95,7 +81,6 @@ function CaptureChart(props) {
           xAccessor={({ item }) => item.x}
           yMin={y_range[0]}
           yMax={y_range[1]}
-
           xMin={min_x_value}
           xMax={max_x_value}
           contentInset={verticalContentInset}

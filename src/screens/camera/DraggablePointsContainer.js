@@ -7,18 +7,11 @@ import React, {
 } from "react";
 import PropTypes from "prop-types";
 import {
-  FlatList,
-  ActivityIndicator,
-  RefreshControl,
-  SafeAreaView,
-  BackHandler,
   StyleSheet,
   Animated,
   PanResponder,
-  Pressable,
-  Modal,
 } from "react-native";
-import { Svg, Line, Rect, Circle } from "react-native-svg";
+import { Svg, Line } from "react-native-svg";
 import Victor from "victor";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -26,7 +19,7 @@ import {
   updateReaderBoxData,
   selectCorners,
 } from "../../redux/reducers/video";
-import { Colors, Typography, Spacings, Text, View } from "react-native-ui-lib";
+import { Colors, View } from "react-native-ui-lib";
 import { fullDims } from "./CameraLoader";
 
 const CIRCLE_RADIUS = 20;

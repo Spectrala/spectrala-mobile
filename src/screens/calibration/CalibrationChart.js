@@ -1,12 +1,10 @@
 import React, { useState, useCallback } from "react";
-import PropTypes from "prop-types";
 import { StyleSheet } from "react-native";
 import { Text, View, Colors } from "react-native-ui-lib";
 import { AreaChart, Grid } from "react-native-svg-charts";
 import { useSelector } from "react-redux";
 import { selectChartData } from "../../redux/reducers/video";
 import * as shape from "d3-shape";
-// import TickContainer from "./TickContainer";
 import Tick from "./Tick";
 import { selectCalibrationPoints } from "../../redux/reducers/calibration/calibration";
 

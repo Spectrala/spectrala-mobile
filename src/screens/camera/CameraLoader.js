@@ -1,19 +1,12 @@
 import * as tf from "@tensorflow/tfjs";
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, Image } from "react-native";
+import { StyleSheet } from "react-native";
 import { Camera } from "expo-camera";
 import PropTypes from "prop-types";
-import { useSelector, useDispatch } from "react-redux";
-import {
-  updateFeed,
-  selectCorners,
-  selectAngle,
-  selectReaderWidth,
-  selectReaderLength,
-  selectSecondCropBox,
-  tfUpdateFrame,
-  selectPreviewImg,
-} from "../../redux/reducers/video";
+import { useDispatch } from "react-redux";
+import { updateFeed } from "../../redux/reducers/video";
+import { getLineData } from "../../redux/reducers/tfUtil";
+import { store } from "../../redux/store/store";
 
 export const CAMERA_VISIBILITY_OPTIONS = {
   full: "full",
@@ -63,11 +56,19 @@ export default function CameraLoader({ visibility, TensorCamera }) {
     requestCameraPermission();
   }, []);
 
+  const lineDataThunk = async (imgTensor) => {
+    const state = store.store.getState();
+    const readerBox = state.video.readerBoxData;
+    const nextLine = await getLineData(imgTensor, readerBox);
+    dispatch(updateFeed({ value: nextLine }));
+  };
+
   const handleCameraStream = (images, updatePreview, gl) => {
     const loop = async () => {
       // Call when starting a session with tensors to prevent leaks
       tf.engine().startScope();
-      dispatch(tfUpdateFrame({ tensor: images.next().value }));
+      // dispatch(tfUpdateFrame({ tensor: images.next().value }));
+      lineDataThunk(images.next().value);
       requestAnimationFrame(loop);
     };
     loop();

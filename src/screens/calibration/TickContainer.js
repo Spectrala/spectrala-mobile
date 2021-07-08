@@ -1,18 +1,9 @@
-import React, { useCallback, useRef, useState, useEffect } from "react";
+import React, { useCallback, useRef } from "react";
 import PropTypes from "prop-types";
-import {
-  FlatList,
-  ActivityIndicator,
-  RefreshControl,
-  SafeAreaView,
-  BackHandler,
-  StyleSheet,
-  Animated,
-  PanResponder,
-} from "react-native";
+import { StyleSheet, Animated, PanResponder } from "react-native";
 import { Text, View } from "react-native-ui-lib";
 import { useTheme } from "@react-navigation/native";
-import { Svg, Line, Rect } from "react-native-svg";
+import { Svg, Line } from "react-native-svg";
 import * as CalibPt from "../../redux/reducers/calibration/calibration_point";
 
 const CIRCLE_RADIUS = 20;
@@ -69,7 +60,6 @@ function TickContainer(props) {
           }}
         >
           <Text style={styles.tickText}>{props.activeWavelength}</Text>
-          
         </View>
       </Animated.View>
     ) : null;

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React from "react";
 import {
   View,
   TouchableOpacity,
@@ -6,19 +6,10 @@ import {
   StyleSheet,
   SafeAreaView,
   TextInput,
-  Button,
 } from "react-native";
-import DraggableFlatList, {
-  RenderItemParams,
-} from "react-native-draggable-flatlist";
 import PropTypes from "prop-types";
 import { MaterialIcons } from "@expo/vector-icons";
 import PreviewChart from "../capture/PreviewChart";
-import { Touchable } from "react-native";
-
-const CHART_HEIGHT = 200;
-const CHART_MARGIN = 16;
-const MODE_BUTTON_HEIGHT = 24;
 
 const NUM_ITEMS = 10;
 
@@ -70,7 +61,7 @@ export default function ReviewCell(props) {
       </TouchableOpacity>
 
       <View style={styles.rightContainer}>
-        <TouchableOpacity onPress={ () => console.log("review")}>
+        <TouchableOpacity onPress={() => console.log("review")}>
           <PreviewChart data={props.data} />
         </TouchableOpacity>
         <TouchableOpacity onLongPress={props.dragControl}>

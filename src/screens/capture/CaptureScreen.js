@@ -1,14 +1,10 @@
 import * as React from "react";
-import { Button, StyleSheet } from "react-native";
-
-import { Text, View } from "react-native-ui-lib";
-import { StackNavigationProp } from "@react-navigation/stack";
+import { StyleSheet } from "react-native";
+import { View } from "react-native-ui-lib";
 import CaptureChart from "./CaptureChart";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import ModeSwitcher from "./ModeSwitcher";
 import CapturedList from "./CapturedList";
-import { SafeAreaView } from "react-native";
-
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectValidateLiveSpectrum,

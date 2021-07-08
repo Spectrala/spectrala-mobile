@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { StyleSheet, ScrollView } from "react-native";
 import {
   Text,

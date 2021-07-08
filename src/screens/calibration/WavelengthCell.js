@@ -1,13 +1,8 @@
-import React, { useState, useCallback } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import {
-  TouchableWithoutFeedback,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, TextInput, TouchableOpacity } from "react-native";
 import { Text, View } from "react-native-ui-lib";
-import { FontAwesome, Entypo } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
 import * as CalibPt from "../../redux/reducers/calibration/calibration_point";
 

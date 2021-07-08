@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { useTheme } from "@react-navigation/native";
-import { AreaChart, Grid } from "react-native-svg-charts";
+import { AreaChart } from "react-native-svg-charts";
 
 const CHART_INSET = 30;
 

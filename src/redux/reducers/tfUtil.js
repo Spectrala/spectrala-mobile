@@ -183,9 +183,9 @@ export const getLineData = async (tensor, readerBox) => {
     return rotate(padded, angle);
   });
   const trimmed = await trim(rotated);
-  const transposed = trimmed.transpose([1,0,2]);
+  const transposed = trimmed.transpose([1, 0, 2]);
   const intensities2d = await convertIntensityAsync(transposed);
-  tf.engine().endScope(); // Tensorflow operations are over; clean up. 
+  tf.engine().endScope(); // Tensorflow operations are over; clean up.
 
   const intensities1d = intensities2d.map((row) => reduceHorizontal(row));
   return intensities1d;

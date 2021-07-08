@@ -1,31 +1,17 @@
 import React, { useCallback } from "react";
 import PropTypes from "prop-types";
-import {
-  FlatList,
-  ActivityIndicator,
-  RefreshControl,
-  SafeAreaView,
-  View,
-  BackHandler,
-  useState,
-  StyleSheet,
-} from "react-native";
+import { FlatList, View, StyleSheet } from "react-native";
 import WavelengthCell from "./WavelengthCell";
 import { useTheme } from "@react-navigation/native";
-import { KeyboardAwareFlatList } from "react-native-keyboard-aware-scroll-view";
 import * as CalibPt from "../../redux/reducers/calibration/calibration_point";
 
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
-  selectCalibrationPoints,
   modifyWavelength,
   removePoint,
-  addOption,
   beginPlace,
   cancelPlace,
   editPlacement,
-  setCalibrationPoints,
-  setPreset,
   placePoint,
 } from "../../redux/reducers/calibration/calibration";
 

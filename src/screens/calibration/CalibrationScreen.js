@@ -14,12 +14,7 @@ import {
 import { MAX_POINTS } from "../../redux/reducers/calibration/calibration_constants";
 import { Dimensions } from "react-native";
 
-const CHART_HEIGHT = 200;
-const CHART_MARGIN = 16;
 const CHART_INSET = 30;
-const TICK_HEIGHT = 40;
-const TICK_MARGIN = 4;
-const TICK_WIDTH = 60;
 
 export default function CalibrationScreen({ navigation }) {
   const calibrationPoints = useSelector(

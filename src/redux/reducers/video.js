@@ -1,7 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getLineData } from "./tfUtil";
-
-const convert = require("color-convert");
 
 export const SourceEnum = {
   STREAM: "SOURCE_STREAM",
@@ -10,7 +7,6 @@ export const SourceEnum = {
   MOBILE_STREAM: "SOURCE_MOBILE_STREAM",
 };
 
-let debug_horizontal_warning_count = 0;
 
 // Samples included in the moving average
 const PIXEL_LINE_HISTORY_DEPTH = 5;
@@ -18,49 +14,6 @@ const PIXEL_LINE_HISTORY_DEPTH = 5;
 // Look for absolute maximum, and don't do this in video. this should be raw input.
 const OVERSATURATION_CEILING = 98;
 const isNotOversaturated = (val) => val < OVERSATURATION_CEILING;
-
-/**
- * Function used to extract intensity from any given pixel
- * during reading an image from the box.
- *
- * Takes r,g,b from (0,255) and returns an intensity from 0-100.
- *
- * @param {number} r red value from 0 to 255
- * @param {number} g green value from 0 to 255
- * @param {number} b blue value from 0 to 255
- * @returns {number} intensity
- */
-const rgbToIntensity = (r, g, b) => {
-  // Take brightness to be "value" in HSV color space, 0-100.
-  const hsv = convert.rgb.hsv.raw(r, g, b);
-  // Indicies described: https://github.com/Qix-/color-convert/blob/HEAD/conversions.js
-  const value = hsv[2];
-  return value;
-};
-
-/**
- * Function to map a 2d reader box to a 1d reader line. Each
- * line perpendicular to the reader line (between the two dots)
- * and is represented by a 1d array of intensities (from rgbToIntensity).
- *
- * @param {array} intensities array of intensities from rgbToIntensity
- * @returns {number} single intensity value from the given horizontal.
- */
-const reduceHorizontal = (intensities) => {
-  // Return the maximum intensity, given this intensity is not exactly 100.
-  if (intensities.length == 0) return 0;
-  const noExtremes = intensities.filter((i) => i < 100);
-  if (noExtremes.length == 0) {
-    debug_horizontal_warning_count += 1;
-    return intensities[0];
-  } else if (debug_horizontal_warning_count > 0) {
-    console.log(
-      `Issue: All of a horizontal were extreme values (intensity of 100). Happened for ${debug_horizontal_warning_count} frames.`
-    );
-    debug_horizontal_warning_count = 0;
-  }
-  return Math.max(...noExtremes);
-};
 
 /**
  * readerBoxData:
@@ -119,7 +72,7 @@ export const videoSlice = createSlice({
       // Done because going to data upload makes image blank.
       state.uploadedImage = action.payload.image;
     },
-    updateLineHistory: (state, action) => {
+    updateFeed: (state, action) => {
       const newLine = action.payload.value;
       let lineHist = state.pixelLineHistory;
       /**
@@ -144,13 +97,6 @@ export const videoSlice = createSlice({
        */
       state.isOversaturated = !newLine.every(isNotOversaturated);
     },
-    tfUpdateFrame: (state, action) => {
-      const imgTensor = action.payload.tensor;
-      const readerBox = state.readerBoxData;
-
-      const newLine = await getLineData(imgTensor, readerBox);
-
-    },
     debugSetPreviewImage: (state, action) => {
       state.previewImage = action.payload.value;
     },
@@ -163,7 +109,6 @@ export const {
   setSelectedSource,
   setUploadedImage,
   updateReaderWidth,
-  tfUpdateFrame,
   debugSetPreviewImage,
 } = videoSlice.actions;
 

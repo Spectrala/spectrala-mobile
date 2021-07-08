@@ -1,8 +1,6 @@
 import * as Font from "expo-font";
-import * as SplashScreen from "expo-splash-screen";
 import * as tf from "@tensorflow/tfjs";
-import React, { useEffect, useState } from "react";
-import { Camera } from "expo-camera";
+import { useEffect, useState } from "react";
 
 /**
  * Initializes asynchronous app elements
