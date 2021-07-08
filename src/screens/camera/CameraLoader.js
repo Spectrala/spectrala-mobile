@@ -28,7 +28,7 @@ const getTextureDimensions = (scale) => {
   }
 };
 
-const SCALE = 1;
+const SCALE = 0.1;
 
 export const fullDims = getTextureDimensions(1);
 const scaledDims = getTextureDimensions(SCALE);
@@ -96,10 +96,6 @@ export default function CameraLoader({ visibility }) {
     )
   );
 }
-
-CameraLoader.propTypes = {
-  TensorCamera: PropTypes.any.isRequired,
-};
 
 const styles = StyleSheet.create({
   camera: {
