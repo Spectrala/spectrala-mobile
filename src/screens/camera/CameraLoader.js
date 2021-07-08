@@ -26,7 +26,7 @@ const getTextureDimensions = (scale) => {
   }
 };
 
-const SCALE = 0.1;
+const SCALE = 0.5;
 
 export const fullDims = getTextureDimensions(1);
 const scaledDims = getTextureDimensions(SCALE);
@@ -56,7 +56,8 @@ export default function CameraLoader({ visibility, TensorCamera }) {
     requestCameraPermission();
   }, []);
 
-  const lineDataThunk = async (imgTensor) => {
+  const updateLineData = async (imgTensor) => {
+    if (!imgTensor) return;
     const state = store.store.getState();
     const readerBox = state.video.readerBoxData;
     const nextLine = await getLineData(imgTensor, readerBox);
@@ -67,8 +68,7 @@ export default function CameraLoader({ visibility, TensorCamera }) {
     const loop = async () => {
       // Call when starting a session with tensors to prevent leaks
       tf.engine().startScope();
-      // dispatch(tfUpdateFrame({ tensor: images.next().value }));
-      lineDataThunk(images.next().value);
+      updateLineData(images.next().value);
       requestAnimationFrame(loop);
     };
     loop();
