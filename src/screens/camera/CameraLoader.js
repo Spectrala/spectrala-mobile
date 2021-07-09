@@ -81,16 +81,15 @@ export default function CameraLoader({ collectsFrames }) {
     }
   };
 
-  const loop = (images) => {
-    // Call when starting a session with tensors to prevent leaks
-    tf.engine().startScope();
-    updateLineData(images.next().value);
-    const id = requestAnimationFrame(() => loop(images));
-    unsubscribeTensorCamera = () => cancelAnimationFrame(id);
-  };
-
   const handleCameraStream = (images, updatePreview, gl) => {
-    loop(images);
+    const loop = () => {
+      // Call when starting a session with tensors to prevent leaks
+      tf.engine().startScope();
+      updateLineData(images.next().value);
+      const id = requestAnimationFrame(loop);
+      unsubscribeTensorCamera = () => cancelAnimationFrame(id);
+    };
+    loop();
   };
 
   return (
