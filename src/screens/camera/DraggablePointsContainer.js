@@ -50,7 +50,6 @@ function DraggablePointsContainer({ width }) {
     let x2 = new Victor(p2.x * viewDims.width, p2.y * viewDims.height);
     const l = x2.subtract(x1);
     const theta = l.horizontalAngleDeg();
-    const length = l.magnitude();
 
     // Four corners of rectangle with extremes (0, -width/2) and (length, width/2)
     const yRange = [-width / 2, width / 2];
@@ -67,16 +66,6 @@ function DraggablePointsContainer({ width }) {
       return { x: corner.x / viewDims.width, y: corner.y / viewDims.height };
     });
 
-    // Follow same steps as here: https://github.com/leimao/Rotated-Rectangle-Crop-OpenCV
-    // These constants for secondCropBox compute the bounds of the
-    // rectangle for the(Crop the "rotated rectangle") step
-    const degreesToRadians = Math.PI / 180;
-    const scaleFactor = 0.5 * Math.abs(Math.sin(2 * degreesToRadians * theta));
-    const horizontalMargin = scaleFactor * length;
-    const verticalMargin = scaleFactor * width;
-    const boxWidth = width + 2 * horizontalMargin;
-    const boxHeight = length + 2 * verticalMargin;
-
     dispatch(
       updateReaderBoxData({
         value: {
@@ -88,12 +77,6 @@ function DraggablePointsContainer({ width }) {
           },
           corners: derivedCorners,
           angle: theta,
-          secondCropBox: {
-            originXPct: horizontalMargin / boxWidth,
-            originYPct: verticalMargin / boxHeight,
-            widthPct: width / boxWidth,
-            heightPct: length / boxHeight,
-          },
         },
       })
     );

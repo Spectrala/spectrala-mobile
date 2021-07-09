@@ -28,7 +28,6 @@ export default function loadAssets() {
   const loadTensorflow = async () => {
     await tf.ready();
     setTfReady(true);
-    // console.log("TF IS READY");
   };
 
   // Load any resources or data that we need prior to rendering the app

@@ -7,7 +7,6 @@ export const SourceEnum = {
   MOBILE_STREAM: "SOURCE_MOBILE_STREAM",
 };
 
-
 // Samples included in the moving average
 const PIXEL_LINE_HISTORY_DEPTH = 5;
 
@@ -38,16 +37,15 @@ export const videoSlice = createSlice({
     pixelLineHistory: [],
     isOversaturated: false,
     readerBoxData: {
-      lineCoords: {
-        lowX: 0.2,
-        lowY: 0.5,
-        highX: 0.8,
-        highY: 0.5,
-      },
+      lineCoords: { lowX: 0.2, lowY: 0.5, highX: 0.8, highY: 0.5 },
       width: 100,
-      corners: undefined,
-      angle: undefined,
-      secondCropBox: undefined,
+      corners: [
+        { x: 0.20000000000000004, y: 0.4320652173913043 },
+        { x: 0.20000000000000004, y: 0.5679347826086957 },
+        { x: 0.8000000000000002, y: 0.4320652173913043 },
+        { x: 0.8000000000000002, y: 0.5679347826086957 },
+      ],
+      angle: 0,
     },
     selectedSource: SourceEnum.WEBCAM,
     uploadedImage: undefined,
@@ -57,6 +55,7 @@ export const videoSlice = createSlice({
   reducers: {
     updateReaderBoxData: (state, action) => {
       state.readerBoxData = { ...state.readerBoxData, ...action.payload.value };
+      console.log(JSON.stringify(state.readerBoxData));
     },
     updateReaderWidth: (state, action) => {
       state.readerBoxData = {
@@ -152,9 +151,6 @@ export const selectAngle = (state) => state.video.readerBoxData.angle;
 export const selectReaderWidth = (state) => state.video.readerBoxData.width;
 
 export const selectReaderLength = (state) => state.video.readerBoxData.length;
-
-export const selectSecondCropBox = (state) =>
-  state.video.readerBoxData.secondCropBox;
 
 export const selectChartData = (state) => {
   const intensities = selectIntensities(state);

@@ -34,7 +34,6 @@ function WavelengthCell(props) {
     const description = CalibPt.getPlacementStatusDescription(
       props.calibrationPoint
     );
-    // console.log(`Description: ${JSON.stringify(description)}`);
 
     if (description["isBeingPlaced"]) {
       return (

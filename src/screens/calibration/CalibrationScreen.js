@@ -11,9 +11,9 @@ import {
   addOption,
   setCalibrationPoints,
 } from "../../redux/reducers/calibration/calibration";
-import { setCapturesFrames } from "../../redux/reducers/video";
 import { MAX_POINTS } from "../../redux/reducers/calibration/calibration_constants";
 import { Dimensions } from "react-native";
+import CameraLoader from "../camera/CameraLoader";
 
 const CHART_INSET = 30;
 
@@ -59,30 +59,39 @@ export default function CalibrationScreen({ navigation }) {
     Math.max(Math.min(1, (chartX - CHART_INSET) / calibrationWidth), 0);
 
   return (
-    <View style={styles.container}>
-      <Card style={styles.chart}>
-        <CalibrationChart />
-      </Card>
-
-      <View style={styles.picker}>
-        <CalibrationModePicker open={open} setOpen={setOpen} />
+    <>
+      <View style={styles.container}>
+        <CameraLoader collectsFrames />
       </View>
+      <View style={styles.container}>
+        <Card style={styles.chart}>
+          <CalibrationChart />
+        </Card>
 
-      <View>
-        <WavelengthList
-          calibrationPoints={calibrationPoints}
-          setWavelengths={setCalibrationPoints}
-          inputEnabled={!open}
-          calibXFromChartX={calibXFromChartX}
-        />
+        <View style={styles.picker}>
+          <CalibrationModePicker open={open} setOpen={setOpen} />
+        </View>
+
+        <View>
+          <WavelengthList
+            calibrationPoints={calibrationPoints}
+            setWavelengths={setCalibrationPoints}
+            inputEnabled={!open}
+            calibXFromChartX={calibXFromChartX}
+          />
+        </View>
+        {addNewPointButton()}
       </View>
-      {addNewPointButton()}
-    </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    left: 0,
     height: "100%",
   },
   chart: {
