@@ -1,6 +1,9 @@
 import { Ionicons } from "@expo/vector-icons";
 import { createStackNavigator } from "@react-navigation/stack";
 import * as React from "react";
+import CameraScreen from "../screens/camera/CameraScreen";
+import CalibrationScreen from "../screens/calibration/CalibrationScreen";
+import CaptureScreen from "../screens/capture/CaptureScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import HomeScreen from "../screens/home/HomeScreen";
 import {
@@ -10,26 +13,7 @@ import {
   HiddenItem,
 } from "react-navigation-header-buttons";
 import { Colors } from "react-native-ui-lib";
-import { CAMERA_VISIBILITY_OPTIONS } from "../screens/camera/CameraLoader";
-import SessionScreen from "../screens/SessionScreen";
 
-export const SESSION_SCREENS = {
-  camera: {
-    name: "camera",
-    header: "Setup (1/2)",
-    cameraVisibility: CAMERA_VISIBILITY_OPTIONS.full,
-  },
-  calibration: {
-    name: "calibration",
-    header: "Setup (2/2)",
-    cameraVisibility: CAMERA_VISIBILITY_OPTIONS.none,
-  },
-  capture: {
-    name: "capture",
-    header: "Capture",
-    cameraVisibility: CAMERA_VISIBILITY_OPTIONS.none,
-  },
-};
 
 const NextPageButton = ({ onPress }) => <Item title="Next" onPress={onPress} />;
 
@@ -99,12 +83,9 @@ export default function HomeNavigator({ navigation }) {
       />
       <HomeStack.Screen
         name="CameraScreen"
-        component={SessionScreen}
-        initialParams={{
-          screenOptions: SESSION_SCREENS.camera,
-        }}
+        component={CameraScreen}
         options={{
-          title: SESSION_SCREENS.camera.header,
+          title: "Setup Box",
           headerStyle: {
             backgroundColor: Colors.background,
           },
@@ -120,12 +101,9 @@ export default function HomeNavigator({ navigation }) {
       />
       <HomeStack.Screen
         name="CalibrationScreen"
-        component={SessionScreen}
-        initialParams={{
-          screenOptions: SESSION_SCREENS.calibration,
-        }}
+        component={CalibrationScreen}
         options={{
-          title: SESSION_SCREENS.calibration.header,
+          title: "Setup Calibration",
           headerStyle: {
             backgroundColor: Colors.background,
           },
@@ -141,12 +119,9 @@ export default function HomeNavigator({ navigation }) {
       />
       <HomeStack.Screen
         name="CaptureScreen"
-        component={SessionScreen}
-        initialParams={{
-          screenOptions: SESSION_SCREENS.capture,
-        }}
+        component={CaptureScreen}
         options={{
-          title: SESSION_SCREENS.capture.header,
+          title: "Capture",
           headerStyle: {
             backgroundColor: Colors.background,
           },

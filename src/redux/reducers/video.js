@@ -53,7 +53,6 @@ export const videoSlice = createSlice({
     uploadedImage: undefined,
     selectedWebcam: undefined,
     previewImage: undefined,
-    collectsFrames: false,
   },
   reducers: {
     updateReaderBoxData: (state, action) => {
@@ -101,10 +100,6 @@ export const videoSlice = createSlice({
     setPreviewImage: (state, action) => {
       state.previewImage = action.payload.value;
     },
-    setCollectsFrames: (state, action) => {
-      state.collectsFrames = action.payload.value;
-    }
-    
   },
 });
 
@@ -112,7 +107,6 @@ export const {
   updateFeed,
   updateReaderBoxData,
   setSelectedSource,
-  setCollectsFrames,
   setUploadedImage,
   updateReaderWidth,
   setPreviewImage,

@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, useEffect} from "react";
+import React, { useRef, useCallback, useEffect } from "react";
 import { StyleSheet } from "react-native";
 import { Text, View, Slider, Colors } from "react-native-ui-lib";
 import DraggablePointsContainer from "./DraggablePointsContainer";
@@ -6,18 +6,14 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   selectReaderWidth,
   updateReaderWidth,
-  setCollectsFrames,
 } from "../../redux/reducers/video";
 import BottomHelper from "../../components/BottomHelper";
+import CameraLoader from "./CameraLoader";
 
 export default function CameraScreen({ navigation }) {
   const readerWidth = useSelector(selectReaderWidth);
   const initialWidth = useRef(readerWidth).current;
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(setCollectsFrames({ value: false }));
-  }, []);
 
   const helperHeader = useCallback(
     () => (
@@ -39,26 +35,35 @@ export default function CameraScreen({ navigation }) {
   );
 
   return (
-    <View style={styles.container}>
-      <DraggablePointsContainer width={readerWidth} />
-      <BottomHelper
-        utilityComponents={helperHeader}
-        bodyText={
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur in\
+    <>
+      <View style={styles.container}>
+        <CameraLoader capturesFrames={false} />
+      </View>
+      <View style={styles.container}>
+        <DraggablePointsContainer width={readerWidth} />
+        <BottomHelper
+          utilityComponents={helperHeader}
+          bodyText={
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur in\
 nisi maximus, vehicula nibh pulvinar, pulvinar massa. Maecenas quis\
 lectus elit. Aliquam tempus felis rutrum ex blandit, eu laoreet sapien\
 tincidunt. Nam convallis, velit at rutrum rutrum, mauris nunc\
 vestibulum velit, et mollis sapien elit eu nibh. Sed eget nulla orci.\
 Etiam a lorem rhoncus, tempus erat nec, lobortis odio. Maecenas semper\
 sagittis auctor."
-        }
-      />
-    </View>
+          }
+        />
+      </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
     flex: 1,
     height: "100%",
   },

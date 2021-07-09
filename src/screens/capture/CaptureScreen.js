@@ -15,7 +15,6 @@ import {
   selectHasReference,
   recordSpectrum,
 } from "../../redux/reducers/spectrum";
-import { setCollectsFrames } from "../../redux/reducers/video";
 
 const CHART_HEIGHT = 200;
 const CHART_MARGIN = 16;
@@ -30,9 +29,6 @@ export default function CaptureScreen({ navigation }) {
 
   const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   dispatch(setCollectsFrames({ value: true }));
-  // }, []);
 
   const spectrumViewOptions = [
     SPECTRUM_OPTIONS.INTENSITY,

@@ -1,12 +1,17 @@
 import * as tf from "@tensorflow/tfjs";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { StyleSheet } from "react-native";
-import { useDispatch } from "react-redux";
-import { updateFeed } from "../../redux/reducers/video";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  updateFeed,
+  selectAngle,
+  selectReaderWidth,
+} from "../../redux/reducers/video";
 import { getLineData } from "../../redux/reducers/tfUtil";
 import { store } from "../../redux/store/store";
 import { Camera } from "expo-camera";
 import { cameraWithTensors } from "@tensorflow/tfjs-react-native";
+import { useFocusEffect, useIsFocused } from "@react-navigation/native";
 
 export const CAMERA_VISIBILITY_OPTIONS = {
   full: "full",
@@ -32,7 +37,6 @@ const SCALE = 0.1;
 export const fullDims = getTextureDimensions(1);
 const scaledDims = getTextureDimensions(SCALE);
 
-
 const TensorCamera = cameraWithTensors(Camera);
 
 /**
@@ -45,11 +49,9 @@ const TensorCamera = cameraWithTensors(Camera);
  * @returns camera view which feeds a stream to redux.
  */
 
-export default function CameraLoader({ visibility }) {
+export default function CameraLoader({ collectsFrames }) {
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const cameraType = Camera.Constants.Type.back;
-  const [mustCleanup, setMustCleanup] = useState(false);
-
   const dispatch = useDispatch();
 
   const requestCameraPermission = async () => {
@@ -57,17 +59,21 @@ export default function CameraLoader({ visibility }) {
     setHasCameraPermission(status === "granted");
   };
 
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        unsubscribeTensorCamera();
+      };
+    }, [])
+  );
+
   useEffect(() => {
     requestCameraPermission();
-    return () => {
-      setMustCleanup(true);
-    }
   }, []);
 
   const updateLineData = async (imgTensor) => {
     if (!imgTensor) return;
     const state = store.store.getState();
-    const collectsFrames = state.video.collectsFrames;
     if (collectsFrames) {
       const readerBox = state.video.readerBoxData;
       const nextLine = await getLineData(imgTensor, readerBox);
@@ -75,15 +81,16 @@ export default function CameraLoader({ visibility }) {
     }
   };
 
+  const loop = (images) => {
+    // Call when starting a session with tensors to prevent leaks
+    tf.engine().startScope();
+    updateLineData(images.next().value);
+    const id = requestAnimationFrame(() => loop(images));
+    unsubscribeTensorCamera = () => cancelAnimationFrame(id);
+  };
+
   const handleCameraStream = (images, updatePreview, gl) => {
-    const loop = async () => {
-      // Call when starting a session with tensors to prevent leaks
-      tf.engine().startScope();
-      console.log("start");
-      updateLineData(images.next().value);
-      requestAnimationFrame(loop);
-    };
-    mustCleanup || loop();
+    loop(images);
   };
 
   return (
