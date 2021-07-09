@@ -20,7 +20,7 @@ import {
   selectCorners,
 } from "../../redux/reducers/video";
 import { Colors, View } from "react-native-ui-lib";
-import { fullDims } from "./CameraLoader";
+import { fullDims } from "../../components/CameraLoader";
 
 const CIRCLE_RADIUS = 20;
 

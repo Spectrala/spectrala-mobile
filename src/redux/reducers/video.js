@@ -55,7 +55,6 @@ export const videoSlice = createSlice({
   reducers: {
     updateReaderBoxData: (state, action) => {
       state.readerBoxData = { ...state.readerBoxData, ...action.payload.value };
-      console.log(JSON.stringify(state.readerBoxData));
     },
     updateReaderWidth: (state, action) => {
       state.readerBoxData = {

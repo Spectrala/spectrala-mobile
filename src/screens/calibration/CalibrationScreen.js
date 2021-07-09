@@ -13,7 +13,7 @@ import {
 } from "../../redux/reducers/calibration/calibration";
 import { MAX_POINTS } from "../../redux/reducers/calibration/calibration_constants";
 import { Dimensions } from "react-native";
-import CameraLoader from "../camera/CameraLoader";
+import CameraLoader from "../../components/CameraLoader";
 
 const CHART_INSET = 30;
 

@@ -8,7 +8,7 @@ import {
   updateReaderWidth,
 } from "../../redux/reducers/video";
 import BottomHelper from "../../components/BottomHelper";
-import CameraLoader from "./CameraLoader";
+import CameraLoader from "../../components/CameraLoader";
 
 export default function CameraScreen({ navigation }) {
   const readerWidth = useSelector(selectReaderWidth);
