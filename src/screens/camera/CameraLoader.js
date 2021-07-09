@@ -1,19 +1,18 @@
 import * as tf from "@tensorflow/tfjs";
 import React, { useState, useEffect } from "react";
 import { StyleSheet } from "react-native";
-import PropTypes from "prop-types";
 import { useDispatch } from "react-redux";
 import { updateFeed } from "../../redux/reducers/video";
 import { getLineData } from "../../redux/reducers/tfUtil";
 import { store } from "../../redux/store/store";
 import { Camera } from "expo-camera";
 import { cameraWithTensors } from "@tensorflow/tfjs-react-native";
-export const TensorCamera = cameraWithTensors(Camera);
 
 export const CAMERA_VISIBILITY_OPTIONS = {
   full: "full",
   none: "none",
 };
+
 const getTextureDimensions = (scale) => {
   if (Platform.OS === "ios") {
     return {
@@ -33,6 +32,9 @@ const SCALE = 0.1;
 export const fullDims = getTextureDimensions(1);
 const scaledDims = getTextureDimensions(SCALE);
 
+
+const TensorCamera = cameraWithTensors(Camera);
+
 /**
  * Get image tensors from the camera using tfjs-react-native:
  * https://js.tensorflow.org/api_react_native/latest/#cameraWithTensors
@@ -46,6 +48,7 @@ const scaledDims = getTextureDimensions(SCALE);
 export default function CameraLoader({ visibility }) {
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const cameraType = Camera.Constants.Type.back;
+  const [mustCleanup, setMustCleanup] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -56,14 +59,20 @@ export default function CameraLoader({ visibility }) {
 
   useEffect(() => {
     requestCameraPermission();
+    return () => {
+      setMustCleanup(true);
+    }
   }, []);
 
   const updateLineData = async (imgTensor) => {
     if (!imgTensor) return;
     const state = store.store.getState();
-    const readerBox = state.video.readerBoxData;
-    const nextLine = await getLineData(imgTensor, readerBox);
-    dispatch(updateFeed({ value: nextLine }));
+    const collectsFrames = state.video.collectsFrames;
+    if (collectsFrames) {
+      const readerBox = state.video.readerBoxData;
+      const nextLine = await getLineData(imgTensor, readerBox);
+      dispatch(updateFeed({ value: nextLine }));
+    }
   };
 
   const handleCameraStream = (images, updatePreview, gl) => {
@@ -74,10 +83,8 @@ export default function CameraLoader({ visibility }) {
       updateLineData(images.next().value);
       requestAnimationFrame(loop);
     };
-    loop();
+    mustCleanup || loop();
   };
-
-  console.log("render");
 
   return (
     hasCameraPermission && (

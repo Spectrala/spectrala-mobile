@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet } from "react-native";
 import { View } from "react-native-ui-lib";
 import CaptureChart from "./CaptureChart";
@@ -15,7 +15,7 @@ import {
   selectHasReference,
   recordSpectrum,
 } from "../../redux/reducers/spectrum";
-
+import { setCollectsFrames } from "../../redux/reducers/video";
 
 const CHART_HEIGHT = 200;
 const CHART_MARGIN = 16;
@@ -28,9 +28,11 @@ export default function CaptureScreen({ navigation }) {
   const hasReference = useSelector(selectHasReference);
   const intensities = useSelector(selectIntensity);
 
-
   const dispatch = useDispatch();
-  
+
+  // useEffect(() => {
+  //   dispatch(setCollectsFrames({ value: true }));
+  // }, []);
 
   const spectrumViewOptions = [
     SPECTRUM_OPTIONS.INTENSITY,
@@ -78,7 +80,6 @@ export default function CaptureScreen({ navigation }) {
           ></TouchableOpacity>
         </View>
       </View>
-
     </>
   );
 }

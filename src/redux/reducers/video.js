@@ -53,6 +53,7 @@ export const videoSlice = createSlice({
     uploadedImage: undefined,
     selectedWebcam: undefined,
     previewImage: undefined,
+    collectsFrames: false,
   },
   reducers: {
     updateReaderBoxData: (state, action) => {
@@ -97,9 +98,13 @@ export const videoSlice = createSlice({
        */
       state.isOversaturated = !newLine.every(isNotOversaturated);
     },
-    debugSetPreviewImage: (state, action) => {
+    setPreviewImage: (state, action) => {
       state.previewImage = action.payload.value;
     },
+    setCollectsFrames: (state, action) => {
+      state.collectsFrames = action.payload.value;
+    }
+    
   },
 });
 
@@ -107,9 +112,10 @@ export const {
   updateFeed,
   updateReaderBoxData,
   setSelectedSource,
+  setCollectsFrames,
   setUploadedImage,
   updateReaderWidth,
-  debugSetPreviewImage,
+  setPreviewImage,
 } = videoSlice.actions;
 
 export const selectUploadedImage = (state) => state.video.uploadedImage;

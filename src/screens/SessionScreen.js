@@ -26,7 +26,9 @@ export default function SessionScreen({ route }) {
   return (
     <View style={styles.container}>
       <View style={styles.cameraContainer}>
-        <CameraLoader visibility={screenOptions.cameraVisibility} />
+        <CameraLoader
+          visibility={screenOptions.cameraVisibility}
+        />
       </View>
       <View style={styles.cameraContainer}>{getBody()}</View>
     </View>

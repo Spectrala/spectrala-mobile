@@ -1,4 +1,4 @@
-import React, { useRef, useCallback } from "react";
+import React, { useRef, useCallback, useEffect} from "react";
 import { StyleSheet } from "react-native";
 import { Text, View, Slider, Colors } from "react-native-ui-lib";
 import DraggablePointsContainer from "./DraggablePointsContainer";
@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   selectReaderWidth,
   updateReaderWidth,
+  setCollectsFrames,
 } from "../../redux/reducers/video";
 import BottomHelper from "../../components/BottomHelper";
 
@@ -13,6 +14,10 @@ export default function CameraScreen({ navigation }) {
   const readerWidth = useSelector(selectReaderWidth);
   const initialWidth = useRef(readerWidth).current;
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(setCollectsFrames({ value: false }));
+  }, []);
 
   const helperHeader = useCallback(
     () => (

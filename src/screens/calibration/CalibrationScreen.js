@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, StyleSheet } from "react-native";
 import { View, Card } from "react-native-ui-lib";
 import CalibrationChart from "./CalibrationChart";
@@ -11,6 +11,7 @@ import {
   addOption,
   setCalibrationPoints,
 } from "../../redux/reducers/calibration/calibration";
+import { setCapturesFrames } from "../../redux/reducers/video";
 import { MAX_POINTS } from "../../redux/reducers/calibration/calibration_constants";
 import { Dimensions } from "react-native";
 
@@ -22,6 +23,10 @@ export default function CalibrationScreen({ navigation }) {
     (a, b) => false // TODO: fix hack
   );
   const dispatch = useDispatch();
+
+  // useEffect(() => {
+  //   dispatch(setCapturesFrames({ value: true }));
+  // });
 
   const addNewPointButton = () => {
     if (calibrationPoints.length < MAX_POINTS) {
@@ -56,7 +61,7 @@ export default function CalibrationScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Card style={styles.chart}>
-        <CalibrationChart/>
+        <CalibrationChart />
       </Card>
 
       <View style={styles.picker}>

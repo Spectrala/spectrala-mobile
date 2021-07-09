@@ -120,7 +120,6 @@ function Tick({
     [viewDims, bounds]
   );
 
-  // console.log(targetIdx, bounds);
   return (
     <>
       <Animated.View
