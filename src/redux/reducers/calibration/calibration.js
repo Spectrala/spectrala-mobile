@@ -54,6 +54,7 @@ export const calibrationSlice = createSlice({
   name: "calibration",
   initialState: {
     calibrationPoints: initializeCalibrationPoints(defaultCalibration),
+    activePointPlacement: false,
   },
   reducers: {
     modifyWavelength: (state, action) => {
@@ -119,6 +120,10 @@ export const calibrationSlice = createSlice({
       const points = action.payload.value;
       state.calibrationPoints.value = addBulkCalibPt(points);
     },
+    setActivePointPlacement: (state, action) => {
+      const isActivePointPlacement = action.payload.value;
+      state.activePointPlacement = isActivePointPlacement;
+    },
   },
 });
 
@@ -134,6 +139,7 @@ export const {
   setPreset,
   setCalibrationPoints,
   setPlacement,
+  setActivePointPlacement,
 } = calibrationSlice.actions;
 
 export const selectCalibrationPoints = (state) => {
@@ -152,5 +158,8 @@ export const selectTooltipLabel = (state) => {
   });
   return pointBeingPlaced;
 };
+
+export const selectActivePointPlacement = (state) =>
+  state.calibration.activePointPlacement;
 
 export default calibrationSlice.reducer;

@@ -50,6 +50,8 @@ function CalibrationChart({ horizontalInset }) {
         data={data[0].data}
         yAccessor={({ item }) => item.y}
         xAccessor={({ item }) => item.x}
+        yMax={100}
+        yMin={0}
         contentInset={{
           top: 0,
           bottom: 0,

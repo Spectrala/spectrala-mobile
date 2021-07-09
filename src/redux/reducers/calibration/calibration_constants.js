@@ -18,9 +18,14 @@ export const calibrationPresets = [
     title: "Ch3A Lab Kit",
     value: [400, 530, 875, 940],
   },
+  {
+    id: "digikey",
+    title: "Spectrala",
+    value: [458, 530, 623],
+  },
 ];
 
-export const defaultCalibration = calibrationPresets[2];
+export const defaultCalibration = calibrationPresets[3];
 
 export const expandPreset = (preset) => {
   return {

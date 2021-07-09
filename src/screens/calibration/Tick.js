@@ -9,7 +9,10 @@ import PropTypes from "prop-types";
 import { StyleSheet, Animated, PanResponder, Pressable } from "react-native";
 import { useDispatch } from "react-redux";
 import { Text, View } from "react-native-ui-lib";
-import { setPlacement } from "../../redux/reducers/calibration/calibration";
+import {
+  setActivePointPlacement,
+  setPlacement,
+} from "../../redux/reducers/calibration/calibration";
 import { wavelengthToRGB } from "../../util/colorUtil";
 
 const TICK_WIDTH = 40;
@@ -38,10 +41,7 @@ function Tick({
     [calibrationPoints, targetIdx]
   );
 
-  const shadowColor = useMemo(
-    () => wavelengthToRGB(wavelength),
-    [wavelength]
-  );
+  const shadowColor = useMemo(() => wavelengthToRGB(wavelength), [wavelength]);
 
   const [localX, setLocalX] = useState(placement);
 
@@ -104,6 +104,7 @@ function Tick({
         onPanResponderGrant: () => {
           const dx = pan.x._value;
           pan.setOffset({ x: dx });
+          dispatch(setActivePointPlacement({ value: true }));
         },
         onPanResponderMove: (e, gesture) => {
           const currentX = getPlacementX(gesture.moveX);
@@ -121,6 +122,7 @@ function Tick({
         onPanResponderRelease: () => {
           pan.flattenOffset();
           dispatch(setPlacement({ placement: localX, targetIndex: targetIdx }));
+          dispatch(setActivePointPlacement({ value: false }));
         },
       }),
     [viewDims, bounds]

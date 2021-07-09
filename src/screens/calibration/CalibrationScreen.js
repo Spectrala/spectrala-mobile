@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import { Button, StyleSheet } from "react-native";
 import { View, Card } from "react-native-ui-lib";
 import CalibrationChart from "./CalibrationChart";
@@ -10,6 +10,7 @@ import {
   selectCalibrationPoints,
   addOption,
   setCalibrationPoints,
+  selectActivePointPlacement,
 } from "../../redux/reducers/calibration/calibration";
 import { MAX_POINTS } from "../../redux/reducers/calibration/calibration_constants";
 import { Dimensions } from "react-native";
@@ -22,6 +23,7 @@ export default function CalibrationScreen({ navigation }) {
     selectCalibrationPoints,
     (a, b) => false // TODO: fix hack
   );
+  const isActivelyPlacing = useSelector(selectActivePointPlacement);
   const dispatch = useDispatch();
 
   // useEffect(() => {
@@ -61,26 +63,13 @@ export default function CalibrationScreen({ navigation }) {
   return (
     <>
       <View style={styles.container}>
-        <CameraLoader collectsFrames />
+        <CameraLoader collectsFrames={!isActivelyPlacing} />
       </View>
+
       <View style={styles.container}>
         <Card style={styles.chart}>
           <CalibrationChart />
         </Card>
-
-        <View style={styles.picker}>
-          <CalibrationModePicker open={open} setOpen={setOpen} />
-        </View>
-
-        <View>
-          <WavelengthList
-            calibrationPoints={calibrationPoints}
-            setWavelengths={setCalibrationPoints}
-            inputEnabled={!open}
-            calibXFromChartX={calibXFromChartX}
-          />
-        </View>
-        {addNewPointButton()}
       </View>
     </>
   );

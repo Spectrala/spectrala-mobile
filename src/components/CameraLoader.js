@@ -26,13 +26,13 @@ const getTextureDimensions = (scale) => {
     };
   } else {
     return {
-      height: 1200 * scale,
-      width: 1600 * scale,
+      width: 1200 * scale,
+      height: 1600 * scale,
     };
   }
 };
 
-const SCALE = 0.1;
+const SCALE = 0.05;
 
 export const fullDims = getTextureDimensions(1);
 const scaledDims = getTextureDimensions(SCALE);
@@ -59,6 +59,12 @@ export default function CameraLoader({ collectsFrames }) {
     setHasCameraPermission(status === "granted");
   };
 
+  try {
+    collectsFrames || unsubscribeTensorCamera();
+  } catch (err) {
+    console.log(err);
+  }
+
   useFocusEffect(
     useCallback(() => {
       return () => {
@@ -69,7 +75,7 @@ export default function CameraLoader({ collectsFrames }) {
 
   useEffect(() => {
     requestCameraPermission();
-  }, []);
+  }, [collectsFrames]);
 
   const updateLineData = async (imgTensor) => {
     if (!imgTensor) return;
@@ -88,6 +94,7 @@ export default function CameraLoader({ collectsFrames }) {
       updateLineData(images.next().value);
       const id = requestAnimationFrame(loop);
       unsubscribeTensorCamera = () => cancelAnimationFrame(id);
+      resubscribeTensorCamera = () => requestAnimationFrame(loop);
     };
     loop();
   };
