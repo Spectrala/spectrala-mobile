@@ -12,6 +12,7 @@ import { store } from "../redux/store/store";
 import { Camera } from "expo-camera";
 import { cameraWithTensors } from "@tensorflow/tfjs-react-native";
 import { useFocusEffect, useIsFocused } from "@react-navigation/native";
+import { Button } from "react-native";
 
 export const CAMERA_VISIBILITY_OPTIONS = {
   full: "full",
@@ -59,6 +60,12 @@ export default function CameraLoader({ collectsFrames }) {
     setHasCameraPermission(status === "granted");
   };
 
+  // const unsubscribeTensorCamera = () => cancelAnimationFrame(rafID);
+
+  const unsubscribeTensorCamera = () => {
+    cancelAnimationFrame(rafID);
+  };
+
   try {
     collectsFrames || unsubscribeTensorCamera();
   } catch (err) {
@@ -83,7 +90,9 @@ export default function CameraLoader({ collectsFrames }) {
     if (collectsFrames) {
       const readerBox = state.video.readerBoxData;
       const nextLine = await getLineData(imgTensor, readerBox);
-      dispatch(updateFeed({ value: nextLine }));
+      if (nextLine && Math.max(...nextLine) > 0) {
+        nextLine && dispatch(updateFeed({ value: nextLine }));
+      }
     }
   };
 
@@ -91,18 +100,27 @@ export default function CameraLoader({ collectsFrames }) {
     const loop = () => {
       // Call when starting a session with tensors to prevent leaks
       tf.engine().startScope();
-      updateLineData(images.next().value);
-      const id = requestAnimationFrame(loop);
-      unsubscribeTensorCamera = () => cancelAnimationFrame(id);
-      resubscribeTensorCamera = () => requestAnimationFrame(loop);
+      const nextImg = images.next().value;
+      collectsFrames && nextImg && updateLineData(nextImg);
+      rafID = requestAnimationFrame(loop);
     };
     loop();
   };
 
-  return (
-    hasCameraPermission && (
+  /**
+   * TODO: Find a smoother way to pause live image manipulaiton 
+   * when adjusting the ticks. The pan-responder and image 
+   * manipulation are CPU-heavy; doing both simultaneously
+   * is not fluid. This setup forces TensorCamera to rerender when
+   * collectsFrames changes through an unstable key (hack), producing
+   * potentially unnecessary windows of no data upon mounting again. 
+   * The camera is black for a second before the images start loading.
+   */
+  const getTensorCameraComponent = useCallback(() => {
+    return (
       <TensorCamera
         style={styles.camera}
+        key={collectsFrames ? 0 : 1}
         type={cameraType}
         zoom={0}
         cameraTextureHeight={fullDims.height}
@@ -113,14 +131,17 @@ export default function CameraLoader({ collectsFrames }) {
         onReady={handleCameraStream}
         autorender={true}
       />
-    )
-  );
+    );
+  }, [collectsFrames]);
+
+  return hasCameraPermission && getTensorCameraComponent();
 }
 
 const styles = StyleSheet.create({
   camera: {
     width: "100%",
-    aspectRatio: scaledDims.width / scaledDims.height,
+    // aspectRatio: scaledDims.width / scaledDims.height,
+    height: 350,
   },
   image: {
     paddingHorizontal: 10,
