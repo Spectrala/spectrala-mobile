@@ -64,13 +64,13 @@ export default function CalibrationScreen({ navigation }) {
 
   return (
     <>
-      <View style={styles.container}>
+      <View style={{ ...styles.container, opacity: 0 }}>
         <CameraLoader collectsFrames={!isActivelyPlacing} />
       </View>
 
       <View style={styles.container}>
         <Card style={styles.previewImageCard}>
-          <Image style={ styles.previewImage} source={{ uri: previewImage }} />
+          <Image style={styles.previewImage} source={{ uri: previewImage }} />
         </Card>
 
         <Card style={styles.chart}>
@@ -96,13 +96,13 @@ const styles = StyleSheet.create({
   },
   previewImageCard: {
     width: "100%",
-    height: 300,
+    height: 100,
     marginBottom: 20,
   },
   previewImage: {
-    width: "100%",
-    height: 100,
+    flex: 1,
     marginBottom: 20,
+    resizeMode: "stretch",
   },
   title: {
     fontSize: 20,
