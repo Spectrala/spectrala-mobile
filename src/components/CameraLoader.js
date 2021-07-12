@@ -75,8 +75,7 @@ export default function CameraLoader({ collectsFrames }) {
 
   useFocusEffect(
     useCallback(() => {
-      console.log(`Camera key: ${cameraKey}`);
-      setCameraKey(cameraKey + 1);
+      setCameraKey(Math.floor(Math.random() * 10000));
       return () => {
         unsubscribeTensorCamera();
       };
@@ -107,10 +106,8 @@ export default function CameraLoader({ collectsFrames }) {
   };
 
   const handleCameraStream = (images, updatePreview, gl) => {
-    const randomNum = Math.random();
     const loop = () => {
       // Call when starting a session with tensors to prevent leaks
-      console.log(randomNum);
       tf.engine().startScope();
       const state = store.store.getState();
       // console.log(state.calibration.activePointPlacement);
