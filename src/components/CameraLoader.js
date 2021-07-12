@@ -40,6 +40,8 @@ const scaledDims = getTextureDimensions(SCALE);
 
 const TensorCamera = cameraWithTensors(Camera);
 
+let rafID = null;
+
 /**
  * Get image tensors from the camera using tfjs-react-native:
  * https://js.tensorflow.org/api_react_native/latest/#cameraWithTensors
@@ -59,20 +61,22 @@ export default function CameraLoader({ collectsFrames }) {
     setHasCameraPermission(status === "granted");
   };
 
-  // const unsubscribeTensorCamera = () => cancelAnimationFrame(rafID);
+  const [cameraKey, setCameraKey] = useState(0);
 
   const unsubscribeTensorCamera = () => {
     cancelAnimationFrame(rafID);
   };
 
-  try {
-    collectsFrames || unsubscribeTensorCamera();
-  } catch (err) {
-    console.log(err);
-  }
+  // try {
+  //   collectsFrames || unsubscribeTensorCamera();
+  // } catch (err) {
+  //   console.log(err);
+  // }
 
   useFocusEffect(
     useCallback(() => {
+      console.log(`Camera key: ${cameraKey}`);
+      setCameraKey(cameraKey + 1);
       return () => {
         unsubscribeTensorCamera();
       };
@@ -83,9 +87,13 @@ export default function CameraLoader({ collectsFrames }) {
     requestCameraPermission();
   }, [collectsFrames]);
 
-  const updateLineData = async (imgTensor) => {
+  // useEffect(() => {
+  //   setCameraKey(cameraKey + 1);
+  //   console.log(`Camera key: ${cameraKey}`);
+  // }, []);
+
+  const updateLineData = async (imgTensor, state) => {
     if (!imgTensor) return;
-    const state = store.store.getState();
     if (collectsFrames) {
       const readerBox = state.video.readerBoxData;
       const { intensities, previewUri } = await getLineData(
@@ -99,11 +107,17 @@ export default function CameraLoader({ collectsFrames }) {
   };
 
   const handleCameraStream = (images, updatePreview, gl) => {
+    const randomNum = Math.random();
     const loop = () => {
       // Call when starting a session with tensors to prevent leaks
+      console.log(randomNum);
       tf.engine().startScope();
-      const nextImg = images.next().value;
-      collectsFrames && nextImg && updateLineData(nextImg);
+      const state = store.store.getState();
+      // console.log(state.calibration.activePointPlacement);
+      if (!state.calibration.activePointPlacement) {
+        const nextImg = images.next().value;
+        collectsFrames && nextImg && updateLineData(nextImg, state);
+      }
       rafID = requestAnimationFrame(loop);
     };
     loop();
@@ -118,11 +132,11 @@ export default function CameraLoader({ collectsFrames }) {
    * potentially unnecessary windows of no data upon mounting again.
    * The camera is black for a second before the images start loading.
    */
-  const getTensorCameraComponent = useCallback(() => {
+  const getTensorCameraComponent = () => {
     return (
       <TensorCamera
         style={styles.camera}
-        key={collectsFrames ? 0 : 1}
+        key={cameraKey}
         type={cameraType}
         zoom={0}
         cameraTextureHeight={fullDims.height}
@@ -134,7 +148,7 @@ export default function CameraLoader({ collectsFrames }) {
         autorender={true}
       />
     );
-  }, [collectsFrames]);
+  };
 
   return hasCameraPermission && getTensorCameraComponent();
 }
