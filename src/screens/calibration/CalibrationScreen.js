@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { Button, StyleSheet } from "react-native";
+import { Button, StyleSheet, Image } from "react-native";
 import { View, Card } from "react-native-ui-lib";
 import CalibrationChart from "./CalibrationChart";
 import CalibrationModePicker from "./CalibrationModePicker";
@@ -12,6 +12,7 @@ import {
   setCalibrationPoints,
   selectActivePointPlacement,
 } from "../../redux/reducers/calibration/calibration";
+import { selectPreviewImg } from "../../redux/reducers/video";
 import { MAX_POINTS } from "../../redux/reducers/calibration/calibration_constants";
 import { Dimensions } from "react-native";
 import CameraLoader from "../../components/CameraLoader";
@@ -23,6 +24,7 @@ export default function CalibrationScreen({ navigation }) {
     selectCalibrationPoints,
     (a, b) => false // TODO: fix hack
   );
+  const previewImage = useSelector(selectPreviewImg);
   const isActivelyPlacing = useSelector(selectActivePointPlacement);
   const dispatch = useDispatch();
 
@@ -67,6 +69,10 @@ export default function CalibrationScreen({ navigation }) {
       </View>
 
       <View style={styles.container}>
+        <Card style={styles.previewImageCard}>
+          <Image style={ styles.previewImage} source={{ uri: previewImage }} />
+        </Card>
+
         <Card style={styles.chart}>
           <CalibrationChart />
         </Card>
@@ -86,6 +92,16 @@ const styles = StyleSheet.create({
   chart: {
     width: "100%",
     height: 300,
+    marginBottom: 20,
+  },
+  previewImageCard: {
+    width: "100%",
+    height: 300,
+    marginBottom: 20,
+  },
+  previewImage: {
+    width: "100%",
+    height: 100,
     marginBottom: 20,
   },
   title: {

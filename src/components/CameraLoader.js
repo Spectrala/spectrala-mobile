@@ -33,7 +33,7 @@ const getTextureDimensions = (scale) => {
   }
 };
 
-const SCALE = 0.05;
+const SCALE = 0.1;
 
 export const fullDims = getTextureDimensions(1);
 const scaledDims = getTextureDimensions(SCALE);
@@ -49,7 +49,6 @@ const TensorCamera = cameraWithTensors(Camera);
  *
  * @returns camera view which feeds a stream to redux.
  */
-
 export default function CameraLoader({ collectsFrames }) {
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const cameraType = Camera.Constants.Type.back;
@@ -89,9 +88,12 @@ export default function CameraLoader({ collectsFrames }) {
     const state = store.store.getState();
     if (collectsFrames) {
       const readerBox = state.video.readerBoxData;
-      const nextLine = await getLineData(imgTensor, readerBox);
-      if (nextLine && Math.max(...nextLine) > 0) {
-        nextLine && dispatch(updateFeed({ value: nextLine }));
+      const { intensities, previewUri } = await getLineData(
+        imgTensor,
+        readerBox
+      );
+      if (intensities && Math.max(...intensities) > 0) {
+        dispatch(updateFeed({ intensities, previewUri }));
       }
     }
   };
@@ -108,12 +110,12 @@ export default function CameraLoader({ collectsFrames }) {
   };
 
   /**
-   * TODO: Find a smoother way to pause live image manipulaiton 
-   * when adjusting the ticks. The pan-responder and image 
+   * TODO: Find a smoother way to pause live image manipulaiton
+   * when adjusting the ticks. The pan-responder and image
    * manipulation are CPU-heavy; doing both simultaneously
    * is not fluid. This setup forces TensorCamera to rerender when
    * collectsFrames changes through an unstable key (hack), producing
-   * potentially unnecessary windows of no data upon mounting again. 
+   * potentially unnecessary windows of no data upon mounting again.
    * The camera is black for a second before the images start loading.
    */
   const getTensorCameraComponent = useCallback(() => {
@@ -140,8 +142,7 @@ export default function CameraLoader({ collectsFrames }) {
 const styles = StyleSheet.create({
   camera: {
     width: "100%",
-    // aspectRatio: scaledDims.width / scaledDims.height,
-    height: 350,
+    aspectRatio: scaledDims.width / scaledDims.height,
   },
   image: {
     paddingHorizontal: 10,

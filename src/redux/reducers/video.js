@@ -71,7 +71,9 @@ export const videoSlice = createSlice({
       state.uploadedImage = action.payload.image;
     },
     updateFeed: (state, action) => {
-      const newLine = action.payload.value;
+      const previewImage = action.payload.previewUri;
+      state.previewImage = previewImage;
+      const newLine = action.payload.intensities;
       let lineHist = state.pixelLineHistory;
       /**
        * This maintains a history of a certain length
