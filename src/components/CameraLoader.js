@@ -67,12 +67,6 @@ export default function CameraLoader({ collectsFrames }) {
     cancelAnimationFrame(rafID);
   };
 
-  // try {
-  //   collectsFrames || unsubscribeTensorCamera();
-  // } catch (err) {
-  //   console.log(err);
-  // }
-
   useFocusEffect(
     useCallback(() => {
       setCameraKey(Math.floor(Math.random() * 10000));
@@ -116,15 +110,6 @@ export default function CameraLoader({ collectsFrames }) {
     loop();
   };
 
-  /**
-   * TODO: Find a smoother way to pause live image manipulaiton
-   * when adjusting the ticks. The pan-responder and image
-   * manipulation are CPU-heavy; doing both simultaneously
-   * is not fluid. This setup forces TensorCamera to rerender when
-   * collectsFrames changes through an unstable key (hack), producing
-   * potentially unnecessary windows of no data upon mounting again.
-   * The camera is black for a second before the images start loading.
-   */
   const getTensorCameraComponent = () => {
     return (
       <TensorCamera
