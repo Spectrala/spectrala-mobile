@@ -86,10 +86,6 @@ export default function CameraLoader({ collectsFrames }) {
     requestCameraPermission();
   }, [collectsFrames]);
 
-  // useEffect(() => {
-  //   setCameraKey(cameraKey + 1);
-  //   console.log(`Camera key: ${cameraKey}`);
-  // }, []);
 
   const updateLineData = async (imgTensor, state) => {
     if (!imgTensor) return;

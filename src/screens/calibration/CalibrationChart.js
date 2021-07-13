@@ -17,8 +17,6 @@ function CalibrationChart({ horizontalInset }) {
   const calibrationPoints = useSelector(selectCalibrationPoints);
   const [tickViewDims, setTickDims] = useState(undefined);
 
-  const HORIZONTAL_INSET = 20;
-
   if (!data) {
     return <Text>Loading...</Text>;
   }
@@ -37,7 +35,7 @@ function CalibrationChart({ horizontalInset }) {
             console.log(idx);
           }}
           viewDims={tickViewDims}
-          horizontalInset={ HORIZONTAL_INSET}
+          horizontalInset={ horizontalInset}
         />
       );
     });
@@ -55,8 +53,8 @@ function CalibrationChart({ horizontalInset }) {
         contentInset={{
           top: 0,
           bottom: 0,
-          left: HORIZONTAL_INSET,
-          right: HORIZONTAL_INSET,
+          left: horizontalInset,
+          right: horizontalInset,
         }}
         curve={shape.curveBasis}
         svg={{

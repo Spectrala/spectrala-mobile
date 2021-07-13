@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Button, StyleSheet, Image } from "react-native";
 import { View, Card } from "react-native-ui-lib";
 import CalibrationChart from "./CalibrationChart";
@@ -17,7 +17,7 @@ import { MAX_POINTS } from "../../redux/reducers/calibration/calibration_constan
 import { Dimensions } from "react-native";
 import CameraLoader from "../../components/CameraLoader";
 
-const CHART_INSET = 30;
+const CHART_INSET = 60;
 
 export default function CalibrationScreen({ navigation }) {
   const calibrationPoints = useSelector(
@@ -74,7 +74,7 @@ export default function CalibrationScreen({ navigation }) {
         </Card>
 
         <Card style={styles.chart}>
-          <CalibrationChart />
+          <CalibrationChart horizontalInset={ CHART_INSET}/>
         </Card>
       </View>
     </>
@@ -102,6 +102,7 @@ const styles = StyleSheet.create({
   previewImage: {
     flex: 1,
     marginBottom: 20,
+    marginHorizontal: CHART_INSET,
     resizeMode: "stretch",
   },
   title: {

@@ -19,7 +19,7 @@ const TICK_WIDTH = 40;
 const VERTICAL_SLOP = 20;
 
 function Tick({
-  targetIdx,
+  targetIdx: targetIndex,
   calibrationPoints,
   yPosition,
   isBottom,
@@ -32,13 +32,13 @@ function Tick({
   const dispatch = useDispatch();
 
   const placement = useMemo(
-    () => calibrationPoints[targetIdx].placement,
-    [calibrationPoints, targetIdx]
+    () => calibrationPoints[targetIndex].placement,
+    [calibrationPoints, targetIndex]
   );
 
   const wavelength = useMemo(
-    () => calibrationPoints[targetIdx].wavelength,
-    [calibrationPoints, targetIdx]
+    () => calibrationPoints[targetIndex].wavelength,
+    [calibrationPoints, targetIndex]
   );
 
   const shadowColor = useMemo(() => wavelengthToRGB(wavelength), [wavelength]);
@@ -48,26 +48,29 @@ function Tick({
   // Make sure the lines from the bottom ones don't cross the top ones
   const zPosition = isBottom ? 10 : 20;
 
-  const getScreenX = (placementX) => {
-    if (!viewDims) return 0;
+  const screenXFrom = (placementX) => {
+    if (!viewDims) return null;
     const deadHorizontalSpace = 2 * horizontalInset;
     const freeWidth = viewDims.width - deadHorizontalSpace;
-    return placementX * freeWidth;
+    return placementX * freeWidth + horizontalInset;
   };
 
-  const getPlacementX = (screenX) => {
-    if (!viewDims) return 0;
-    const deadHorizontalSpace = 2 * horizontalInset;
-    const freeWidth = viewDims.width - deadHorizontalSpace;
-    return screenX / freeWidth;
-  };
+  const placementXFrom = useCallback(
+    (screenX) => {
+      if (!viewDims) return null;
+      const deadHorizontalSpace = 2 * horizontalInset;
+      const freeWidth = viewDims.width - deadHorizontalSpace;
+      return screenX / freeWidth;
+    },
+    [viewDims, localX]
+  );
 
-  const getLeft = useCallback(() => getScreenX(localX), [viewDims, localX]);
+  const getLeft = () => screenXFrom(localX);
 
   const getSlop = useCallback(() => {
-    const screenMin = getScreenX(bounds.min);
+    const screenMin = screenXFrom(bounds.min);
     const screenPos = getLeft();
-    const screenMax = getScreenX(bounds.max);
+    const screenMax = screenXFrom(bounds.max);
     return {
       left: (screenPos - screenMin) / 2,
       right: (screenMax - screenPos) / 2,
@@ -78,23 +81,31 @@ function Tick({
 
   useEffect(() => {
     let _bounds = { min: undefined, max: undefined };
-    if (targetIdx === 0) {
+    if (targetIndex === 0) {
       _bounds.min = 0;
     } else {
-      _bounds.min = calibrationPoints[targetIdx - 1].placement;
+      _bounds.min = calibrationPoints[targetIndex - 1].placement;
     }
-    if (targetIdx === calibrationPoints.length - 1) {
+    if (targetIndex === calibrationPoints.length - 1) {
       _bounds.max = 1;
     } else {
-      _bounds.max = calibrationPoints[targetIdx + 1].placement;
+      _bounds.max = calibrationPoints[targetIndex + 1].placement;
     }
     setBounds(_bounds);
   }, [calibrationPoints, viewDims]);
 
   const initial = useRef(placement).current;
 
+  const placementXFromDx = (dx) => {
+    if (!viewDims) return null;
+    const screenX = initial + dx;
+    return placementXFrom(screenX);
+  };
+
   pan.addListener(({ x }) => {
-    !viewDims || setLocalX(initial + x / viewDims.width);
+    const placement = placementXFromDx(x);
+    placement && setLocalX(placement);
+    // console.log(`A ${placement} vs B ${getPlacementX(x)}`);
   });
 
   const panResponder = useMemo(
@@ -107,7 +118,7 @@ function Tick({
           dispatch(setActivePointPlacement({ value: true }));
         },
         onPanResponderMove: (e, gesture) => {
-          const currentX = getPlacementX(gesture.moveX);
+          const currentX = placementXFrom(gesture.moveX);
           let inBounds = bounds.min <= currentX && currentX <= bounds.max;
 
           // TODO: troubleshoot bounds. Difficulty is currently with the gesture.
@@ -119,9 +130,11 @@ function Tick({
             })(e, gesture);
           }
         },
-        onPanResponderRelease: () => {
+        onPanResponderRelease: (e, gesture) => {
           pan.flattenOffset();
-          dispatch(setPlacement({ placement: localX, targetIndex: targetIdx }));
+          // const placement = viewDims ? gesture.moveX / viewDims.width : null;
+          // console.log(`Hey! ${JSON.stringify(pan.x)}`);
+          // placement && dispatch(setPlacement({ placement, targetIndex }));
           dispatch(setActivePointPlacement({ value: false }));
         },
       }),
@@ -135,7 +148,7 @@ function Tick({
           ...styles.thumb,
           shadowColor: shadowColor,
           borderColor: shadowColor,
-          left: getLeft(),
+          left: getLeft() - TICK_WIDTH / 2,
           top: yPosition,
           zIndex: zPosition, // works on ios
           elevation: zPosition, // works on android
@@ -151,7 +164,7 @@ function Tick({
         style={{
           ...styles.tickLine,
           height: yPosition,
-          left: getLeft() + TICK_WIDTH / 2,
+          left: getLeft(),
         }}
       />
     </>
