@@ -56,11 +56,6 @@ const getPreviewUri = async (img) => {
   return imageUri;
 };
 
-const logPreview = async (img) => {
-  const url = await getPreviewUri(img);
-  console.log(`\n${url}\n`);
-};
-
 const getImageInfo = (img) => {
   return {
     img,
@@ -126,18 +121,6 @@ const trim = async (imgRotated) => {
   const trimmedImg = crudeSliceCrop(imgRotated, flagCoordArr, 0);
   return trimmedImg;
 };
-
-// TODO: does not work (see issue). Not necessary, but would be nice.
-// // 6. Resize
-// const MAX_WIDTH = 100;
-// const resize = (imgTrimmed) => {
-//   const { img, height, width } = getImageInfo(imgTrimmed);
-//   if (width < MAX_WIDTH) return imgTrimmed;
-//   const newWidth = MAX_WIDTH;
-//   const newHeight = newWidth * (height / width);
-//   const resizedImg = tf.image.resizeBilinear(img, [newHeight, newWidth]);
-//   return resizedImg;
-// };
 
 /**
  * Function used to extract intensity from any given pixel
