@@ -94,6 +94,15 @@ function Tick({
     setBounds(_bounds);
   }, [calibrationPoints, viewDims]);
 
+  useEffect(() => {
+    const panDx = pan.x._value;
+    const screenX = screenXFrom(initial);
+    if (screenX && panDx !== initial) {
+      pan.setValue({ x: screenX, y: 0 });
+      setLocalX(initial);
+    }
+  }, [viewDims]);
+
   const initial = useRef(placement).current;
 
   const placementXFromDx = (dx) => {
@@ -105,7 +114,6 @@ function Tick({
   pan.addListener(({ x }) => {
     const placement = placementXFromDx(x);
     placement && setLocalX(placement);
-    // console.log(`A ${placement} vs B ${getPlacementX(x)}`);
   });
 
   const panResponder = useMemo(
@@ -121,9 +129,9 @@ function Tick({
           const currentX = placementXFrom(gesture.moveX);
           let inBounds = bounds.min <= currentX && currentX <= bounds.max;
 
+          console.log(currentX, placementXFromDx(pan.x._value), localX);
           // TODO: troubleshoot bounds. Difficulty is currently with the gesture.
           inBounds = true;
-
           if (inBounds) {
             return Animated.event([null, { dx: pan.x }], {
               useNativeDriver: false,
@@ -132,9 +140,8 @@ function Tick({
         },
         onPanResponderRelease: (e, gesture) => {
           pan.flattenOffset();
-          // const placement = viewDims ? gesture.moveX / viewDims.width : null;
-          // console.log(`Hey! ${JSON.stringify(pan.x)}`);
-          // placement && dispatch(setPlacement({ placement, targetIndex }));
+          const placement = placementXFromDx(pan.x._value);
+          placement && dispatch(setPlacement({ placement, targetIndex }));
           dispatch(setActivePointPlacement({ value: false }));
         },
       }),
@@ -159,7 +166,6 @@ function Tick({
           <Text text70>{wavelength}</Text>
         </Pressable>
       </Animated.View>
-
       <View
         style={{
           ...styles.tickLine,
