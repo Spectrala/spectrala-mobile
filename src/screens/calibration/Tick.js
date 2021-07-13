@@ -6,7 +6,8 @@ import React, {
   useMemo,
 } from "react";
 import PropTypes from "prop-types";
-import { StyleSheet, Animated, PanResponder, Pressable } from "react-native";
+import { StyleSheet, PanResponder, Pressable, Animated } from "react-native";
+// import { Animated } from "react-native-reanimated";
 import { useDispatch } from "react-redux";
 import { Text, View } from "react-native-ui-lib";
 import {
@@ -125,24 +126,25 @@ function Tick({
           pan.setOffset({ x: dx });
           dispatch(setActivePointPlacement({ value: true }));
         },
-        onPanResponderMove: (e, gesture) => {
-          const currentX = placementXFrom(gesture.moveX);
-          let inBounds = bounds.min <= currentX && currentX <= bounds.max;
-
-          console.log(currentX, placementXFromDx(pan.x._value), localX);
-          // TODO: troubleshoot bounds. Difficulty is currently with the gesture.
-          inBounds = true;
-          if (inBounds) {
-            return Animated.event([null, { dx: pan.x }], {
-              useNativeDriver: false,
-            })(e, gesture);
-          }
-        },
+        onPanResponderMove: (e, gesture) =>
+          Animated.event([null, { dx: pan.x }], {
+            useNativeDriver: false,
+          })(e, gesture),
         onPanResponderRelease: (e, gesture) => {
           pan.flattenOffset();
-          const placement = placementXFromDx(pan.x._value);
-          placement && dispatch(setPlacement({ placement, targetIndex }));
           dispatch(setActivePointPlacement({ value: false }));
+
+          let placement = placementXFromDx(pan.x._value);
+          if (placement) {
+            if (placement < bounds.min || placement > bounds.max) {
+              placement = Math.max(Math.min(placement, bounds.max), bounds.min);
+              Animated.spring(pan, {
+                toValue: screenXFrom(placement),
+                // friction: 3,
+              }).start();
+            }
+            dispatch(setPlacement({ placement, targetIndex }));
+          }
         },
       }),
     [viewDims, bounds]

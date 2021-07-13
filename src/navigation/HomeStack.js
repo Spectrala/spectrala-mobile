@@ -40,7 +40,7 @@ export default function HomeNavigator({ navigation }) {
   return (
     // TODO: MARK: Make this "HomeScreen"
     <HomeStack.Navigator
-      initialRouteName="CameraScreen"
+      initialRouteName="CalibrationScreen"
       options={{ headerTintColor: Colors.background }}
       screenOptions={{ gestureEnabled: false }}
     >
