@@ -7,7 +7,6 @@ import React, {
 } from "react";
 import PropTypes from "prop-types";
 import { StyleSheet, PanResponder, Pressable, Animated } from "react-native";
-// import { Animated } from "react-native-reanimated";
 import { useDispatch } from "react-redux";
 import { Text, View } from "react-native-ui-lib";
 import {
@@ -100,6 +99,7 @@ function Tick({
     const screenX = screenXFrom(initial);
     if (screenX && panDx !== initial) {
       pan.setValue({ x: screenX, y: 0 });
+      pan.flattenOffset();
       setLocalX(initial);
     }
   }, [viewDims]);
@@ -138,11 +138,15 @@ function Tick({
           if (placement) {
             if (placement < bounds.min || placement > bounds.max) {
               placement = Math.max(Math.min(placement, bounds.max), bounds.min);
-              Animated.spring(pan, {
-                toValue: screenXFrom(placement),
-                // friction: 3,
+              const x = new Animated.Value(screenXFrom(placement));
+              const y = new Animated.Value(0);
+              const next = new Animated.ValueXY({ x, y });
+              Animated.timing(pan, {
+                toValue: next,
+                useNativeDriver: false,
               }).start();
             }
+            setLocalX(placement);
             dispatch(setPlacement({ placement, targetIndex }));
           }
         },
