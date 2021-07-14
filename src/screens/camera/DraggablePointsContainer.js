@@ -6,11 +6,7 @@ import React, {
   useMemo,
 } from "react";
 import PropTypes from "prop-types";
-import {
-  StyleSheet,
-  Animated,
-  PanResponder,
-} from "react-native";
+import { StyleSheet, Animated, PanResponder } from "react-native";
 import { Svg, Line } from "react-native-svg";
 import Victor from "victor";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,7 +14,7 @@ import {
   selectLineCoords,
   updateReaderBoxData,
   selectCorners,
-} from "../../redux/reducers/Video";
+} from "../../redux/reducers/ReaderBox";
 import { Colors, View } from "react-native-ui-lib";
 import { fullDims } from "../../components/CameraLoader";
 

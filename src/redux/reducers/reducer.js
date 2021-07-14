@@ -1,11 +1,13 @@
 import { combineReducers } from "redux";
 import calibrationReducer from "./calibration/Calibration";
-import videoReducer from "./Video";
+import readerBoxReducer from "./ReaderBox";
 import spectrumReducer from "./Spectrum";
+import spectrumFeedReducer from "./SpectrumFeed";
 
 const rootReducer = combineReducers({
   calibration: calibrationReducer,
-  video: videoReducer,
+  readerBox: readerBoxReducer,
+  spectrumFeed: spectrumFeedReducer,
   spectra: spectrumReducer,
 });
 

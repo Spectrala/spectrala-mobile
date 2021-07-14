@@ -2,11 +2,7 @@ import * as tf from "@tensorflow/tfjs";
 import React, { useState, useEffect, useCallback } from "react";
 import { StyleSheet } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  updateFeed,
-  selectAngle,
-  selectReaderWidth,
-} from "../redux/reducers/Video";
+import { updateFeed } from "../redux/reducers/SpectrumFeed";
 import { getLineData } from "../util/tfUtil";
 import { store } from "../redux/store/Store";
 import { Camera } from "expo-camera";
@@ -80,11 +76,10 @@ export default function CameraLoader({ collectsFrames }) {
     requestCameraPermission();
   }, [collectsFrames]);
 
-
   const updateLineData = async (imgTensor, state) => {
     if (!imgTensor) return;
     if (collectsFrames) {
-      const readerBox = state.video.readerBoxData;
+      const readerBox = state.readerBox;
       const { intensities, previewUri } = await getLineData(
         imgTensor,
         readerBox

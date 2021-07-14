@@ -4,7 +4,7 @@ import { Text, View, Colors } from "react-native-ui-lib";
 import { AreaChart, Grid } from "react-native-svg-charts";
 import { Defs, LinearGradient, Stop } from "react-native-svg";
 import { useSelector } from "react-redux";
-import { selectChartData } from "../../redux/reducers/Video";
+import { selectChartData } from "../../redux/reducers/SpectrumFeed";
 import * as shape from "d3-shape";
 import Tick from "./Tick";
 import { selectCalibrationPoints } from "../../redux/reducers/calibration/Calibration";

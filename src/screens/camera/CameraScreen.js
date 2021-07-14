@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   selectReaderWidth,
   updateReaderWidth,
-} from "../../redux/reducers/Video";
+} from "../../redux/reducers/ReaderBox";
 import BottomHelper from "../../components/BottomHelper";
 import CameraLoader from "../../components/CameraLoader";
 

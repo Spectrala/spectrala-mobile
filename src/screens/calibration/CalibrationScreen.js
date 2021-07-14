@@ -4,12 +4,12 @@ import { View, Card } from "react-native-ui-lib";
 import CalibrationChart from "./CalibrationChart";
 import { useSelector } from "react-redux";
 import { selectActivePointPlacement } from "../../redux/reducers/calibration/Calibration";
-import { selectPreviewImg } from "../../redux/reducers/Video";
+import { selectPreviewImg } from "../../redux/reducers/SpectrumFeed";
 import CameraLoader from "../../components/CameraLoader";
 
 const CHART_INSET = 24;
 
-export default function CalibrationScreen({ navigation }) {
+export default function CalibrationScreen() {
   const previewImage = useSelector(selectPreviewImg);
   const isActivelyPlacing = useSelector(selectActivePointPlacement);
 

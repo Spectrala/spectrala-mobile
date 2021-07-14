@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { selectIntensities } from "./Video";
+import { selectIntensities } from "./ReaderBox";
 import { getCalibratedSpectrum } from "./calibration/CalibrationMath";
 import SpectralDataResponse from "./SpectralDataResponse";
 
