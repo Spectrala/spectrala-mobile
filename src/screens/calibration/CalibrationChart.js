@@ -17,12 +17,9 @@ const BOTTOM_TICK_Y = 255;
 const GRADIENT_COLOR_STOPS = 100; // one less than the number of color stops placed
 
 function CalibrationChart({ horizontalInset }) {
-  const allData = useSelector(selectChartData);
-  const data = allData[0].data
+  const data = useSelector(selectChartData);
   const calibrationPoints = useSelector(selectCalibrationPoints);
   const [tickViewDims, setTickDims] = useState(undefined);
-
-  console.log(allData);
 
   if (!data) {
     return <Text>Loading...</Text>;

@@ -11,7 +11,6 @@ import {
   PanResponder,
   Pressable,
   Animated,
-  Easing,
 } from "react-native";
 import { useDispatch } from "react-redux";
 import { Text, View } from "react-native-ui-lib";

@@ -158,18 +158,12 @@ export const selectChartData = (state) => {
   if (!intensities) {
     return null;
   }
-  return [
-    {
-      id: "spectrum",
-      color: "#00873E",
-      data: intensities.map((y, idx) => {
-        return {
-          x: idx / (intensities.length - 1),
-          y: y,
-        };
-      }),
-    },
-  ];
+  return intensities.map((y, idx) => {
+    return {
+      x: idx / (intensities.length - 1),
+      y: y,
+    };
+  });
 };
 
 export const selectPreviewImg = (state) => state.video.previewImage;
