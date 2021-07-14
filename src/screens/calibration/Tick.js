@@ -6,7 +6,13 @@ import React, {
   useMemo,
 } from "react";
 import PropTypes from "prop-types";
-import { StyleSheet, PanResponder, Pressable, Animated } from "react-native";
+import {
+  StyleSheet,
+  PanResponder,
+  Pressable,
+  Animated,
+  Easing,
+} from "react-native";
 import { useDispatch } from "react-redux";
 import { Text, View } from "react-native-ui-lib";
 import {
@@ -17,6 +23,7 @@ import { wavelengthToRGB } from "../../util/colorUtil";
 
 const TICK_WIDTH = 40;
 const VERTICAL_SLOP = 20;
+const BOUNDS_PADDING = 0.055;
 
 function Tick({
   targetIdx: targetIndex,
@@ -27,7 +34,7 @@ function Tick({
   viewDims,
   horizontalInset,
 }) {
-  const pan = useRef(new Animated.ValueXY()).current;
+  const pan = useRef(new Animated.Value(0)).current;
   const [bounds, setBounds] = useState({ min: undefined, max: undefined });
   const dispatch = useDispatch();
 
@@ -84,26 +91,37 @@ function Tick({
     if (targetIndex === 0) {
       _bounds.min = 0;
     } else {
-      _bounds.min = calibrationPoints[targetIndex - 1].placement;
+      _bounds.min =
+        calibrationPoints[targetIndex - 1].placement + BOUNDS_PADDING;
     }
     if (targetIndex === calibrationPoints.length - 1) {
       _bounds.max = 1;
     } else {
-      _bounds.max = calibrationPoints[targetIndex + 1].placement;
+      _bounds.max =
+        calibrationPoints[targetIndex + 1].placement - BOUNDS_PADDING;
     }
     setBounds(_bounds);
   }, [calibrationPoints, viewDims]);
 
   useEffect(() => {
-    const panDx = pan.x._value;
+    const panDx = pan._value;
     const screenX = screenXFrom(initial);
     if (screenX && panDx !== initial) {
-      pan.setValue({ x: screenX, y: 0 });
+      pan.setValue(screenX);
       pan.flattenOffset();
       setLocalX(initial);
     }
   }, [viewDims]);
 
+  pan.removeAllListeners();
+  pan.addListener(({ value }) => {
+    const placement = placementXFromDx(value);
+    placement && setLocalX(placement);
+  });
+
+  useEffect(() => {
+    return () => pan.removeAllListeners();
+  }, []);
   const initial = useRef(placement).current;
 
   const placementXFromDx = (dx) => {
@@ -112,39 +130,32 @@ function Tick({
     return placementXFrom(screenX);
   };
 
-  pan.addListener(({ x }) => {
-    const placement = placementXFromDx(x);
-    placement && setLocalX(placement);
-  });
-
   const panResponder = useMemo(
     () =>
       PanResponder.create({
         onMoveShouldSetPanResponder: () => true,
         onPanResponderGrant: () => {
-          const dx = pan.x._value;
-          pan.setOffset({ x: dx });
+          const dx = pan._value;
+          pan.setOffset(dx);
           dispatch(setActivePointPlacement({ value: true }));
         },
         onPanResponderMove: (e, gesture) =>
-          Animated.event([null, { dx: pan.x }], {
+          Animated.event([null, { dx: pan }], {
             useNativeDriver: false,
           })(e, gesture),
         onPanResponderRelease: (e, gesture) => {
           pan.flattenOffset();
           dispatch(setActivePointPlacement({ value: false }));
 
-          let placement = placementXFromDx(pan.x._value);
+          let placement = placementXFromDx(pan._value);
           if (placement) {
             if (placement < bounds.min || placement > bounds.max) {
               placement = Math.max(Math.min(placement, bounds.max), bounds.min);
-              const x = new Animated.Value(screenXFrom(placement));
-              const y = new Animated.Value(0);
-              const next = new Animated.ValueXY({ x, y });
-              Animated.timing(pan, {
-                toValue: next,
-                useNativeDriver: false,
-              }).start();
+              const screenX = screenXFrom(placement);
+              if (screenX) {
+                pan.setValue(screenX);
+                pan.flattenOffset();
+              }
             }
             setLocalX(placement);
             dispatch(setPlacement({ placement, targetIndex }));
