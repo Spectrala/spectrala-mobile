@@ -78,12 +78,14 @@ function Tick({
     const screenMin = screenXFrom(bounds.min);
     const screenPos = getLeft();
     const screenMax = screenXFrom(bounds.max);
-    return {
-      left: (screenPos - screenMin) / 2,
-      right: (screenMax - screenPos) / 2,
-      top: isBottom ? 0 : VERTICAL_SLOP,
-      bottom: isBottom ? VERTICAL_SLOP : 0,
-    };
+    if (screenMin && screenPos && screenMax) {
+      return {
+        left: (screenPos - screenMin) / 2,
+        right: (screenMax - screenPos) / 2,
+        top: isBottom ? 0 : VERTICAL_SLOP,
+        bottom: isBottom ? VERTICAL_SLOP : 0,
+      };
+    }
   }, [bounds]);
 
   useEffect(() => {

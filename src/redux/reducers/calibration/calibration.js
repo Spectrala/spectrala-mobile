@@ -112,7 +112,6 @@ export const calibrationSlice = createSlice({
       const points = state.calibrationPoints.value;
       const point = points[action.payload.targetIndex];
       CalibPt.setPlacement(point, action.payload.placement);
-      console.log(points);
     },
     setPreset: (state, action) => {
       const preset = action.payload.preset;
