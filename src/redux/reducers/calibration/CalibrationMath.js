@@ -1,4 +1,4 @@
-import SpectralDataResponse from '../spectral_data_response';
+import SpectralDataResponse from '../SpectralDataResponse';
 
 export const validateCalibrationPoints = (calibrationPoints) => {
     // Make sure all points are placed.

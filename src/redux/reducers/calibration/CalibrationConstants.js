@@ -1,4 +1,3 @@
-import * as CalibPt from "./calibration_point";
 
 export const MAX_POINTS = 5;
 
@@ -30,9 +29,10 @@ export const defaultCalibration = calibrationPresets[3];
 export const expandPreset = (preset) => {
   return {
     title: preset.title,
-    value: preset.value.map((w, idx) =>
-      CalibPt.construct(w, idx / preset.value.length, false)
-    ),
+    value: preset.value.map((w, idx) => ({
+      wavelength: w,
+      placement: idx / preset.value.length,
+    })),
   };
 };
 
@@ -41,7 +41,7 @@ export const presetOfTitle = (title) =>
 
 export const currentCalibrationPreset = (calibrationPoints) => {
   let possiblePresets = [];
-  let currentPoints = calibrationPoints.map(CalibPt.getWavelength);
+  let currentPoints = calibrationPoints.map((p) => p.wavelength);
   for (const calibration of calibrationPresets) {
     const sameLength = calibration.value.length === currentPoints.length;
     const samePoints = calibration.value.every((p) =>

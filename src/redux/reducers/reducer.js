@@ -1,14 +1,12 @@
-import { combineReducers } from 'redux';
-import adjustmentsReducer from './adjustments';
-import calibrationReducer from './calibration/calibration';
-import videoReducer from './video';
-import spectrumReducer from './spectrum';
+import { combineReducers } from "redux";
+import calibrationReducer from "./calibration/Calibration";
+import videoReducer from "./Video";
+import spectrumReducer from "./Spectrum";
 
 const rootReducer = combineReducers({
-    adjustments: adjustmentsReducer,
-    calibration: calibrationReducer,
-    video: videoReducer,
-    spectra: spectrumReducer,
+  calibration: calibrationReducer,
+  video: videoReducer,
+  spectra: spectrumReducer,
 });
 
 export default rootReducer;

@@ -18,7 +18,7 @@ import {
   selectLineCoords,
   updateReaderBoxData,
   selectCorners,
-} from "../../redux/reducers/video";
+} from "../../redux/reducers/Video";
 import { Colors, View } from "react-native-ui-lib";
 import { fullDims } from "../../components/CameraLoader";
 

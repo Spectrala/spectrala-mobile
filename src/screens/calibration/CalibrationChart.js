@@ -4,10 +4,10 @@ import { Text, View, Colors } from "react-native-ui-lib";
 import { AreaChart, Grid } from "react-native-svg-charts";
 import { Defs, LinearGradient, Stop } from "react-native-svg";
 import { useSelector } from "react-redux";
-import { selectChartData } from "../../redux/reducers/video";
+import { selectChartData } from "../../redux/reducers/Video";
 import * as shape from "d3-shape";
 import Tick from "./Tick";
-import { selectCalibrationPoints } from "../../redux/reducers/calibration/calibration";
+import { selectCalibrationPoints } from "../../redux/reducers/calibration/Calibration";
 import { wavelengthToRGB } from "../../util/colorUtil";
 
 const CHART_HEIGHT = 200;

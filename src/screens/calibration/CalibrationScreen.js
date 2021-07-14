@@ -3,8 +3,8 @@ import { StyleSheet, Image } from "react-native";
 import { View, Card } from "react-native-ui-lib";
 import CalibrationChart from "./CalibrationChart";
 import { useSelector } from "react-redux";
-import { selectActivePointPlacement } from "../../redux/reducers/calibration/calibration";
-import { selectPreviewImg } from "../../redux/reducers/video";
+import { selectActivePointPlacement } from "../../redux/reducers/calibration/Calibration";
+import { selectPreviewImg } from "../../redux/reducers/Video";
 import CameraLoader from "../../components/CameraLoader";
 
 const CHART_INSET = 24;

@@ -17,7 +17,7 @@ import { Text, View } from "react-native-ui-lib";
 import {
   setActivePointPlacement,
   setPlacement,
-} from "../../redux/reducers/calibration/calibration";
+} from "../../redux/reducers/calibration/Calibration";
 import { wavelengthToRGB } from "../../util/colorUtil";
 
 const TICK_WIDTH = 40;
@@ -216,7 +216,6 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     justifyContent: "center",
     alignItems: "center",
-
     borderColor: "#000",
     borderWidth: 1,
     borderRadius: 4,

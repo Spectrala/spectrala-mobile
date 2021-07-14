@@ -6,9 +6,9 @@ import {
   updateFeed,
   selectAngle,
   selectReaderWidth,
-} from "../redux/reducers/video";
+} from "../redux/reducers/Video";
 import { getLineData } from "../util/tfUtil";
-import { store } from "../redux/store/store";
+import { store } from "../redux/store/Store";
 import { Camera } from "expo-camera";
 import { cameraWithTensors } from "@tensorflow/tfjs-react-native";
 import { useFocusEffect, useIsFocused } from "@react-navigation/native";

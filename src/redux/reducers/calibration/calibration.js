@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import * as CalibPt from "./calibration_point";
-import { expandPreset, defaultCalibration } from "./calibration_constants";
+import { expandPreset, defaultCalibration } from "./CalibrationConstants";
 
 /**
  * addNewCalibPt
@@ -45,7 +44,6 @@ const initializeCalibrationPoints = (calibrationPoints) => {
  *         {
  *             "wavelength":436,
  *             "placement":0.204,
- *             "isBeingPlaced":false,
  *         },
  *      ]
  *  }
@@ -57,12 +55,12 @@ export const calibrationSlice = createSlice({
     activePointPlacement: false,
   },
   reducers: {
-    setPlacement: (state, action) => { /**/
+    setPlacement: (state, action) => { 
       const points = state.calibrationPoints.value;
       const point = points[action.payload.targetIndex];
-      CalibPt.setPlacement(point, action.payload.placement);
+      point.placement = action.payload.placement;
     },
-    setPreset: (state, action) => { /**/
+    setPreset: (state, action) => { 
       const preset = action.payload.preset;
       state.calibrationPoints = initializeCalibrationPoints(preset);
     },
@@ -70,7 +68,7 @@ export const calibrationSlice = createSlice({
       const points = action.payload.value;
       state.calibrationPoints.value = addBulkCalibPt(points);
     },
-    setActivePointPlacement: (state, action) => { /**/
+    setActivePointPlacement: (state, action) => { 
       const isActivePointPlacement = action.payload.value;
       state.activePointPlacement = isActivePointPlacement;
     },

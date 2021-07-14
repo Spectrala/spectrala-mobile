@@ -1,5 +1,5 @@
 import { createStore } from "redux";
-import rootReducer from "../reducers/reducer";
+import rootReducer from "../reducers/Reducer";
 import { Provider } from "react-redux";
 import React, { useState, useCallback, useEffect } from "react";
 

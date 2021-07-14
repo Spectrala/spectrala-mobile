@@ -1,4 +1,4 @@
-import { store, recreateStore } from './store';
+import { store, recreateStore } from './Store';
 
 // Recreate redux state using the passed state, as if initializing the store for the first time.
 export const recreateUsingState = (state) => {
