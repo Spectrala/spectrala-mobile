@@ -12,6 +12,7 @@ export const spectrumFeedSlice = createSlice({
   initialState: {
     previewImage: undefined,
     pixelLineHistory: [],
+    uncalibratedIntensities: undefined,
   },
   reducers: {
     updateFeed: (state, action) => {
@@ -44,40 +45,6 @@ export const spectrumFeedSlice = createSlice({
 });
 
 export const { updateFeed, setPreviewImage } = spectrumFeedSlice.actions;
-
-export const selectIntensities = (state) => {
-  const pixels = state.spectrumFeed.pixelLineHistory;
-  if (pixels && pixels.length > 0) {
-    const pixelLines = pixels;
-
-    var averagedLine = [];
-    const len = pixelLines[0].length;
-
-    for (var i = 0; i < len; i++) {
-      let column = [];
-      for (var j = 0; j < pixelLines.length; j++) {
-        column.push(pixelLines[j][i]);
-      }
-
-      averagedLine.push(column.reduce((a, b) => a + b, 0) / pixelLines.length);
-    }
-    return averagedLine;
-  }
-  return null;
-};
-
-export const selectChartData = (state) => {
-  const intensities = selectIntensities(state);
-  if (!intensities) {
-    return null;
-  }
-  return intensities.map((y, idx) => {
-    return {
-      x: idx / (intensities.length - 1),
-      y: y,
-    };
-  });
-};
 
 export const selectPreviewImg = (state) => state.spectrumFeed.previewImage;
 

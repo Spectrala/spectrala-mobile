@@ -6,12 +6,7 @@ import React, {
   useMemo,
 } from "react";
 import PropTypes from "prop-types";
-import {
-  StyleSheet,
-  PanResponder,
-  Pressable,
-  Animated,
-} from "react-native";
+import { StyleSheet, PanResponder, Pressable, Animated } from "react-native";
 import { useDispatch } from "react-redux";
 import { Text, View } from "react-native-ui-lib";
 import {
@@ -38,12 +33,12 @@ function Tick({
   const dispatch = useDispatch();
 
   const placement = useMemo(
-    () => calibrationPoints[targetIndex].placement,
+    () => calibrationPoints[targetIndex].x,
     [calibrationPoints, targetIndex]
   );
 
   const wavelength = useMemo(
-    () => calibrationPoints[targetIndex].wavelength,
+    () => calibrationPoints[targetIndex].w,
     [calibrationPoints, targetIndex]
   );
 
@@ -92,14 +87,12 @@ function Tick({
     if (targetIndex === 0) {
       _bounds.min = 0;
     } else {
-      _bounds.min =
-        calibrationPoints[targetIndex - 1].placement + BOUNDS_PADDING;
+      _bounds.min = calibrationPoints[targetIndex - 1].x + BOUNDS_PADDING;
     }
     if (targetIndex === calibrationPoints.length - 1) {
       _bounds.max = 1;
     } else {
-      _bounds.max =
-        calibrationPoints[targetIndex + 1].placement - BOUNDS_PADDING;
+      _bounds.max = calibrationPoints[targetIndex + 1].x - BOUNDS_PADDING;
     }
     setBounds(_bounds);
   }, [calibrationPoints, viewDims]);

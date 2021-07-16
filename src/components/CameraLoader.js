@@ -1,14 +1,13 @@
 import * as tf from "@tensorflow/tfjs";
 import React, { useState, useEffect, useCallback } from "react";
 import { StyleSheet } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { updateFeed } from "../redux/reducers/SpectrumFeed";
 import { getLineData } from "../util/tfUtil";
 import { store } from "../redux/store/Store";
 import { Camera } from "expo-camera";
 import { cameraWithTensors } from "@tensorflow/tfjs-react-native";
-import { useFocusEffect, useIsFocused } from "@react-navigation/native";
-import { Button } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 
 export const CAMERA_VISIBILITY_OPTIONS = {
   full: "full",

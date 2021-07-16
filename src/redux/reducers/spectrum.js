@@ -1,29 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { selectIntensities } from "./ReaderBox";
-import { getCalibratedSpectrum } from "./calibration/CalibrationMath";
-import SpectralDataResponse from "./SpectralDataResponse";
+import { selectUncalibratedIntensities } from "./SpectrumFeed";
+import { getCalibratedIntensities } from "./calibration/CalibrationMath";
 
 // Default name prefix for saving a spectrum. Will start naming as DEFAULT_NAME 1.
 const DEFAULT_NAME = "New Spectrum ";
-
-/**
- * FULL_SPECTRUM
- *      Default spectrum to pass to resultant when nothing is selected.
- *      This works because of the nearest-neighbor method in the resultant spectrum.
- *      Since there is only one x-value, it is the closest x value (which has a y component of 0).
- */
-// const FULL_SPECTRUM = [{ x: 0, y: 1 }];
-
-/**
- * SPECTRUM_OPTIONS
- *      The different ways the user can view the spectrum.
- *      Absorbance is the only option without a reference spectrum.
- */
-export const SPECTRUM_OPTIONS = {
-  ABSORBANCE: "Absorbance",
-  TRANSMITTANCE: "Transmittance",
-  INTENSITY: "Intensity",
-};
 
 /**
  * addNewSpectrum
@@ -34,33 +14,16 @@ export const SPECTRUM_OPTIONS = {
  *      [{
  *          key: 2
  *          name: "Water"
- *          data: [{x: 338.3, y: 44.2}]
+ *          intensity: [{x: 338.3, y: 44.2}]
  *      }]
  * @param {array} currentArray - the current array of recorded spectra
- * @param {array} data - the spectral data to record in the recorded spectra array
- * @param {string} defaultName - the default prefix to append before the key in naming the specta
+ * @param {array} intensity - the intensitiy data to record in the recorded spectra array
  */
-export const addNewSpectrum = (currentArray, data, defaultName) => {
-  let key = 1;
-  if (currentArray.length > 0) {
-    key = Math.max(...currentArray.map((ref) => ref.key)) + 1;
-  }
+const addNewSpectrum = (currentArray, intensity) => {
+  let key = Math.max(...currentArray.map((r) => r.key)) + 1;
   const name = defaultName + key;
-  currentArray.push({
-    key: key,
-    name: name,
-    data: data,
-    isReference: false,
-  });
+  currentArray.push({ key, name, intensity });
   return currentArray;
-};
-
-export const setIsReferenceFalse = (currentArray) => {
-  return currentArray.map((pt) => {
-    let newObj = Object.assign({}, pt);
-    newObj.isReference = false;
-    return newObj;
-  });
 };
 
 export const spectrumSlice = createSlice({
@@ -69,14 +32,13 @@ export const spectrumSlice = createSlice({
     spectrum: null,
     recorded_spectra: [],
     key_being_used: null,
-    preferredSpectrum: SPECTRUM_OPTIONS.INTENSITY,
   },
   reducers: {
     recordSpectrum: (state, action) => {
       // TODO: Verify spectrum is okay. Right now that is only done in the button.
-      const data = action.payload.data;
+      const key = action.payload.data;
       const refs = state.recorded_spectra;
-      const recorded = addNewSpectrum(refs, data, DEFAULT_NAME);
+      const recorded = addNewSpectrum(refs, data);
 
       // To automatically use the reference
       state.key_being_used = recorded[recorded.length - 1].key;
@@ -126,81 +88,6 @@ export const {
 } = spectrumSlice.actions;
 
 /**
- * selectValidateCalibratedPixelLine
- *      Gets the pixel line (raw from the camera source) after validating
- *      that the data exists to do the calibration.
- *
- *      Returns: SpectralDataResponse. If there is data, it looks like this: [{x: 338.3, y: 44.2}].
- */
-export const selectValidateCalibratedPixelLine = (state) => {
-  const intensities = selectIntensities(state);
-
-  const calibrationPoints = selectValidateCalibrationPoints(state);
-  if (!calibrationPoints.isValid()) return calibrationPoints;
-
-  if (!intensities) {
-    return new SpectralDataResponse({
-      valid: false,
-      message: "Waiting...",
-    });
-  }
-
-  return new SpectralDataResponse({
-    valid: true,
-    data: getCalibratedSpectrum(intensities, calibrationPoints.getData()),
-  });
-};
-
-export const selectPreferredSpectrumOption = (state) => {
-  return state.spectra.preferredSpectrum;
-};
-
-export const selectHasReference = (state) => !!selectReferenceIntensity(state);
-
-// FOR DOWNLOADING CSV
-export const selectIntensity = (state) => {
-  const pixelLine = selectValidateCalibratedPixelLine(state);
-  if (!pixelLine.valid) return pixelLine;
-  return pixelLine.data;
-};
-export const selectTransmittance = (state) => {
-  const intensity = selectIntensity(state);
-  const reference = selectReferenceIntensity(state);
-  return computeTransmittance(intensity, reference);
-};
-export const selectAbsorbance = (state) => {
-  const intensity = selectIntensity(state);
-  const reference = selectReferenceIntensity(state);
-  return computeAbsorbance(intensity, reference);
-};
-
-/**
- * selectValidateLiveSpectrum
- *      Get the line graph data to show in the Spectrum component.
- *
- *      Returns: array. Looks like this: [{x: 338.3, y: 44.2}].
- */
-export const selectValidateLiveSpectrum = (state) => {
-  // TODO: allow user to view old reference spectra.
-  const spectrumOption = selectPreferredSpectrumOption(state);
-  if (spectrumOption === SPECTRUM_OPTIONS.INTENSITY) {
-    return selectValidateCalibratedPixelLine(state);
-  } else if (spectrumOption === SPECTRUM_OPTIONS.TRANSMITTANCE) {
-    return new SpectralDataResponse({
-      valid: true,
-      data: selectTransmittance(state),
-    });
-  } else if (spectrumOption === SPECTRUM_OPTIONS.ABSORBANCE) {
-    return new SpectralDataResponse({
-      valid: true,
-      data: selectAbsorbance(state),
-    });
-  }
-  console.error(`Received unexpected spectrum option of ${spectrumOption}`);
-  return null;
-};
-
-/**
  * selectReferenceIntensity
  *      Get the intensity values of the reference spectrum used for creating a resultant spectrum.
  *      This will be what the user has selected.
@@ -244,6 +131,24 @@ export const computeAbsorbance = (target, reference) => {
     return { x: t.x, y: -Math.log10(t.y) };
   });
   return absorbance;
+};
+
+export const selectIntensity = (state) => {
+  const pixelLine = selectValidateCalibratedPixelLine(state);
+  if (!pixelLine.valid) return pixelLine;
+  return pixelLine.data;
+};
+
+export const selectTransmittance = (state) => {
+  const intensity = selectIntensity(state);
+  const reference = selectReferenceIntensity(state);
+  return computeTransmittance(intensity, reference);
+};
+
+export const selectAbsorbance = (state) => {
+  const intensity = selectIntensity(state);
+  const reference = selectReferenceIntensity(state);
+  return computeAbsorbance(intensity, reference);
 };
 
 /**

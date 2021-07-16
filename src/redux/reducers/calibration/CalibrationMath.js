@@ -1,62 +1,31 @@
-import SpectralDataResponse from '../SpectralDataResponse';
+import * as CalibPt from "../../../types/CalibrationPoint";
 
-export const validateCalibrationPoints = (calibrationPoints) => {
-    // Make sure all points are placed.
-    const noNulls = calibrationPoints.every(
-        (p) => p && p.rawWavelength && p.placement
-    );
-    if (!noNulls)
-        return new SpectralDataResponse({
-            valid: false,
-            message:
-                'All calibration points must be placed before creating a spectrum.',
-        });
 
-    // Make sure there are at least 2 points.
-    if (calibrationPoints.length < 2)
-        return new SpectralDataResponse({
-            valid: false,
-            message:
-                'Waiting for at least two calibratin points to create a spectrum.',
-        });
-
-    // Sort the calibration points by wavelength
-    const sortedPoints = calibrationPoints.sort(
-        (a, b) => a.rawWavelength - b.rawWavelength
-    );
-
-    // Verify these points are also sorted by placement
-    for (var i = 0; i < sortedPoints.length - 1; i++) {
-        if (sortedPoints[i + 1].placement < sortedPoints[i].placement)
-            return new SpectralDataResponse({
-                valid: false,
-                message: 'Calibration points must go in order of wavelength.',
-            });
+const getUncalibratedIntensitiesArray = (pixelLineHistory) => {
+  if (pixelLineHistory && pixelLineHistory.length > 0) {
+    const pixelLines = pixelLineHistory;
+    let averagedLine = [];
+    const len = pixelLines[0].length;
+    for (let i = 0; i < len; i++) {
+      let column = [];
+      for (let j = 0; j < pixelLines.length; j++) {
+        column.push(pixelLines[j][i]);
+      }
+      averagedLine.push(column.reduce((a, b) => a + b, 0) / pixelLines.length);
     }
-
-    return new SpectralDataResponse({ valid: true, data: sortedPoints });
+    return averagedLine;
+  }
+  return null;
 };
 
-const cartesian = (point) => {
-    return { x: point.placement, y: point.rawWavelength };
-};
-
-const pointSlope = (a, b) => {
-    const m = (b.y - a.y) / (b.x - a.x);
-    const equation = (x) => m * (x - a.x) + a.y;
-    return equation;
-};
-
-
-const linearSpline = (pts, x) => {
-    for (let i = 0; i < pts.length - 1; i++) {
-        const a = pts[i];
-        const b = pts[i + 1];
-        if (a.x <= x && x <= b.x) {
-            return pointSlope(a, b)(x);
-        }
-    }
+const getUncalibratedIntensities = (intensitiesArray) => {
+  if (!intensitiesArray) {
     return null;
+  }
+  return intensitiesArray.map((intensity, idx) => ({
+    x: idx / (intensitiesArray.length - 1),
+    i: intensity,
+  }));
 };
 
 /**
@@ -72,37 +41,38 @@ const linearSpline = (pts, x) => {
  *              ii. Use value from step 5i for wavelength(x)
  *              iii. return { x: wavelength(x), y: pixel intensity }
  *
- *      Returns: (array) Pixel intensities at wavelengths. Looks like this: [{ x: wavelength(x), y: pixel intensity }]
+ *      Returns: (array) Pixel intensities at wavelengths. Looks like this: [{ w: wavelength(x), y: pixel intensity }]
  */
-export const getCalibratedSpectrum = (intensities, sortedCalibrationPoints) => {
-    // Convert points to cartesian
-    const pts = sortedCalibrationPoints.map((point) => cartesian(point));
+export const getCalibratedIntensities = (
+  pixelLineHistory,
+  sortedCalibrationPoints
+) => {
+  const intensityArr = getUncalibratedIntensitiesArray(pixelLineHistory);
+  const uncalibratedIntensities = getUncalibratedIntensities(intensityArr);
 
-    // Get endpoints
-    const a = pts[0];
-    const b = pts[pts.length - 1];
+  // Convert points from CalibPt to cartesian ()
+  const pts = sortedCalibrationPoints.map((point) =>
+    CalibPt.getCartesian(point)
+  );
 
-    const w_end = pointSlope(a, b);
+  // Get endpoints
+  const lowerBound = pts[0];
+  const upperBound = pts[pts.length - 1];
 
-    const w_middle = (x) => linearSpline(pts, x);
+  // If a point falls on the end, only compute wavelength with endpoints
+  const w_end = pointSlope(lowerBound, upperBound);
 
-    const wavelength = (x) => {
-        if (pts.length < 3) return w_end(x);
-        if (x > a.x && x < b.x) return w_middle(x);
-        return w_end(x);
-    };
+  // If a point falls in the middle, compute wavelength with nearest calibration points
+  const w_middle = (x) => linearSpline(pts, x);
 
-    if (!intensities) {
-        console.warn('Got null intensities');
-        return;
-    }
+  const wavelength = (x) => {
+    if (pts.length < 3) return w_end(x);
+    if (x > lowerBound.x && x < upperBound.x) return w_middle(x);
+    return w_end(x);
+  };
 
-
-    return intensities.map((y, idx) => {
-        const x_position = idx / (intensities.length - 1);
-        return {
-            x: wavelength(x_position),
-            y: y,
-        };
-    });
+  return uncalibratedIntensities.map(({ x: xPosition, i: intensity }) => ({
+    w: wavelength(xPosition),
+    y: intensity,
+  }));
 };

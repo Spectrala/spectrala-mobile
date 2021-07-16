@@ -1,4 +1,3 @@
-
 export const MAX_POINTS = 5;
 
 export const calibrationPresets = [
@@ -41,7 +40,7 @@ export const presetOfTitle = (title) =>
 
 export const currentCalibrationPreset = (calibrationPoints) => {
   let possiblePresets = [];
-  let currentPoints = calibrationPoints.map((p) => p.wavelength);
+  let currentPoints = calibrationPoints.map((p) => p.w);
   for (const calibration of calibrationPresets) {
     const sameLength = calibration.value.length === currentPoints.length;
     const samePoints = calibration.value.every((p) =>
