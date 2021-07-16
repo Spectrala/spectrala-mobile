@@ -29,6 +29,16 @@ export const construct = (xPosition, wavelength) => ({
 export const getXPosition = (calibrationPoint) => calibrationPoint.x;
 
 /**
+ * Set the x position of a calibration point to a new value.
+ * Mutates the object.
+ * @param {CalibPt} calibrationPoint
+ * @param {number} xPosition the x position of the point
+ */
+export const setXPosition = (calibrationPoint, xPosition) => {
+  calibrationPoint.x = xPosition;
+};
+
+/**
  * Return the wavelength of a calibration point
  * @param {CalibPt} calibrationPoint
  * @returns {number} the wavelength of the point

@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { getUncalibratedIntensities } from "../../util/spectroscopyMath";
 
 // Samples included in the moving average
 const PIXEL_LINE_HISTORY_DEPTH = 5;
@@ -7,11 +8,17 @@ const PIXEL_LINE_HISTORY_DEPTH = 5;
 const OVERSATURATION_CEILING = 98;
 export const isNotOversaturated = (val) => val < OVERSATURATION_CEILING;
 
+/**
+ * State variables:
+ * previewImage {String} base64 JPEG of readerBox with pre-appended MIME type
+ * intensityArrayHistory {Array<Array<Number>>} running history of intensity arrays
+ * uncalibratedIntensities {Array<UncalibratedIntensity>} intensity array with x values
+ */
 export const spectrumFeedSlice = createSlice({
   name: "spectrumFeed",
   initialState: {
     previewImage: undefined,
-    pixelLineHistory: [],
+    intensityArrayHistory: [],
     uncalibratedIntensities: undefined,
   },
   reducers: {
@@ -19,7 +26,7 @@ export const spectrumFeedSlice = createSlice({
       const previewImage = action.payload.previewUri;
       state.previewImage = previewImage;
       const newLine = action.payload.intensities;
-      let lineHist = state.pixelLineHistory;
+      let lineHist = state.intensityArrayHistory;
 
       /**
        * This maintains a history of a certain length
@@ -36,7 +43,8 @@ export const spectrumFeedSlice = createSlice({
       } else {
         lineHist = [newLine];
       }
-      state.pixelLineHistory = lineHist;
+      state.intensityArrayHistory = lineHist;
+      state.uncalibratedIntensities = getUncalibratedIntensities(lineHist);
     },
     setPreviewImage: (state, action) => {
       state.previewImage = action.payload.value;

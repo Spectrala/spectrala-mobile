@@ -1,12 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { expandPreset, defaultCalibration } from "./CalibrationConstants";
-import * as CalibPt from "../../../types/CalibrationPoint";
 
-const initializeCalibrationPoints = (calibrationPoints) => {
-  let obj = expandPreset(calibrationPoints);
-  obj.value = addBulkCalibPt(obj.value);
-  return obj;
-};
+import { DEFAULT_CALIBRATION } from "./CalibrationConstants";
+
+import * as CalibPt from "../../../types/CalibrationPoint";
+import * as Calibration from "../../../types/Calibration";
 
 /**
  * Calibration points object:
@@ -27,18 +24,18 @@ const initializeCalibrationPoints = (calibrationPoints) => {
 export const calibrationSlice = createSlice({
   name: "calibration",
   initialState: {
-    calibrationPoints: initializeCalibrationPoints(defaultCalibration),
+    calibrationPoints: Calibration.fromPreset(DEFAULT_CALIBRATION),
     activePointPlacement: false,
   },
   reducers: {
     setPlacement: (state, action) => {
       const points = state.calibrationPoints.value;
       const point = points[action.payload.targetIndex];
-      point.x = action.payload.x;
+      CalibPt.setXPosition(point, action.payload.x);
     },
     setPreset: (state, action) => {
       const preset = action.payload.preset;
-      state.calibrationPoints = initializeCalibrationPoints(preset);
+      state.calibrationPoints = Calibration.fromPreset(preset);
     },
     setCalibrationPoints: (state, action) => {
       const points = action.payload.value;
