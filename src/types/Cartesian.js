@@ -12,16 +12,22 @@ import * as CalibPt from "./CalibrationPoint";
  */
 
 /**
+ * Constructs a cartesian point
+ * @param {number} x horizontal position on a graph
+ * @param {number} y vertical position on a graph
+ * @returns {Cartesian}
+ */
+export const construct = (x, y) => ({ x, y });
+
+/**
  * Constructs a Cartesian using a CalibPt.
  * Maps the xPosition of the calibration point to x,
  * and the wavelength of the calibration point to y.
  * @param {CalibPt} calibrationPoint
  * @returns
  */
-export const fromCalibPt = (calibrationPoint) => ({
-  x: calibrationPoint.x,
-  y: calibrationPoint.w,
-});
+export const fromCalibPt = (calibrationPoint) =>
+  construct(calibrationPoint.x, calibrationPoint.w);
 
 /**
  * Return the x value of the cartesian point

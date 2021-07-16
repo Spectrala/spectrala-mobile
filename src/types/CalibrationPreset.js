@@ -1,32 +1,29 @@
 /**
- * CalibPt:
+ * CalibPreset:
  *
  * This module works with objects in the form
  * {
- *  x: Number,
- *  w: Number
+ *  title: String,
+ *  wavelengths: Array<Number>
  * }
  *
  * These represent the ticks on the graph during calibration.
  */
 
 /**
- * Constructs a calibration point
- * @param {number} xPosition location, [0,1] along the chart
- * @param {number} wavelength wavelength to be associated with xPosition
- * @returns {CalibPt}
+ * Constructs a calibration preset
+ * @param {String} title name of the preset
+ * @param {Array<Number>} wavelengths wavelengths for the preset's calibraiton points
+ * @returns {CalibPreset}
  */
-export const construct = (xPosition, wavelength) => ({
-  x: xPosition,
-  w: wavelength,
-});
+export const construct = (title, wavelengths) => ({ title, wavelengths });
 
 /**
  * Return the x position of a calibration point
  * @param {CalibPt} calibrationPoint
  * @returns {number} the x position of the point
  */
-export const getXPosition = (calibrationPoint) => calibrationPoint.x;
+export const getTitle = (calibrationPreset) => calibrationPoint.x;
 
 /**
  * Return the wavelength of a calibration point

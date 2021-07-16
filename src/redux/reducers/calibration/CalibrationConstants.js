@@ -1,6 +1,8 @@
+import * as CalibPt from "../../../types/CalibrationPoint";
+
 export const MAX_POINTS = 5;
 
-export const calibrationPresets = [
+export const CALIBRATION_PRESETS = [
   {
     id: "custom",
     title: "Custom",
@@ -28,10 +30,9 @@ export const defaultCalibration = calibrationPresets[3];
 export const expandPreset = (preset) => {
   return {
     title: preset.title,
-    value: preset.value.map((w, idx) => ({
-      wavelength: w,
-      placement: idx / preset.value.length,
-    })),
+    value: preset.value.map((w, idx) =>
+      CalibPt.construct(idx / preset.value.length, w)
+    ),
   };
 };
 
