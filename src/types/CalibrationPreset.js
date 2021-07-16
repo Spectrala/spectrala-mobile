@@ -4,7 +4,7 @@
  * This module works with objects in the form
  * {
  *  title: String,
- *  wavelengths: Array<Number>
+ *  wavelengths: Array<number>
  * }
  *
  * These represent the ticks on the graph during calibration.
@@ -13,21 +13,21 @@
 /**
  * Constructs a calibration preset
  * @param {String} title name of the preset
- * @param {Array<Number>} wavelengths wavelengths for the preset's calibraiton points
+ * @param {Array<number>} wavelengths wavelengths for the preset's calibraiton points
  * @returns {CalibPreset}
  */
 export const construct = (title, wavelengths) => ({ title, wavelengths });
 
 /**
- * Return the x position of a calibration point
- * @param {CalibPt} calibrationPoint
- * @returns {number} the x position of the point
+ * Return the title of a calibration preset
+ * @param {CalibPreset} preset
+ * @returns {String} the title of the preset
  */
-export const getTitle = (calibrationPreset) => calibrationPoint.x;
+export const getTitle = (preset) => preset.x;
 
 /**
- * Return the wavelength of a calibration point
- * @param {CalibPt} calibrationPoint
- * @returns {number} the wavelength of the point
+ * Return the wavelengths of a calibration preset
+ * @param {CalibPt} preset
+ * @returns {Array<number>} the wavelengths of the preset
  */
-export const getWavelength = (calibrationPoint) => calibrationPoint.w;
+export const getWavelengths = (preset) => preset.wavelengths;
