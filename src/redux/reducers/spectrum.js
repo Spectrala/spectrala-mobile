@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { selectUncalibratedIntensities } from "./SpectrumFeed";
-import { getCalibratedIntensities } from "../../util/spectroscopyMath";
+import { getIntensityChart } from "../../util/spectroscopyMath";
 
 // Default name prefix for saving a spectrum. Will start naming as DEFAULT_NAME 1.
 const DEFAULT_NAME = "New Spectrum ";

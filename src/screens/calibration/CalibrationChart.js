@@ -4,11 +4,12 @@ import { Text, View, Colors } from "react-native-ui-lib";
 import { AreaChart, Grid } from "react-native-svg-charts";
 import { Defs, LinearGradient, Stop } from "react-native-svg";
 import { useSelector } from "react-redux";
-import { selectChartData } from "../../redux/reducers/SpectrumFeed";
+import { selectUncalibratedIntensities } from "../../redux/reducers/SpectrumFeed";
 import * as shape from "d3-shape";
 import Tick from "./Tick";
-import { selectCalibrationPoints } from "../../redux/reducers/calibration/Calibration";
+import { selectCalibrationPoints } from "../../redux/reducers/Calibration";
 import { wavelengthToRGB } from "../../util/colorUtil";
+import * as UncalibratedIntensity from "../../types/UncalibratedIntensity";
 
 const CHART_HEIGHT = 200;
 const TOP_TICK_Y = 215;
@@ -17,7 +18,7 @@ const BOTTOM_TICK_Y = 255;
 const GRADIENT_COLOR_STOPS = 100; // one less than the number of color stops placed
 
 function CalibrationChart({ horizontalInset }) {
-  const data = useSelector(selectChartData);
+  const data = useSelector(selectUncalibratedIntensities);
   const calibrationPoints = useSelector(selectCalibrationPoints);
   const [tickViewDims, setTickDims] = useState(undefined);
 
@@ -46,7 +47,7 @@ function CalibrationChart({ horizontalInset }) {
   };
 
   // https://stackoverflow.com/questions/60503898/how-to-apply-gradient-color-on-react-native-stackedareachart
-  
+
   // offset [0-1], color [#AABBCC]
   // for (let stop = 0; stop <= GRADIENT_COLOR_STOPS; stop++) {
   //   const x = stop / GRADIENT_COLOR_STOPS;
@@ -58,8 +59,8 @@ function CalibrationChart({ horizontalInset }) {
       <AreaChart
         style={{ height: CHART_HEIGHT }}
         data={data}
-        yAccessor={({ item }) => item.y}
-        xAccessor={({ item }) => item.x}
+        yAccessor={({ item }) => UncalibratedIntensity.getIntensity(item)}
+        xAccessor={({ item }) => UncalibratedIntensity.getXPosition(item)}
         yMax={100}
         yMin={0}
         contentInset={{

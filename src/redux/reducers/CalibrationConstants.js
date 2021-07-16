@@ -1,4 +1,4 @@
-import * as CalibPreset from "../../../types/CalibrationPreset";
+import * as CalibPreset from "../../types/CalibrationPreset";
 
 export const MAX_POINTS = 5;
 
@@ -9,4 +9,4 @@ export const CALIBRATION_PRESETS = [
   CalibPreset.construct("Spectrala", [458, 530, 623]),
 ];
 
-export const DEFAULT_CALIBRATION = calibrationPresets[3];
+export const DEFAULT_CALIBRATION = CALIBRATION_PRESETS[3];

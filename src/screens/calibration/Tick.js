@@ -12,7 +12,7 @@ import { Text, View } from "react-native-ui-lib";
 import {
   setActivePointPlacement,
   setPlacement,
-} from "../../redux/reducers/calibration/Calibration";
+} from "../../redux/reducers/Calibration";
 import { wavelengthToRGB } from "../../util/colorUtil";
 
 const TICK_WIDTH = 40;

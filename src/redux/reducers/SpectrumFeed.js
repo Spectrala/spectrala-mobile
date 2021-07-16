@@ -56,4 +56,7 @@ export const { updateFeed, setPreviewImage } = spectrumFeedSlice.actions;
 
 export const selectPreviewImg = (state) => state.spectrumFeed.previewImage;
 
+export const selectUncalibratedIntensities = (state) =>
+  state.spectrumFeed.uncalibratedIntensities;
+
 export default spectrumFeedSlice.reducer;

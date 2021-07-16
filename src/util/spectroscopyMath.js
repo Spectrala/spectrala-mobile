@@ -1,5 +1,6 @@
 import * as Cartesian from "../types/Cartesian";
 import * as UncalibratedIntensity from "../types/UncalibratedIntensity";
+import * as ChartPt from "../types/ChartPoint";
 
 const getAverageOfLineHistory = (intensityArrayHistory) => {
   if (!intensityArrayHistory || intensityArrayHistory.length === 0) {
@@ -51,15 +52,12 @@ export const getUncalibratedIntensities = (intensityArrayHistory) => {
  */
 
 /**
- *
- * @param {Array<UncalibratedIntensity} uncalibratedIntensities
+ * Return calibrated intensities from uncalibratedIntensities and a calibration
+ * @param {Array<UncalibratedIntensity>} uncalibratedIntensities
  * @param {Calibration} calibration
- * @returns {Array<Char....t>}
+ * @returns {Array<ChartPt>} calibrated intensities chart
  */
-export const getCalibratedIntensities = (
-  uncalibratedIntensities,
-  calibration
-) => {
+export const getIntensityChart = (uncalibratedIntensities, calibration) => {
   // Convert points from CalibPt to Cartesian
   const pts = calibration.map((point) => Cartesian.fromCalibPt(point));
 
@@ -79,11 +77,62 @@ export const getCalibratedIntensities = (
     return w_end(x);
   };
 
-  return uncalibratedIntensities.map(({ x: xPosition, i: intensity }) => ({
-    w: wavelength(xPosition),
-    y: intensity,
-  }));
+  return uncalibratedIntensities.map(({ x: xPosition, i: intensity }) =>
+    ChartPt.construct(wavelength(xPosition), intensity)
+  );
 };
 
+/**
+ * Get the intensity in an intensity chart with a wavelength closest
+ * to a given wavelength from a test chart.
+ * @param {Number} testWavelength wavelength from a testIntensityChart
+ * @param {Array<ChartPt>} intensityChart 
+ * @returns {Number} intensity from intensityChart
+ */
+const getClosestIntensity = (testWavelength, intensityChart) => {
+  const closest = intensityChart.reduce((intensityA, intensityB) => {
+    const aWavelength = ChartPt.getWavelength(intensityA);
+    const bWavelength = ChartPt.getWavelength(intensityB);
+    const distanceA = Math.abs(testWavelength - aWavelength);
+    const distanceB = Math.abs(testWavelength - bWavelength);
+    return distanceA < distanceB ? wavelengthA : wavelengthB;
+  });
+  return ChartPt.getY(closest);
+};
 
+export const computeTransmittanceChart = (
+  testIntensityChart,
+  referenceIntensityChart
+) => {
+  const transmittanceChart = testIntensityChart.map((testPoint) => {
+    const testWavelength = ChartPt.getWavelength(testPoint);
+    const testIntensity = ChartPt.getY(testPoint);
+    const referenceIntensity = getClosestIntensity(
+      testWavelength,
+      referenceIntensityChart
+    );
+    let transmittance = 0;
+    if (referenceIntensity !== 0) {
+      transmittance = testIntensity / referenceIntensity;
+    }
+    return ChartPt.construct(testWavelength, transmittance);
+  });
+  return transmittanceChart;
+};
 
+export const computeAbsorptionChart = (
+  testIntensityChart,
+  referenceIntensityChart
+) => {
+  const transmittanceChart = computeTransmittanceChart(
+    testIntensityChart,
+    referenceIntensityChart
+  );
+  const absorptionChart = transmittanceChart.map((transmittancePoint) => {
+    const wavelength = ChartPt.getWavelength(transmittancePoint);
+    const transmittance = ChartPt.getY(transmittancePoint);
+    const absorption = -Math.log10(transmittance);
+    return ChartPt.construct(wavelength, absorption);
+  });
+  return absorptionChart;
+};
