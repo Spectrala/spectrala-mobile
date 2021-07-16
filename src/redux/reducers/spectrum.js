@@ -21,7 +21,7 @@ const DEFAULT_NAME = "New Spectrum ";
  */
 const addNewSpectrum = (currentArray, intensity) => {
   let key = Math.max(...currentArray.map((r) => r.key)) + 1;
-  const name = defaultName + key;
+  const name = DEFAULT_NAME + key;
   currentArray.push({ key, name, intensity });
   return currentArray;
 };

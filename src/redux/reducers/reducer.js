@@ -1,5 +1,5 @@
 import { combineReducers } from "redux";
-import calibrationReducer from "./calibration/Calibration";
+import calibrationReducer from "./Calibration";
 import readerBoxReducer from "./ReaderBox";
 import spectrumReducer from "./Spectrum";
 import spectrumFeedReducer from "./SpectrumFeed";
