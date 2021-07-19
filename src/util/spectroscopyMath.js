@@ -2,6 +2,11 @@ import * as Cartesian from "../types/Cartesian";
 import * as UncalibratedIntensity from "../types/UncalibratedIntensity";
 import * as ChartPt from "../types/ChartPoint";
 
+/**
+ * Averages multiple arrays element-wise. 
+ * @param {Array<Array<Number>>} intensityArrayHistory Previous intensity arrays
+ * @returns {Array<Number>} All intensity arrays, averaged.
+ */
 const getAverageOfLineHistory = (intensityArrayHistory) => {
   if (!intensityArrayHistory || intensityArrayHistory.length === 0) {
     return null;
@@ -23,7 +28,7 @@ const getAverageOfLineHistory = (intensityArrayHistory) => {
  * Assigns x values to intensityArrayHistory to get an
  * unclaibrated intensity chart.
  * @param {Array<Number>} intensityArrayHistory
- * @returns {Array<UncalibratedIntensity}
+ * @returns {Array<UncalibratedIntensity>}
  */
 export const getUncalibratedIntensities = (intensityArrayHistory) => {
   const intensitiesArr = getAverageOfLineHistory(intensityArrayHistory);
@@ -39,12 +44,15 @@ export const getUncalibratedIntensities = (intensityArrayHistory) => {
 /**
  * Process for calibration:
  *
- * Input a raw array of pixel intensities and calibration points and output an array of wavelength and intensitiy pairs.
- * The method used to do this is
- *   1. Assign each calibration point an x value of placement and a y value of wavelength
- *   2. Use point-slope to get a straight line between the points with the lowest x and highest x
+ * Input a raw array of pixel intensities and calibration points and output 
+ * an array of wavelength and intensitiy pairs. The method used to do this is:
+ *   1. Assign each calibration point an x value of placement and a y value of
+ *      wavelength
+ *   2. Use point-slope to get a straight line between the points with the 
+ *      lowest x and highest x
  *   3. Use linearSpline to draw a linear spline through all points
- *   4. Create a wavelength(x) function which uses the line from step 3 for x values between the two endpoints and otherwise the line from step 2
+ *   4. Create a wavelength(x) function which uses the line from step 3 for x 
+ *      values between the two endpoints and otherwise the line from step 2
  *   5. Map all pixel intensities to wavelength values
  *      i. Calculate position fom 0 to 1 inside the array
  *      ii. Use value from step 5i for wavelength(x)
@@ -86,7 +94,7 @@ export const getIntensityChart = (uncalibratedIntensities, calibration) => {
  * Get the intensity in an intensity chart with a wavelength closest
  * to a given wavelength from a test chart.
  * @param {Number} testWavelength wavelength from a testIntensityChart
- * @param {Array<ChartPt>} intensityChart 
+ * @param {Array<ChartPt>} intensityChart
  * @returns {Number} intensity from intensityChart
  */
 const getClosestIntensity = (testWavelength, intensityChart) => {
@@ -100,6 +108,13 @@ const getClosestIntensity = (testWavelength, intensityChart) => {
   return ChartPt.getY(closest);
 };
 
+/**
+ * Given a test spectrum and reference spectrum (both in terms of intensity),
+ * returns the transmittance spectrum.
+ * @param {Array<ChartPt>} testIntensityChart intensity of test sample
+ * @param {Array<ChartPt>} referenceIntensityChart intensity of reference sample
+ * @returns {Array<ChartPt>} transmittance of test sample
+ */
 export const computeTransmittanceChart = (
   testIntensityChart,
   referenceIntensityChart
@@ -120,6 +135,13 @@ export const computeTransmittanceChart = (
   return transmittanceChart;
 };
 
+/**
+ * Given a test spectrum and reference spectrum (both in terms of intensity),
+ * returns the absorption spectrum.
+ * @param {Array<ChartPt>} testIntensityChart intensity of test sample
+ * @param {Array<ChartPt>} referenceIntensityChart intensity of reference sample
+ * @returns {Array<ChartPt>} absorption of test sample
+ */
 export const computeAbsorptionChart = (
   testIntensityChart,
   referenceIntensityChart

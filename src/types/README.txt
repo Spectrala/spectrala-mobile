@@ -6,3 +6,6 @@ expansion.
 
 These classes simply manipulate plain javascript objects. They are
 completely serializable (for redux) and purely stylistic.
+
+This system is more robust for renaming- the client side doesn't need
+to worry about the data stored in the backend.

@@ -21,10 +21,7 @@ import { fullDims } from "../../components/CameraLoader";
 const CIRCLE_RADIUS = 20;
 
 function DraggablePointsContainer({ width }) {
-  const lineCoords = useSelector(
-    selectLineCoords,
-    (a, b) => false // TODO: fix hack
-  );
+  const lineCoords = useSelector(selectLineCoords);
   const corners = useSelector(selectCorners);
   const dispatch = useDispatch();
 

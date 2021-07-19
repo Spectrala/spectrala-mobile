@@ -1,78 +1,33 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { selectUncalibratedIntensities } from "./SpectrumFeed";
-import { getIntensityChart } from "../../util/spectroscopyMath";
-
-// Default name prefix for saving a spectrum. Will start naming as DEFAULT_NAME 1.
-const DEFAULT_NAME = "New Spectrum ";
-
-/**
- * addNewSpectrum
- *      Adds a new spectrum to the list of stored spectra.
- *
- *      Returns: (array) -- the array of recorded spectra.
- *      Format:
- *      [{
- *          key: 2
- *          name: "Water"
- *          intensity: [{x: 338.3, y: 44.2}]
- *      }]
- * @param {array} currentArray - the current array of recorded spectra
- * @param {array} intensity - the intensitiy data to record in the recorded spectra array
- */
-const addNewSpectrum = (currentArray, intensity) => {
-  let key = Math.max(...currentArray.map((r) => r.key)) + 1;
-  const name = DEFAULT_NAME + key;
-  currentArray.push({ key, name, intensity });
-  return currentArray;
-};
+import * as Spectrum from "../../types/Spectrum";
 
 export const spectrumSlice = createSlice({
   name: "spectra",
   initialState: {
-    spectrum: null,
-    recorded_spectra: [],
-    key_being_used: null,
+    recordedSpectra: [],
+    referenceKey: null,
   },
   reducers: {
     recordSpectrum: (state, action) => {
-      // TODO: Verify spectrum is okay. Right now that is only done in the button.
-      const key = action.payload.data;
-      const refs = state.recorded_spectra;
-      const recorded = addNewSpectrum(refs, data);
-
-      // To automatically use the reference
-      state.key_being_used = recorded[recorded.length - 1].key;
-      state.recorded_spectra = recorded;
+      const spectrum = action.payload.spectrum;
+      state.recordedSpectra.push(spectrum);
     },
     removeSpectrum: (state, action) => {
       const idx = action.payload.targetIndex;
-      let recorded = state.recorded_spectra;
-      recorded.splice(idx, 1);
-      state.recorded_spectra = recorded;
+      state.recordedSpectra.splice(idx, 1);
     },
-    renameSpectrum: (state, action) => {
+    updateSpectrum: (state, action) => {
       const idx = action.payload.targetIndex;
-      const name = action.payload.name;
-      let recorded = state.recorded_spectra;
-      recorded[idx].name = name;
-      state.recorded_spectra = recorded;
+      const spectrum = action.payload.spectrum;
+      state.recordedSpectra[idx] = spectrum;
     },
     removeReference: (state, action) => {
-      state.recorded_spectra = setIsReferenceFalse(state.recorded_spectra);
-      state.preferredSpectrum = SPECTRUM_OPTIONS.INTENSITY;
+      state.referenceKey = null;
     },
     setReference: (state, action) => {
       const idx = action.payload.targetIndex;
-      let recorded = setIsReferenceFalse(state.recorded_spectra);
-      recorded[idx].isReference = true;
-      state.recorded_spectra = recorded;
-    },
-    setRecordedSpectra: (state, action) => {
-      const recorded = action.payload.value;
-      state.recorded_spectra = recorded;
-    },
-    setPreferredSpectrum: (state, action) => {
-      state.preferredSpectrum = action.payload.preferredSpectrum;
+      const reference = state.recordedSpectra[idx];
+      state.referenceKey = Spectrum.getKey(reference);
     },
   },
 });
@@ -80,89 +35,30 @@ export const spectrumSlice = createSlice({
 export const {
   recordSpectrum,
   removeSpectrum,
-  renameSpectrum,
+  updateSpectrum,
   removeReference,
   setReference,
-  setPreferredSpectrum,
-  setRecordedSpectra,
 } = spectrumSlice.actions;
 
 /**
- * selectReferenceIntensity
- *      Get the intensity values of the reference spectrum used for creating a resultant spectrum.
- *      This will be what the user has selected.
- *
- *      Returns: array. Looks like this: [{x: 338.3, y: 44.2}].
+ * Get the current reference spectrum from the store
+ * @param {Object} state Redux store state 
+ * @returns {Spectrum} the refrence spectrum
  */
-export const selectReferenceIntensity = (state) => {
-  const reference = state.spectra.recorded_spectra.filter((s) => s.isReference);
-  if (reference.length === 0) {
-    return null;
-  }
-  return reference[0].data;
-};
-
-// TODO: make this look professional
-// get nearest neighbor (in x position) to a parent x value of neighborArray and return the neighborArray y value.
-const getNeighborY = (parentX, neighborArray) => {
-  if (!neighborArray) {
-    console.error("Tried to compute neighbor Y of a null array");
-    return null;
-  }
-
-  const closest = neighborArray.reduce((a, b) => {
-    return Math.abs(a.x - parentX) < Math.abs(b.x - parentX) ? a : b;
-  });
-  return closest.y;
-};
-
-export const computeTransmittance = (target, reference) => {
-  let transmittance = target.map((t) => {
-    const r = getNeighborY(t.x, reference);
-    const transmit = r === 0 ? 0 : t.y / r;
-    return { x: t.x, y: transmit };
-  });
-  return transmittance;
-};
-
-export const computeAbsorbance = (target, reference) => {
-  let transmittance = computeTransmittance(target, reference);
-  let absorbance = transmittance.map((t) => {
-    return { x: t.x, y: -Math.log10(t.y) };
-  });
-  return absorbance;
-};
-
-export const selectIntensity = (state) => {
-  const pixelLine = selectValidateCalibratedPixelLine(state);
-  if (!pixelLine.valid) return pixelLine;
-  return pixelLine.data;
-};
-
-export const selectTransmittance = (state) => {
-  const intensity = selectIntensity(state);
-  const reference = selectReferenceIntensity(state);
-  return computeTransmittance(intensity, reference);
-};
-
-export const selectAbsorbance = (state) => {
-  const intensity = selectIntensity(state);
-  const reference = selectReferenceIntensity(state);
-  return computeAbsorbance(intensity, reference);
+export const selectReferenceSpectrum = (state) => {
+  const key = state.spectra.referenceKey;
+  const spectra = state.spectra.recordedSpectra;
+  const reference = spectra.find((s) => Spectrum.getKey(s) === key);
+  return reference;
 };
 
 /**
- * selectRecordedSpectra
- *      Returns (array) -- the list of recorded spectra.
- *      Format:
- *      [{
- *          key: 2
- *          name: "Water"
- *          data: [{x: 338.3, y: 44.2}]
- *      }]
+ * Return all recorded spectra from the redux store.
+ * @param {Object} state Redux store state
+ * @returns {Array<Spectrum>} Array of recorded spectra
  */
 export const selectRecordedSpectra = (state) => {
-  return state.spectra.recorded_spectra;
+  return state.spectra.recordedSpectra;
 };
 
 export default spectrumSlice.reducer;
