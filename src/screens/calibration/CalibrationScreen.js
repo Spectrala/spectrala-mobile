@@ -25,7 +25,7 @@ export default function CalibrationScreen() {
 
       <View style={styles.container}>
         <Card style={styles.previewImageCard}>
-          <Image style={styles.previewImage} source={{ uri: previewImage }} />
+          <Image style={styles.previewImage} fadeDuration={0}  source={{ uri: previewImage }} />
         </Card>
         <Button
           label="Flip image"
