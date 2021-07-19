@@ -6,15 +6,8 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import ModeSwitcher from "./ModeSwitcher";
 import CapturedList from "./CapturedList";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  selectValidateLiveSpectrum,
-  selectIntensity,
-  SPECTRUM_OPTIONS,
-  setPreferredSpectrum,
-  selectPreferredSpectrumOption,
-  selectHasReference,
-  recordSpectrum,
-} from "../../redux/reducers/Spectrum";
+import { recordSpectrum } from "../../redux/reducers/Spectrum";
+import * as Spectrum from "../../types/Spectrum";
 
 const CHART_HEIGHT = 200;
 const CHART_MARGIN = 16;
@@ -28,7 +21,6 @@ export default function CaptureScreen({ navigation }) {
   const intensities = useSelector(selectIntensity);
 
   const dispatch = useDispatch();
-
 
   const spectrumViewOptions = [
     SPECTRUM_OPTIONS.INTENSITY,

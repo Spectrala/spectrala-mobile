@@ -36,11 +36,14 @@ export const spectrumFeedSlice = createSlice({
        */
       if (lineHist.length > 0 && lineHist[0].length === newLine.length) {
         if (lineHist.length >= PIXEL_LINE_HISTORY_DEPTH)
+          // Remove the first element of line hisotry
           lineHist = lineHist.slice(
             PIXEL_LINE_HISTORY_DEPTH - lineHist.length + 1
           );
+        // Add the most recent line ot the end of the history array
         lineHist.push(newLine);
       } else {
+        // If there is a size mismatch or no line history, restart history.
         lineHist = [newLine];
       }
       state.intensityArrayHistory = lineHist;
