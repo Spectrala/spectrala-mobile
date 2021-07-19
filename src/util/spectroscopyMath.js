@@ -65,7 +65,7 @@ export const getUncalibratedIntensities = (intensityArrayHistory) => {
  * @param {Calibration} calibration
  * @returns {Array<ChartPt>} calibrated intensities chart
  */
-export const getIntensityChart = (uncalibratedIntensities, calibration) => {
+export const computeIntensityChart = (uncalibratedIntensities, calibration) => {
   // Convert points from CalibPt to Cartesian
   const pts = calibration.map((point) => Cartesian.fromCalibPt(point));
 
@@ -74,10 +74,10 @@ export const getIntensityChart = (uncalibratedIntensities, calibration) => {
   const upperBound = pts[pts.length - 1];
 
   // If a point falls on the end, only compute wavelength with endpoints
-  const w_end = Cartesian.pointSlope(lowerBound, upperBound);
+  const w_end = Cartesian.getPointSlopeEquation(lowerBound, upperBound);
 
   // If a point falls in the middle, compute wavelength with nearest calibration points
-  const w_middle = (x) => Cartesian.linearSpline(pts, x);
+  const w_middle = (x) => Cartesian.interpolateYFromData(pts, x);
 
   const wavelength = (x) => {
     if (pts.length < 3) return w_end(x);

@@ -94,7 +94,6 @@ export default function CameraLoader({ collectsFrames }) {
       // Call when starting a session with tensors to prevent leaks
       tf.engine().startScope();
       const state = store.store.getState();
-      // console.log(state.calibration.activePointPlacement);
       if (!state.calibration.activePointPlacement) {
         const nextImg = images.next().value;
         collectsFrames && nextImg && updateLineData(nextImg, state);

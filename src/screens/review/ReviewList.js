@@ -12,7 +12,7 @@ import {
   removeReference,
   setReference,
   setRecordedSpectra,
-} from "../../redux/reducers/Spectrum";
+} from "../../redux/reducers/RecordedSpectra";
 
 const CHART_HEIGHT = 200;
 const CHART_MARGIN = 16;

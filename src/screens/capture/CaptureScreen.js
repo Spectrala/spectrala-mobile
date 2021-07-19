@@ -6,7 +6,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import ModeSwitcher from "./ModeSwitcher";
 import CapturedList from "./CapturedList";
 import { useDispatch, useSelector } from "react-redux";
-import { recordSpectrum } from "../../redux/reducers/Spectrum";
+import { recordSpectrum } from "../../redux/reducers/RecordedSpectra";
 import * as Spectrum from "../../types/Spectrum";
 
 const CHART_HEIGHT = 200;

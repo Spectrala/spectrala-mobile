@@ -45,7 +45,7 @@ export const {
  * @param {Object} state Redux store state 
  * @returns {Spectrum} the refrence spectrum
  */
-export const selectReferenceSpectrum = (state) => {
+export const selectReferenceIntensity = (state) => {
   const key = state.spectra.referenceKey;
   const spectra = state.spectra.recordedSpectra;
   const reference = spectra.find((s) => Spectrum.getKey(s) === key);

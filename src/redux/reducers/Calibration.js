@@ -18,7 +18,7 @@ export const calibrationSlice = createSlice({
   reducers: {
     setPlacement: (state, action) => {
       const point = state.calibration[action.payload.targetIndex];
-      CalibPt.setXPosition(point, action.payload.x);
+      CalibPt.setXPosition(point, action.payload.placement);
     },
     setPreset: (state, action) => {
       const preset = action.payload.preset;

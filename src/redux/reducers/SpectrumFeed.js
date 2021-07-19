@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getUncalibratedIntensities } from "../../util/spectroscopyMath";
+import { getUncalibratedIntensities, computeIntensityChart } from "../../util/spectroscopyMath";
 
 // Samples included in the moving average
 const PIXEL_LINE_HISTORY_DEPTH = 5;
@@ -59,7 +59,12 @@ export const { updateFeed, setPreviewImage } = spectrumFeedSlice.actions;
 
 export const selectPreviewImg = (state) => state.spectrumFeed.previewImage;
 
-export const selectUncalibratedIntensities = (state) =>
-  state.spectrumFeed.uncalibratedIntensities;
+export const selectIntensityChart = (state) => {
+  const uncalibrated = state.spectrumFeed.uncalibratedIntensities;
+  const calibration = state.calibration.calibration;
+  if (!uncalibrated || !calibration) return null;
+  return computeIntensityChart(uncalibrated, calibration);
+}
+
 
 export default spectrumFeedSlice.reducer;

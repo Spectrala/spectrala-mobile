@@ -13,7 +13,7 @@ import {
   setPreferredSpectrum,
   selectPreferredSpectrumOption,
   selectHasReference,
-} from "../../redux/reducers/Spectrum";
+} from "../../redux/reducers/RecordedSpectra";
 
 const CHART_HEIGHT = 200;
 const CHART_MARGIN = 16;
