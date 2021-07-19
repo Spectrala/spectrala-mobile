@@ -122,6 +122,13 @@ const trim = async (imgRotated) => {
   return trimmedImg;
 };
 
+// Flip image left to right, only if necessary
+const flip = (img) => {
+  const img4d = img.expandDims();
+  const flipped4d = tf.image.flipLeftRight(img4d);
+  return flipped4d.squeeze();
+}
+
 /**
  * Function used to extract intensity from any given pixel
  * during reading an image from the box.
@@ -160,11 +167,12 @@ const reduceHorizontal = (intensities) => Math.round(Math.max(...intensities));
 
 export const getLineData = async (tensor, readerBox) => {
   // if (tensor.max().arraySync() === 0) return null;
-  const { corners, angle } = readerBox;
+  const { corners, angle, isFlipped } = readerBox;
   const rotated = tf.tidy(() => {
     const crude = flagAndCrop(tensor, corners);
     const padded = pad(crude);
-    return rotate(padded, angle);
+    const rotated = rotate(padded, angle);
+    return isFlipped ? flip(rotated) : rotated;
   });
   const trimmed = await trim(rotated);
   const previewUri = await getPreviewUri(trimmed);

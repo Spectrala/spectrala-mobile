@@ -12,6 +12,7 @@ export const readerBoxSlice = createSlice({
       { x: 0.8, y: 0.5679347826086957 },
     ],
     angle: 0,
+    isFlipped: true,
   },
   reducers: {
     updateReaderBoxData: (state, action) => {
@@ -20,10 +21,13 @@ export const readerBoxSlice = createSlice({
     updateReaderWidth: (state, action) => {
       state.width = action.payload.value;
     },
+    toggleIsFlipped: (state, action) => {
+      state.isFlipped = !state.isFlipped;
+    },
   },
 });
 
-export const { updateReaderBoxData, updateReaderWidth } =
+export const { updateReaderBoxData, updateReaderWidth, toggleIsFlipped } =
   readerBoxSlice.actions;
 
 export const selectLineCoords = (state) => state.readerBox.lineCoords;
@@ -35,5 +39,7 @@ export const selectAngle = (state) => state.readerBox.angle;
 export const selectReaderWidth = (state) => state.readerBox.width;
 
 export const selectReaderLength = (state) => state.readerBox.length;
+
+export const selectIsFlipped = (state) => state.readerBox.isFlipped;
 
 export default readerBoxSlice.reducer;

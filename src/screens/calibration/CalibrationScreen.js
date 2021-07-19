@@ -1,17 +1,21 @@
 import React from "react";
 import { StyleSheet, Image } from "react-native";
-import { View, Card } from "react-native-ui-lib";
+import { View, Card, Button } from "react-native-ui-lib";
 import CalibrationChart from "./CalibrationChart";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { selectActivePointPlacement } from "../../redux/reducers/Calibration";
-import { selectPreviewImg } from "../../redux/reducers/SpectrumFeed";
+import { toggleIsFlipped } from "../../redux/reducers/ReaderBox";
+import {
+  selectPreviewImg,
+  resetIntensityArrayHistory,
+} from "../../redux/reducers/SpectrumFeed";
 import CameraLoader from "../../components/CameraLoader";
-
 const CHART_INSET = 24;
 
 export default function CalibrationScreen() {
   const previewImage = useSelector(selectPreviewImg);
   const isActivelyPlacing = useSelector(selectActivePointPlacement);
+  const dispatch = useDispatch();
 
   return (
     <>
@@ -23,7 +27,14 @@ export default function CalibrationScreen() {
         <Card style={styles.previewImageCard}>
           <Image style={styles.previewImage} source={{ uri: previewImage }} />
         </Card>
-
+        <Button
+          label="Flip image"
+          onPress={() => {
+            dispatch(toggleIsFlipped());
+            dispatch(resetIntensityArrayHistory());
+          }}
+          style={styles.flipButton}
+        />
         <Card style={styles.chart}>
           <CalibrationChart horizontalInset={CHART_INSET} />
         </Card>
@@ -48,6 +59,13 @@ const styles = StyleSheet.create({
   previewImageCard: {
     width: "100%",
     height: 100,
+    marginBottom: 20,
+  },
+  flipButton: {
+    width: "40%",
+    height: 40,
+    color: "white",
+    alignSelf: "center",
     marginBottom: 20,
   },
   previewImage: {
