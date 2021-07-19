@@ -1,71 +1,47 @@
-import React, { useEffect } from "react";
-import { StyleSheet } from "react-native";
-import { View } from "react-native-ui-lib";
+import React from "react";
+import { StyleSheet, Image } from "react-native";
+import { View, Card, Button, Colors } from "react-native-ui-lib";
 import CaptureChart from "./CaptureChart";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import ModeSwitcher from "./ModeSwitcher";
-import CapturedList from "./CapturedList";
-import { useDispatch, useSelector } from "react-redux";
-import { recordSpectrum } from "../../redux/reducers/RecordedSpectra";
-import * as Spectrum from "../../types/Spectrum";
+import { useSelector, useDispatch } from "react-redux";
+import { selectActivePointPlacement } from "../../redux/reducers/Calibration";
+import { toggleIsFlipped } from "../../redux/reducers/ReaderBox";
+import {
+  selectPreviewImg,
+  resetIntensityArrayHistory,
+  selectIntensityChart,
+} from "../../redux/reducers/SpectrumFeed";
+import CameraLoader from "../../components/CameraLoader";
+import { TouchableOpacity } from "react-native";
+const CHART_INSET = 24;
+const INNER_CIRCLE_SIZE = 70;
+const CIRCLE_RING_SPACE = 10;
 
-const CHART_HEIGHT = 200;
-const CHART_MARGIN = 16;
-const MODE_BUTTON_HEIGHT = 24;
-const CAPTURE_BUTTON_RADIUS = 38;
-
-export default function CaptureScreen({ navigation }) {
-  const data = useSelector(selectValidateLiveSpectrum);
-  const viewSpect = useSelector(selectPreferredSpectrumOption);
-  const hasReference = useSelector(selectHasReference);
-  const intensities = useSelector(selectIntensity);
-
+export default function CaptureScreen() {
+  const previewImage = useSelector(selectPreviewImg);
+  const intensityChart = useSelector(selectIntensityChart);
   const dispatch = useDispatch();
-
-  const spectrumViewOptions = [
-    SPECTRUM_OPTIONS.INTENSITY,
-    SPECTRUM_OPTIONS.TRANSMITTANCE,
-    SPECTRUM_OPTIONS.ABSORBANCE,
-  ];
-
-  function isEnabled(option) {
-    if (option === SPECTRUM_OPTIONS.INTENSITY) return true;
-    // Only show transmittance/absorbance if there is a reference spectrum
-    return hasReference === true;
-  }
-
-  const captureSpectrum = () => {
-    dispatch(recordSpectrum({ data: intensities }));
-  };
 
   return (
     <>
+      <View style={{ ...styles.container, opacity: 0 }}>
+        <CameraLoader collectsFrames />
+      </View>
+
       <View style={styles.container}>
-        <View style={styles.chart}>
-          <CaptureChart
-            spectrumData={data}
-            spectrumViewOption={viewSpect}
-            spectrumViewOptions={SPECTRUM_OPTIONS}
+        <Card style={styles.previewImageCard}>
+          <Image
+            style={styles.previewImage}
+            fadeDuration={0}
+            source={{ uri: previewImage }}
           />
-        </View>
-        <ModeSwitcher
-          selectedViewOption={viewSpect}
-          spectrumViewOptions={spectrumViewOptions}
-          onPress={(spectrumOption) => {
-            dispatch(
-              setPreferredSpectrum({
-                preferredSpectrum: spectrumOption,
-              })
-            );
-          }}
-          optionIsEnabled={isEnabled}
-        />
-        <CapturedList />
-        <View style={styles.captureContainer}>
-          <TouchableOpacity
-            style={styles.captureButton}
-            onPress={captureSpectrum}
-          ></TouchableOpacity>
+        </Card>
+        <Card style={styles.chart}>
+          <CaptureChart horizontalInset={CHART_INSET} data={intensityChart} />
+        </Card>
+        <View style={styles.captureButtonContainer}>
+          <TouchableOpacity style={styles.captureButtonArea}>
+            <View style={styles.cameraCircle} />
+          </TouchableOpacity>
         </View>
       </View>
     </>
@@ -74,40 +50,44 @@ export default function CaptureScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    left: 0,
     height: "100%",
   },
   chart: {
     width: "100%",
-    height: CHART_HEIGHT,
+    height: 30,
   },
-  modeContainer: {
-    justifyContent: "space-around",
-    flexDirection: "row",
-    alignContent: "center",
-  },
-  modeButton: {
-    justifyContent: "center",
-    height: MODE_BUTTON_HEIGHT,
-  },
-  modeButtonText: {
-    fontSize: 14,
-    fontWeight: "bold",
-  },
-  captureContainer: {
-    backgroundColor: "gray",
-    height: 80,
-    position: "absolute",
-    bottom: 0,
+  previewImageCard: {
     width: "100%",
-    justifyContent: "flex-start",
+    height: 100,
+  },
+  previewImage: {
+    flex: 1,
+    marginBottom: 20,
+    marginHorizontal: CHART_INSET,
+    resizeMode: "stretch",
+  },
+  captureButtonContainer: {
+    height: INNER_CIRCLE_SIZE,
+    width: "100%",
     alignItems: "center",
   },
-  captureButton: {
-    borderRadius: CAPTURE_BUTTON_RADIUS,
-    width: CAPTURE_BUTTON_RADIUS * 2,
-    height: CAPTURE_BUTTON_RADIUS * 2,
-    borderWidth: 3,
-    top: -CAPTURE_BUTTON_RADIUS * 0.618,
-    backgroundColor: "white",
+  captureButtonArea: {
+    height: INNER_CIRCLE_SIZE + CIRCLE_RING_SPACE,
+    width: INNER_CIRCLE_SIZE + CIRCLE_RING_SPACE,
+    borderRadius: (CIRCLE_RING_SPACE + INNER_CIRCLE_SIZE) / 2,
+    borderWidth: 2,
+    alignItems: "center",
+    justifyContent: "center",
+    borderColor: Colors.primary,
+  },
+  cameraCircle: {
+    width: INNER_CIRCLE_SIZE,
+    height: INNER_CIRCLE_SIZE,
+    backgroundColor: Colors.primary,
+    borderRadius: INNER_CIRCLE_SIZE / 2,
   },
 });

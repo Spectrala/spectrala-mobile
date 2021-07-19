@@ -61,30 +61,17 @@ const styles = StyleSheet.create({
     height: 100,
     marginBottom: 20,
   },
-  flipButton: {
-    width: "40%",
-    height: 40,
-    color: "white",
-    alignSelf: "center",
-    marginBottom: 20,
-  },
   previewImage: {
     flex: 1,
     marginBottom: 20,
     marginHorizontal: CHART_INSET,
     resizeMode: "stretch",
   },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
-  },
-  picker: {
-    zIndex: 30, // works on ios
-    elevation: 30, // works on android
+  flipButton: {
+    width: "40%",
+    height: 40,
+    color: "white",
+    alignSelf: "center",
+    marginBottom: 20,
   },
 });

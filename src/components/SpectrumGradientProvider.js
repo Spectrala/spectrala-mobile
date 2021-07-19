@@ -11,10 +11,10 @@ const GRADIENT_COLOR_STOPS = 20;
  * Usage: set svg={{ fill: "url(#grad)" }}
  *
  * @param {Array<ChartPt>} chartData intensity/transmittance/absorption data
- * @param {String} id the CSS id to assign the gardient. Defaults to "grad".
- * @returns <LinearGradient> svg component with id "grad"
+ * @param {String} id the CSS id to assign the gardient.
+ * @returns <LinearGradient> svg component with given id
  */
-function SpectrumGradientProvider({ chartData, id = "grad" }) {
+function SpectrumGradientProvider({ chartData, id }) {
   /**
    * To be filled with
    * {
@@ -36,6 +36,8 @@ function SpectrumGradientProvider({ chartData, id = "grad" }) {
     newColors && setColorStops(newColors);
   }, [chartData]);
 
+  // On using LinearGradient:
+  // https://stackoverflow.com/questions/60503898/how-to-apply-gradient-color-on-react-native-stackedareachart
   return (
     <LinearGradient id={id} x1={0} y1={0} x2={1} y2={0}>
       {colorStops.map(({ offset, color }, idx) => (

@@ -1,139 +1,94 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React, { useState } from "react";
 import { StyleSheet } from "react-native";
 import { Text, View } from "react-native-ui-lib";
-import { useTheme } from "@react-navigation/native";
-import { AreaChart, Grid, XAxis, YAxis } from "react-native-svg-charts";
+import { AreaChart, Grid, YAxis, XAxis } from "react-native-svg-charts";
+import { Defs } from "react-native-svg";
+import { useSelector } from "react-redux";
+import { selectIntensityChart } from "../../redux/reducers/SpectrumFeed";
+import * as shape from "d3-shape";
+import * as ChartPt from "../../types/ChartPoint";
+import { selectCalibrationPoints } from "../../redux/reducers/Calibration";
+import SpectrumGradientProvider from "../../components/SpectrumGradientProvider";
 
-const CHART_INSET = 30;
-
-function CaptureChart(props) {
-  const { colors } = useTheme();
-
-  if (!props.spectrumData) {
+const CHART_HEIGHT = 200;
+const X_AXIS_HEIGHT = 10;
+const AXES_FONT_SIZE = 10;
+const INSET_TOP = 10;
+const INSET_BOTTOM = 5;
+const GRADIENT_ID = "grad";
+function CaptureChart({ data, yRange = [0, 100] }) {
+  if (!data) {
     return <Text>Loading...</Text>;
-  } else if (!props.spectrumData.isValid()) {
-    return <Text>{props.spectrumData.getMessage()}</Text>;
   }
 
-  /**
-   * Converts a string of an rgb color formatted like "rgb(0,2,255)"
-   * to a hex string like "#0002FF"
-   * @param {string} str - the rgb string to convert to hex
-   * @returns {string} the reformatted string
-   */
-  const rgbToHexColor = (str) => {
-    return (
-      "#" +
-      str
-        .replace("rgb(", "")
-        .replace(")", "")
-        .split(",")
-        .map((x) => parseInt(x).toString(16).padStart(2, "0"))
-        .join("")
-        .toUpperCase()
-    );
-  };
-
-  const data = props.spectrumData.data;
-
-  const min_x_value = data[0].x;
-  const max_x_value = data[data.length - 1].x;
-
-  let y_range =
-    props.spectrumViewOption === props.spectrumViewOptions.INTENSITY
-      ? [0, 100]
-      : [undefined, undefined];
-
-  const contentInset = {
-    top: 0,
-    bottom: 0,
-    left: CHART_INSET,
-    right: CHART_INSET,
-  };
-
-  const axesSvg = { fontSize: 10, fill: "grey" };
-  const verticalContentInset = { top: 10, bottom: 5 };
-  const xAxisHeight = 10;
-
-  // Layout of an x-axis together with a y-axis is a problem that stems from flexbox.
-  // All react-native-svg-charts components support full flexbox and therefore all
-  // layout problems should be approached with the mindset "how would I layout regular Views with flex in this way".
-  // In order for us to align the axes correctly we must know the height of the x-axis or the width of the x-axis
-  // and then displace the other axis with just as many pixels. Simple but manual.
+  const xRange = [
+    ChartPt.getWavelength(data[0]),
+    ChartPt.getWavelength(data[data.length - 1]),
+  ];
 
   return (
-    <View style={{ height: "100%", padding: 10, flexDirection: "row" }}>
+    <View style={styles.master}>
       <YAxis
-        data={data.map((p) => p.y)}
-        style={{ marginBottom: xAxisHeight }}
-        contentInset={verticalContentInset}
-        svg={axesSvg}
+        data={data.map((p) => ChartPt.getY(p))}
+        style={styles.yAxis}
+        contentInset={{ top: INSET_TOP, bottom: INSET_BOTTOM }}
+        svg={{ fontSize: AXES_FONT_SIZE, fill: "grey" }}
         numberOfTicks={5}
-        min={y_range[0]}
-        max={y_range[1]}
+        min={yRange[0]}
+        max={yRange[1]}
       />
-      <View style={{ flex: 1, marginLeft: 10 }}>
+      <View style={styles.innerView}>
         <AreaChart
-          style={{ flex: 1 }}
+          style={{ height: CHART_HEIGHT }}
           data={data}
-          yAccessor={({ item }) => item.y}
-          xAccessor={({ item }) => item.x}
-          yMin={y_range[0]}
-          yMax={y_range[1]}
-          xMin={min_x_value}
-          xMax={max_x_value}
-          contentInset={verticalContentInset}
-          svg={{
-            fill: rgbToHexColor(colors.primary) + "99",
-            stroke: rgbToHexColor(colors.primary),
+          yAccessor={({ item }) => ChartPt.getY(item)}
+          xAccessor={({ item }) => ChartPt.getWavelength(item)}
+          yMax={yRange[1]}
+          yMin={yRange[0]}
+          min={xRange[0]}
+          max={xRange[1]}
+          contentInset={{
+            top: INSET_TOP,
+            bottom: INSET_BOTTOM,
+            left: 0,
+            right: 0,
           }}
+          curve={shape.curveBasis}
+          svg={{ fill: `url(#${GRADIENT_ID})` }}
         >
           <Grid />
+          <Defs>
+            <SpectrumGradientProvider chartData={data} id={GRADIENT_ID} />
+          </Defs>
         </AreaChart>
         <XAxis
-          style={{ marginHorizontal: -10, height: xAxisHeight }}
-          data={data.map((p) => p.x)}
+          style={{ marginHorizontal: -10, height: X_AXIS_HEIGHT }}
+          data={data.map((p) => ChartPt.getWavelength(p))}
           formatLabel={(value, index) => value}
           contentInset={{ left: 10, right: 10 }}
           numberOfTicks={5}
-          min={min_x_value}
-          max={max_x_value}
-          svg={axesSvg}
+          svg={{ fontSize: AXES_FONT_SIZE, fill: "grey" }}
+          min={xRange[0]}
+          max={xRange[1]}
         />
       </View>
     </View>
   );
 }
 
-// TODO: use some real data.
-
-CaptureChart.propTypes = {
-  margin: PropTypes.number,
-  spectrumData: PropTypes.any,
-  spectrumViewOption: PropTypes.string,
-  spectrumViewOptions: PropTypes.object,
-};
-
 const styles = StyleSheet.create({
-  chartContainer: {
-    height: "100%",
+  master: {
+    padding: 10,
+    flexDirection: "row",
+    height: CHART_HEIGHT,
+  },
+  innerView: {
     flex: 1,
-    flexDirection: "column",
+    marginLeft: 10,
   },
   yAxis: {
-    width: 20,
-    top: 0,
-    bottom: 0,
-    backgroundColor: "lime",
-  },
-  masterChartContainer: {
-    flexDirection: "row",
-    flex: 1,
-    paddingBottom: 16,
-  },
-  area: {
-    height: "100%",
+    height: CHART_HEIGHT,
+    marginBottom: X_AXIS_HEIGHT,
   },
 });
 

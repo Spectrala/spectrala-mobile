@@ -14,6 +14,7 @@ import SpectrumGradientProvider from "../../components/SpectrumGradientProvider"
 const CHART_HEIGHT = 200;
 const TOP_TICK_Y = 215;
 const BOTTOM_TICK_Y = 255;
+const GRADIENT_ID = "grad";
 
 function CalibrationChart({ horizontalInset }) {
   const intensityChart = useSelector(selectIntensityChart);
@@ -63,11 +64,11 @@ function CalibrationChart({ horizontalInset }) {
           right: horizontalInset,
         }}
         curve={shape.curveBasis}
-        svg={{ fill: "url(#grad)" }}
+        svg={{ fill: `url(#${GRADIENT_ID})` }}
       >
         <Grid />
         <Defs>
-          <SpectrumGradientProvider chartData={intensityChart} />
+          <SpectrumGradientProvider chartData={intensityChart} id={ GRADIENT_ID} />
         </Defs>
       </AreaChart>
 
