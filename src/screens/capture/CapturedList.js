@@ -5,30 +5,29 @@ import {
   updateSpectrum,
 } from "../../redux/reducers/RecordedSpectra";
 import { useSelector, useDispatch } from "react-redux";
-import { AreaChart, Grid, YAxis, XAxis } from "react-native-svg-charts";
+import { AreaChart } from "react-native-svg-charts";
 import * as shape from "d3-shape";
 import * as ChartPt from "../../types/ChartPoint";
 import * as Spectrum from "../../types/Spectrum";
 
 import { useTheme } from "@react-navigation/native";
+import { TouchableOpacity } from "react-native";
 
-function CapturedCell({ spectrum, idx }) {
+function CapturedCell({ navigation, spectrum, idx }) {
   const { colors } = useTheme();
   const dispatch = useDispatch();
+
   return (
-    <View style={styles.cellContainer}>
-      <TextInput
-        style={styles.nameField}
-        onChangeText={(text) =>
-          dispatch(
-            updateSpectrum({
-              targetIndex: idx,
-              spectrum: Spectrum.rename(spectrum, text),
-            })
-          )
-        }
-        value={Spectrum.getName(spectrum)}
-      />
+    <TouchableOpacity
+      style={styles.cellContainer}
+      onPress={() => {
+        navigation.navigate("ReviewScreen", {
+          spectrum,
+          targetIndex: idx,
+        });
+      }}
+    >
+      <Text style={styles.name}>{Spectrum.getName(spectrum)}</Text>
       <AreaChart
         style={styles.chart}
         data={Spectrum.getIntensityChart(spectrum)}
@@ -39,16 +38,22 @@ function CapturedCell({ spectrum, idx }) {
         curve={shape.curveBasis}
         svg={{ fill: colors.primary + "30", stroke: colors.primary }}
       />
-    </View>
+    </TouchableOpacity>
   );
 }
 
-export default function CapturedList() {
+export default function CapturedList({ navigation, style }) {
   const recordedSpectra = useSelector(selectRecordedSpectra);
-
-  return recordedSpectra.map((spectrum, idx) => (
-    <CapturedCell spectrum={spectrum} idx={idx} key={`sm${idx}`} />
+  const list = recordedSpectra.map((spectrum, idx) => (
+    <CapturedCell
+      navigation={navigation}
+      spectrum={spectrum}
+      idx={idx}
+      key={`sm${idx}`}
+    />
   ));
+
+  return <View style={style}>{list}</View>;
 }
 
 // CapturedList.propTypes = {
@@ -61,10 +66,8 @@ const styles = StyleSheet.create({
     height: 48,
     flexDirection: "row",
   },
-  nameField: {
+  name: {
     flex: 3,
-    borderColor: "black",
-    borderWidth: 1,
   },
   chart: {
     flex: 2,

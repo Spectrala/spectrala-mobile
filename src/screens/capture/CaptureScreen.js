@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Image, View, Text } from "react-native";
+import { StyleSheet, Image, View, Text, ScrollView } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import CaptureChart from "./CaptureChart";
 import { useSelector, useDispatch } from "react-redux";
@@ -17,7 +17,8 @@ import { Ionicons } from "@expo/vector-icons";
 import CapturedList from "./CapturedList";
 
 const CHART_INSET = 24;
-export default function CaptureScreen() {
+
+export default function CaptureScreen({ navigation }) {
   const { colors } = useTheme();
   const previewImage = useSelector(selectPreviewImg);
   const intensityChart = useSelector(selectIntensityChart);
@@ -52,7 +53,10 @@ export default function CaptureScreen() {
         <CameraLoader collectsFrames />
       </View>
 
-      <View style={styles.container}>
+      <ScrollView
+        style={styles.container}
+        showsHorizontalScrollIndicator={false}
+      >
         <Image
           style={styles.previewImage}
           fadeDuration={0}
@@ -68,11 +72,10 @@ export default function CaptureScreen() {
           <Text text50>Reference</Text>
           {refPlaceholder}
           <Text text50>Test</Text>
-          <CapturedList />
+          <CapturedList navigation={navigation} style={styles.list} />
         </View>
-
-        <CaptureButton style={styles.captureButton} onPress={recordSpectrum} />
-      </View>
+      </ScrollView>
+      <CaptureButton style={styles.captureButton} onPress={recordSpectrum} />
     </>
   );
 }
@@ -87,6 +90,9 @@ const styles = StyleSheet.create({
   },
   chart: {
     marginBottom: 16,
+  },
+  list: {
+    marginBottom: 120,
   },
   tableMaster: {
     marginHorizontal: 8,

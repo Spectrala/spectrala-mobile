@@ -139,7 +139,7 @@ export default function HomeNavigator({ navigation }) {
           ),
         }}
       />
-      {/* <HomeStack.Screen
+      <HomeStack.Screen
         name="ReviewScreen"
         component={ReviewScreen}
         options={{
@@ -161,7 +161,7 @@ headerRight: () => (
             </HeaderButtons>
           ),
         }}
-      /> */}
+      />
     </HomeStack.Navigator>
   );
 }
