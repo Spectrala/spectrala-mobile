@@ -1,6 +1,6 @@
+import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { createStackNavigator } from "@react-navigation/stack";
-import * as React from "react";
 import CameraScreen from "../screens/camera/CameraScreen";
 import CalibrationScreen from "../screens/calibration/CalibrationScreen";
 import CaptureScreen from "../screens/capture/CaptureScreen";

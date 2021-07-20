@@ -6,7 +6,7 @@ import {
 } from "../../redux/reducers/RecordedSpectra";
 import { useSelector, useDispatch } from "react-redux";
 import { AreaChart } from "react-native-svg-charts";
-import * as shape from "d3-shape";
+import { curveBasis as d3ShapeCurveBasis} from "d3-shape";
 import * as ChartPt from "../../types/ChartPoint";
 import * as Spectrum from "../../types/Spectrum";
 
@@ -35,7 +35,7 @@ function CapturedCell({ navigation, spectrum, idx }) {
         xAccessor={({ item }) => ChartPt.getWavelength(item)}
         yMax={100}
         yMin={0}
-        curve={shape.curveBasis}
+        curve={d3ShapeCurveBasis}
         svg={{ fill: colors.primary + "30", stroke: colors.primary }}
       />
     </TouchableOpacity>

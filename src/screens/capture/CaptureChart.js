@@ -4,7 +4,7 @@ import { AreaChart, Grid, YAxis, XAxis } from "react-native-svg-charts";
 import { Defs } from "react-native-svg";
 import { useSelector } from "react-redux";
 import { selectIntensityChart } from "../../redux/reducers/SpectrumFeed";
-import * as shape from "d3-shape";
+import { curveBasis as d3ShapeCurveBasis} from "d3-shape";
 import * as ChartPt from "../../types/ChartPoint";
 import { selectCalibrationPoints } from "../../redux/reducers/Calibration";
 import SpectrumGradientProvider from "../../components/SpectrumGradientProvider";
@@ -54,7 +54,7 @@ function CaptureChart({ data, yRange = [0, 100], style }) {
             top: INSET_TOP,
             bottom: INSET_BOTTOM,
           }}
-          curve={shape.curveBasis}
+          curve={d3ShapeCurveBasis}
           svg={{ fill: `url(#${GRADIENT_ID})` }}
         >
           <Defs>

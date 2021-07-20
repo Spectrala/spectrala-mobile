@@ -1,5 +1,13 @@
-import * as tf from "@tensorflow/tfjs";
-import * as jpeg from "jpeg-js";
+import {
+  util as tfUtil,
+  sparseToDense as tfSparseToDense,
+  pad as tfPad,
+  image as tfImage,
+  whereAsync as tfWhereAsync,
+  tidy as tfTidy,
+  engine as tfEngine,
+} from "@tensorflow/tfjs";
+import { encode as jpegEncode } from "jpeg-js";
 const convert = require("color-convert");
 
 const FLAG_PIXEL_OFFSET = -2;
@@ -45,8 +53,8 @@ const tensorToImageUrl = async (imageTensor) => {
     width,
     height,
   };
-  const jpegImageData = jpeg.encode(rawImageData, 100);
-  const base64Encoding = tf.util.decodeString(jpegImageData.data, "base64");
+  const jpegImageData = jpegEncode(rawImageData, 100);
+  const base64Encoding = tfUtil.decodeString(jpegImageData.data, "base64");
   return base64Encoding;
 };
 
@@ -80,7 +88,7 @@ const flagAndCrop = (tensor, corners) => {
   // Add tensor holding "flags," or negative pixel values to later detect to find corners
   const sparseIndicies = cornerIndicies.map((arr) => [...arr, 0]);
   const sparseVals = Array(sparseIndicies.length).fill(FLAG_PIXEL_OFFSET);
-  const flags = tf.sparseToDense(sparseIndicies, sparseVals, tensor.shape);
+  const flags = tfSparseToDense(sparseIndicies, sparseVals, tensor.shape);
   const imgFlagged = img.add(flags);
 
   // Get a "crude" take on a cropped image, unaccounting for rotation
@@ -90,14 +98,14 @@ const flagAndCrop = (tensor, corners) => {
 };
 
 // 3. Apply padding
-const pad = (imgCrude) => {
+const padTensor = (imgCrude) => {
   // Pad the crude image. This allows enough room (in any case) for the rotation.
   const crude = getImageInfo(imgCrude);
   const longest = Math.max(crude.height, crude.width);
   const getPad = (x) => Math.round(Math.max(longest - x, 0) / 2) + PADDING;
   const padHoriz = Array(2).fill(getPad(crude.width));
   const padVert = Array(2).fill(getPad(crude.height));
-  const imgPad = tf.pad(crude.img, [padVert, padHoriz, [0, 0]]);
+  const imgPad = tfPad(crude.img, [padVert, padHoriz, [0, 0]]);
   return imgPad;
 };
 
@@ -106,7 +114,7 @@ const rotate = (imgPad, boxAngle) => {
   // Rotate the padded image such that the reader box is vertical
   const rotateRadians = (boxAngle * Math.PI) / 180;
   const pad4d = imgPad.expandDims(); // Next command requires 4d
-  const imgRotated = tf.image.rotateWithOffset(pad4d, rotateRadians);
+  const imgRotated = tfImage.rotateWithOffset(pad4d, rotateRadians);
   const imgRotated3d = imgRotated.squeeze(); // Go back to 3d
   return imgRotated3d;
 };
@@ -115,7 +123,7 @@ const rotate = (imgPad, boxAngle) => {
 const trim = async (imgRotated) => {
   // Find the flags previously put in the image and crop around them
   const maskFlags = imgRotated.less([0]).asType("bool");
-  const flagCoordinates = await tf.whereAsync(maskFlags);
+  const flagCoordinates = await tfWhereAsync(maskFlags);
   const flagCoordTensor = flagCoordinates.slice([0, 0], [-1, 2]);
   const flagCoordArr = await flagCoordTensor.array();
   const trimmedImg = crudeSliceCrop(imgRotated, flagCoordArr, 0);
@@ -125,9 +133,9 @@ const trim = async (imgRotated) => {
 // Flip image left to right, only if necessary
 const flip = (img) => {
   const img4d = img.expandDims();
-  const flipped4d = tf.image.flipLeftRight(img4d);
+  const flipped4d = tfImage.flipLeftRight(img4d);
   return flipped4d.squeeze();
-}
+};
 
 /**
  * Function used to extract intensity from any given pixel
@@ -168,9 +176,9 @@ const reduceHorizontal = (intensities) => Math.round(Math.max(...intensities));
 export const getLineData = async (tensor, readerBox) => {
   // if (tensor.max().arraySync() === 0) return null;
   const { corners, angle, isFlipped } = readerBox;
-  const rotated = tf.tidy(() => {
+  const rotated = tfTidy(() => {
     const crude = flagAndCrop(tensor, corners);
-    const padded = pad(crude);
+    const padded = padTensor(crude);
     const rotated = rotate(padded, angle);
     return isFlipped ? flip(rotated) : rotated;
   });
@@ -179,7 +187,7 @@ export const getLineData = async (tensor, readerBox) => {
 
   const transposed = trimmed.transpose([1, 0, 2]);
   const intensities2d = await convertIntensityAsync(transposed);
-  tf.engine().endScope(); // Tensorflow operations are over; clean up.
+  tfEngine().endScope(); // Tensorflow operations are over; clean up.
   const intensities1d = intensities2d.map((row) => reduceHorizontal(row));
   return { intensities: intensities1d, previewUri };
 };

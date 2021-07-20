@@ -1,4 +1,4 @@
-import * as tf from "@tensorflow/tfjs";
+import { engine as tfEngine } from "@tensorflow/tfjs";
 import React, { useState, useEffect, useCallback } from "react";
 import { StyleSheet } from "react-native";
 import { useDispatch } from "react-redux";
@@ -92,7 +92,7 @@ export default function CameraLoader({ collectsFrames }) {
   const handleCameraStream = (images, updatePreview, gl) => {
     const loop = () => {
       // Call when starting a session with tensors to prevent leaks
-      tf.engine().startScope();
+      tfEngine().startScope();
       const state = store.store.getState();
       if (!state.calibration.activePointPlacement) {
         const nextImg = images.next().value;

@@ -4,7 +4,7 @@ import { AreaChart, Grid } from "react-native-svg-charts";
 import { Defs } from "react-native-svg";
 import { useSelector } from "react-redux";
 import { selectIntensityChart } from "../../redux/reducers/SpectrumFeed";
-import * as shape from "d3-shape";
+import { curveBasis as d3ShapeCurveBasis} from "d3-shape";
 import * as ChartPt from "../../types/ChartPoint";
 import Tick from "./Tick";
 import { selectCalibrationPoints } from "../../redux/reducers/Calibration";
@@ -58,7 +58,7 @@ function CalibrationChart({ horizontalInset }) {
           left: horizontalInset,
           right: horizontalInset,
         }}
-        curve={shape.curveBasis}
+        curve={d3ShapeCurveBasis}
         svg={{ fill: `url(#${GRADIENT_ID})` }}
       >
         <Grid />

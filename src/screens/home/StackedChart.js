@@ -2,7 +2,8 @@ import React from "react";
 import { useTheme } from "@react-navigation/native";
 import { StyleSheet } from "react-native";
 import { StackedAreaChart } from "react-native-svg-charts";
-import * as shape from "d3-shape";
+import { curveBasis as d3ShapeCurveBasis } from "d3-shape";
+
 /**
  * https://icons.expo.fyi
  *
@@ -83,14 +84,14 @@ function StackedChart(props) {
       data={data}
       keys={keys}
       colors={chartColors}
-      curve={shape.curveNatural}
+      curve={d3ShapeCurveBasis}
       showGrid={false}
       svgs={svgs}
     />
   );
 }
 
-// TODO: use some real data. 
+// TODO: use some real data.
 
 const styles = StyleSheet.create({
   rightBox: {

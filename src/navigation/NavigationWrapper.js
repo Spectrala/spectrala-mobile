@@ -1,6 +1,6 @@
+import React from "react";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import * as React from "react";
 import { OverflowMenuProvider } from "react-navigation-header-buttons";
 import NotFoundScreen from "../screens/NotFoundScreen";
 import HomeStack from "./HomeStack";

@@ -1,5 +1,5 @@
-import * as Font from "expo-font";
-import * as tf from "@tensorflow/tfjs";
+import { loadAsync as expoFontLoadAsync, FontDisplay } from "expo-font";
+import { ready as tfReady } from "@tensorflow/tfjs";
 import { useEffect, useState } from "react";
 
 /**
@@ -8,25 +8,25 @@ import { useEffect, useState } from "react";
  */
 
 export default function loadAssets() {
-  const [tfReady, setTfReady] = useState(false);
+  const [tfIsReady, setTfReady] = useState(false);
   const [localLoadingComplete, setLocalLoadingComplete] = useState(false);
 
-  const loadingIsComplete = () => tfReady && localLoadingComplete;
+  const loadingIsComplete = () => tfIsReady && localLoadingComplete;
   // const loadingIsComplete = () => localLoadingComplete;
 
   const loadLocalFonts = async () => {
-    await Font.loadAsync({
+    await expoFontLoadAsync({
       Heebo: require("../../assets/fonts/Heebo/static/Heebo-Regular.ttf"),
       "Heebo-SemiBold": {
         uri: require("../../assets/fonts/Heebo/static/Heebo-SemiBold.ttf"),
-        display: Font.FontDisplay.FALLBACK,
+        display: FontDisplay.FALLBACK,
       },
     });
     setLocalLoadingComplete(true);
   };
 
   const loadTensorflow = async () => {
-    await tf.ready();
+    await tfReady();
     setTfReady(true);
   };
 
