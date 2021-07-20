@@ -9,6 +9,7 @@ import {
   selectIntensityChart,
 } from "../../redux/reducers/SpectrumFeed";
 import CameraLoader from "../../components/CameraLoader";
+import { Ionicons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
 const CHART_INSET = 24;
 const INNER_CIRCLE_SIZE = 70;
@@ -18,6 +19,30 @@ export default function CaptureScreen() {
   const previewImage = useSelector(selectPreviewImg);
   const intensityChart = useSelector(selectIntensityChart);
   const dispatch = useDispatch();
+  
+  const waterDrop = (
+    <Ionicons
+      style={styles.alignSelf}
+      name={"water-outline"}
+      size={20}
+      color={Colors.primary}
+    />
+  );
+
+  const refPlaceholder = (
+    <View
+      style={{
+        ...styles.refPlaceholder,
+        backgroundColor: Colors.primary + "10",
+        borderColor: Colors.primary,
+      }}
+    >
+      <Text style={{ ...styles.refText, color: Colors.primary }}>
+        Select a spectrum and press {waterDrop}
+        to use as reference{" "}
+      </Text>
+    </View>
+  );
 
   return (
     <>
@@ -36,17 +61,12 @@ export default function CaptureScreen() {
           horizontalInset={CHART_INSET}
           data={intensityChart}
         />
-        <Text text50>Reference</Text>
-        <View
-          style={{
-            ...styles.refPlaceholder,
-            backgroundColor: Colors.primary + "50",
-            borderColor: Colors.primary,
-          }}
-        >
-          <Text style={{color: Colors.primary}}>hi  </Text>
+
+        <View style={styles.tableMaster}>
+          <Text text50>Reference</Text>
+          {refPlaceholder}
+          <Text text50>Test</Text>
         </View>
-        <Text text50>Test</Text>
 
         <CaptureButton
           style={styles.captureButton}
@@ -66,14 +86,22 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   chart: {
-    marginBottom: 30,
+    marginBottom: 16,
+  },
+  tableMaster: {
+    marginHorizontal: 8,
   },
   refPlaceholder: {
-    height: 40,
-    backgroundColor: "blue",
-    marginHorizontal: 10,
+    height: 48,
     borderWidth: 2,
-    borderStyle: "dotted"
+    marginBottom: 8,
+    borderStyle: "dotted",
+    justifyContent: "center",
+    lineHeight: 100,
+  },
+  refText: {
+    alignSelf: "center",
+    textAlignVertical: "center",
   },
   previewImage: {
     width: "100%",

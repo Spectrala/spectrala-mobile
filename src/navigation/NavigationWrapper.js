@@ -15,7 +15,7 @@ import {
 // Generate colors here: https://colors.eva.design
 Colors.loadColors({
   primary: "#FD893A",
-  background: "#E7EDEE",
+  background: "#F7FDFF",
   text: "#161316",
   successColor: "#63ED8C",
   infoColor: "#0790F9",
