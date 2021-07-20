@@ -4,6 +4,7 @@ import * as React from "react";
 import CameraScreen from "../screens/camera/CameraScreen";
 import CalibrationScreen from "../screens/calibration/CalibrationScreen";
 import CaptureScreen from "../screens/capture/CaptureScreen";
+import ReviewScreen from "../screens/review/ReviewScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import HomeScreen from "../screens/home/HomeScreen";
 import {
