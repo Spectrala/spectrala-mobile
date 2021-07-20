@@ -1,7 +1,7 @@
 import React, { useRef, useCallback, useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
-import { Slider } from "react-native-ui-lib/slider";
+import { Slider } from "react-native-ui-lib";
 import DraggablePointsContainer from "./DraggablePointsContainer";
 import { useDispatch, useSelector } from "react-redux";
 import {
