@@ -34,9 +34,6 @@ function CalibrationChart({ horizontalInset }) {
           calibrationPoints={calibrationPoints}
           yPosition={isBottom ? BOTTOM_TICK_Y : TOP_TICK_Y}
           isBottom={isBottom}
-          onPress={() => {
-            console.log(idx);
-          }}
           viewDims={tickViewDims}
           horizontalInset={horizontalInset}
         />
@@ -44,7 +41,6 @@ function CalibrationChart({ horizontalInset }) {
     });
   };
 
-  // console.log(intensityChart.map((a) => ChartPt.getWavelength(a)));
 
   // https://stackoverflow.com/questions/60503898/how-to-apply-gradient-color-on-react-native-stackedareachart
   return (

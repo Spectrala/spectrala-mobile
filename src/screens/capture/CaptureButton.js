@@ -1,17 +1,38 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
-import { TouchableOpacity } from "react-native";
+import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { useTheme } from "@react-navigation/native";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  recordSpectrum,
+  selectHighestKey,
+} from "../../redux/reducers/RecordedSpectra";
+import { selectIntensityChart } from "../../redux/reducers/SpectrumFeed";
+import * as Spectrum from "../../types/Spectrum";
 
 const INNER_CIRCLE_SIZE = 70;
+
 const CIRCLE_RING_SPACE = 10;
 
 export default function CaptureButton({ onPress, style }) {
   const { colors } = useTheme();
+  const dispatch = useDispatch();
+  const highestKey = useSelector(selectHighestKey);
+
+  const intensityChart = useSelector(selectIntensityChart);
+
+  const rec = () => {
+    const spectrum = Spectrum.constructDefault(intensityChart, highestKey + 1);
+    if (intensityChart) {
+      dispatch(recordSpectrum({ spectrum }));
+    } else {
+      console.log("no intensity chart");
+    }
+  };
+
   return (
     <View style={{ ...styles.captureButtonContainer, ...style }}>
       <TouchableOpacity
-        onPress={onPress}
+        onPress={rec}
         style={{ ...styles.captureButtonArea, borderColor: colors.primary }}
       >
         <View

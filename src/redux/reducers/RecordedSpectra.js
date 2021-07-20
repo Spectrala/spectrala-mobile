@@ -6,11 +6,13 @@ export const spectrumSlice = createSlice({
   initialState: {
     recordedSpectra: [],
     referenceKey: null,
+    highestKey: 0,
   },
   reducers: {
     recordSpectrum: (state, action) => {
-      const spectrum = action.payload.intensityChart;
+      const spectrum = action.payload.spectrum;
       state.recordedSpectra.push(spectrum);
+      state.highestKey = Math.max(state.highestKey, Spectrum.getKey(spectrum));
     },
     removeSpectrum: (state, action) => {
       const idx = action.payload.targetIndex;
@@ -42,7 +44,7 @@ export const {
 
 /**
  * Get the current reference spectrum from the store
- * @param {Object} state Redux store state 
+ * @param {Object} state Redux store state
  * @returns {Spectrum} the refrence spectrum
  */
 export const selectReferenceIntensity = (state) => {
@@ -51,6 +53,14 @@ export const selectReferenceIntensity = (state) => {
   const reference = spectra.find((s) => Spectrum.getKey(s) === key);
   return reference;
 };
+
+/**
+ * Select the highest key used in a spectrum, to be used
+ * for generating the next key.
+ * @param {Object} state Redux store state
+ * @returns {Number} the highest key used so far for a spectrum
+ */
+export const selectHighestKey = (state) => state.spectra.highestKey;
 
 /**
  * Return all recorded spectra from the redux store.

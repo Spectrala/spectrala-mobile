@@ -8,7 +8,10 @@ import {
   selectPreviewImg,
   selectIntensityChart,
 } from "../../redux/reducers/SpectrumFeed";
-import { recordSpectrum } from "../../redux/reducers/RecordedSpectra";
+import {
+  recordSpectrum,
+  selectHighestKey,
+} from "../../redux/reducers/RecordedSpectra";
 import CameraLoader from "../../components/CameraLoader";
 import { Ionicons } from "@expo/vector-icons";
 import CapturedList from "./CapturedList";
@@ -38,8 +41,7 @@ export default function CaptureScreen() {
       }}
     >
       <Text style={{ ...styles.refText, color: colors.primary }}>
-        Select a spectrum and press {waterDrop}
-        to use as reference{" "}
+        Select a spectrum and press {waterDrop} to use as reference
       </Text>
     </View>
   );
@@ -69,10 +71,7 @@ export default function CaptureScreen() {
           <CapturedList />
         </View>
 
-        <CaptureButton
-          style={styles.captureButton}
-          onPress={() => dispatch(recordSpectrum({ intensityChart }))}
-        />
+        <CaptureButton style={styles.captureButton} onPress={recordSpectrum} />
       </View>
     </>
   );
