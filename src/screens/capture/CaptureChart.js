@@ -10,13 +10,15 @@ import * as ChartPt from "../../types/ChartPoint";
 import { selectCalibrationPoints } from "../../redux/reducers/Calibration";
 import SpectrumGradientProvider from "../../components/SpectrumGradientProvider";
 
-const CHART_HEIGHT = 200;
+const CHART_HEIGHT = 160;
 const X_AXIS_HEIGHT = 10;
+const SHOWS_Y = false;
 const AXES_FONT_SIZE = 10;
-const INSET_TOP = 10;
+const INSET_TOP = SHOWS_Y ? 10 : 0;
 const INSET_BOTTOM = 5;
 const GRADIENT_ID = "grad";
-function CaptureChart({ data, yRange = [0, 100] }) {
+
+function CaptureChart({ data, yRange = [0, 100], style }) {
   if (!data) {
     return <Text>Loading...</Text>;
   }
@@ -27,16 +29,18 @@ function CaptureChart({ data, yRange = [0, 100] }) {
   ];
 
   return (
-    <View style={styles.master}>
-      <YAxis
-        data={data.map((p) => ChartPt.getY(p))}
-        style={styles.yAxis}
-        contentInset={{ top: INSET_TOP, bottom: INSET_BOTTOM }}
-        svg={{ fontSize: AXES_FONT_SIZE, fill: "grey" }}
-        numberOfTicks={5}
-        min={yRange[0]}
-        max={yRange[1]}
-      />
+    <View style={{ ...styles.master, ...style }}>
+      {SHOWS_Y && (
+        <YAxis
+          data={data.map((p) => ChartPt.getY(p))}
+          style={styles.yAxis}
+          contentInset={{ top: INSET_TOP, bottom: INSET_BOTTOM }}
+          svg={{ fontSize: AXES_FONT_SIZE, fill: "grey" }}
+          numberOfTicks={5}
+          min={yRange[0]}
+          max={yRange[1]}
+        />
+      )}
       <View style={styles.innerView}>
         <AreaChart
           style={{ height: CHART_HEIGHT }}
@@ -50,22 +54,20 @@ function CaptureChart({ data, yRange = [0, 100] }) {
           contentInset={{
             top: INSET_TOP,
             bottom: INSET_BOTTOM,
-            left: 0,
-            right: 0,
           }}
           curve={shape.curveBasis}
           svg={{ fill: `url(#${GRADIENT_ID})` }}
         >
-          <Grid />
           <Defs>
             <SpectrumGradientProvider chartData={data} id={GRADIENT_ID} />
           </Defs>
+
+          <Grid />
         </AreaChart>
         <XAxis
           style={{ marginHorizontal: -10, height: X_AXIS_HEIGHT }}
           data={data.map((p) => ChartPt.getWavelength(p))}
           formatLabel={(value, index) => value}
-          contentInset={{ left: 10, right: 10 }}
           numberOfTicks={5}
           svg={{ fontSize: AXES_FONT_SIZE, fill: "grey" }}
           min={xRange[0]}
@@ -78,13 +80,12 @@ function CaptureChart({ data, yRange = [0, 100] }) {
 
 const styles = StyleSheet.create({
   master: {
-    padding: 10,
+    padding: 0,
     flexDirection: "row",
     height: CHART_HEIGHT,
   },
   innerView: {
     flex: 1,
-    marginLeft: 10,
   },
   yAxis: {
     height: CHART_HEIGHT,

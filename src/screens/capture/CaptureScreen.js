@@ -1,13 +1,11 @@
 import React from "react";
 import { StyleSheet, Image } from "react-native";
-import { View, Card, Button, Colors } from "react-native-ui-lib";
+import { View, Text, Colors } from "react-native-ui-lib";
 import CaptureChart from "./CaptureChart";
 import { useSelector, useDispatch } from "react-redux";
-import { selectActivePointPlacement } from "../../redux/reducers/Calibration";
-import { toggleIsFlipped } from "../../redux/reducers/ReaderBox";
+import CaptureButton from "./CaptureButton";
 import {
   selectPreviewImg,
-  resetIntensityArrayHistory,
   selectIntensityChart,
 } from "../../redux/reducers/SpectrumFeed";
 import CameraLoader from "../../components/CameraLoader";
@@ -28,21 +26,32 @@ export default function CaptureScreen() {
       </View>
 
       <View style={styles.container}>
-        <Card style={styles.previewImageCard}>
-          <Image
-            style={styles.previewImage}
-            fadeDuration={0}
-            source={{ uri: previewImage }}
-          />
-        </Card>
-        <Card style={styles.chart}>
-          <CaptureChart horizontalInset={CHART_INSET} data={intensityChart} />
-        </Card>
-        <View style={styles.captureButtonContainer}>
-          <TouchableOpacity style={styles.captureButtonArea}>
-            <View style={styles.cameraCircle} />
-          </TouchableOpacity>
+        <Image
+          style={styles.previewImage}
+          fadeDuration={0}
+          source={{ uri: previewImage }}
+        />
+        <CaptureChart
+          style={styles.chart}
+          horizontalInset={CHART_INSET}
+          data={intensityChart}
+        />
+        <Text text50>Reference</Text>
+        <View
+          style={{
+            ...styles.refPlaceholder,
+            backgroundColor: Colors.primary + "50",
+            borderColor: Colors.primary,
+          }}
+        >
+          <Text style={{color: Colors.primary}}>hi  </Text>
         </View>
+        <Text text50>Test</Text>
+
+        <CaptureButton
+          style={styles.captureButton}
+          onPress={() => console.log("button press")}
+        />
       </View>
     </>
   );
@@ -57,37 +66,23 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   chart: {
-    width: "100%",
-    height: 30,
+    marginBottom: 30,
   },
-  previewImageCard: {
-    width: "100%",
-    height: 100,
+  refPlaceholder: {
+    height: 40,
+    backgroundColor: "blue",
+    marginHorizontal: 10,
+    borderWidth: 2,
+    borderStyle: "dotted"
   },
   previewImage: {
-    flex: 1,
+    width: "100%",
+    height: 80,
     marginBottom: 20,
-    marginHorizontal: CHART_INSET,
     resizeMode: "stretch",
   },
-  captureButtonContainer: {
-    height: INNER_CIRCLE_SIZE,
-    width: "100%",
-    alignItems: "center",
-  },
-  captureButtonArea: {
-    height: INNER_CIRCLE_SIZE + CIRCLE_RING_SPACE,
-    width: INNER_CIRCLE_SIZE + CIRCLE_RING_SPACE,
-    borderRadius: (CIRCLE_RING_SPACE + INNER_CIRCLE_SIZE) / 2,
-    borderWidth: 2,
-    alignItems: "center",
-    justifyContent: "center",
-    borderColor: Colors.primary,
-  },
-  cameraCircle: {
-    width: INNER_CIRCLE_SIZE,
-    height: INNER_CIRCLE_SIZE,
-    backgroundColor: Colors.primary,
-    borderRadius: INNER_CIRCLE_SIZE / 2,
+  captureButton: {
+    position: "absolute",
+    bottom: 40,
   },
 });
