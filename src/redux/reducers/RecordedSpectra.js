@@ -9,7 +9,7 @@ export const spectrumSlice = createSlice({
   },
   reducers: {
     recordSpectrum: (state, action) => {
-      const spectrum = action.payload.spectrum;
+      const spectrum = action.payload.intensityChart;
       state.recordedSpectra.push(spectrum);
     },
     removeSpectrum: (state, action) => {

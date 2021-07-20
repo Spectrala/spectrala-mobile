@@ -8,9 +8,10 @@ import {
   selectPreviewImg,
   selectIntensityChart,
 } from "../../redux/reducers/SpectrumFeed";
+import { recordSpectrum } from "../../redux/reducers/RecordedSpectra";
 import CameraLoader from "../../components/CameraLoader";
 import { Ionicons } from "@expo/vector-icons";
-import { TouchableOpacity } from "react-native";
+import CapturedList from "./CapturedList";
 const CHART_INSET = 24;
 const INNER_CIRCLE_SIZE = 70;
 const CIRCLE_RING_SPACE = 10;
@@ -19,7 +20,7 @@ export default function CaptureScreen() {
   const previewImage = useSelector(selectPreviewImg);
   const intensityChart = useSelector(selectIntensityChart);
   const dispatch = useDispatch();
-  
+
   const waterDrop = (
     <Ionicons
       style={styles.alignSelf}
@@ -66,11 +67,12 @@ export default function CaptureScreen() {
           <Text text50>Reference</Text>
           {refPlaceholder}
           <Text text50>Test</Text>
+          <CapturedList />
         </View>
 
         <CaptureButton
           style={styles.captureButton}
-          onPress={() => console.log("button press")}
+          onPress={() => dispatch(recordSpectrum({ intensityChart }))}
         />
       </View>
     </>
