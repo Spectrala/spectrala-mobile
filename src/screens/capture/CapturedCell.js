@@ -4,8 +4,9 @@ import {
   StyleSheet,
   SafeAreaView,
   TextInput,
+  Text,
+  View,
 } from "react-native";
-import { Text, View } from "react-native-ui-lib";
 
 export default function CapturedCell({ spectrum, targetIndex }) {
   const activeProps = {

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet } from "react-native";
-import { Text, View } from "react-native-ui-lib";
+import { StyleSheet, Text, View } from "react-native";
 import { AreaChart, Grid, YAxis, XAxis } from "react-native-svg-charts";
 import { Defs } from "react-native-svg";
 import { useSelector } from "react-redux";

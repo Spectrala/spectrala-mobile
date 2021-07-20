@@ -1,6 +1,5 @@
 import * as React from "react";
-import { StyleSheet } from "react-native";
-import { View } from "react-native-ui-lib";
+import { StyleSheet, View } from "react-native";
 import CaptureChart from "../capture/CaptureChart";
 import ModeSwitcher from "../capture/ModeSwitcher";
 import ReviewList from "./ReviewList";

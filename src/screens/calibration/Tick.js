@@ -6,9 +6,8 @@ import React, {
   useMemo,
 } from "react";
 import PropTypes from "prop-types";
-import { StyleSheet, PanResponder, Pressable, Animated } from "react-native";
+import { Text, View, StyleSheet, PanResponder, Pressable, Animated } from "react-native";
 import { useDispatch } from "react-redux";
-import { Text, View } from "react-native-ui-lib";
 import {
   setActivePointPlacement,
   setPlacement,

@@ -1,6 +1,5 @@
 import * as React from "react";
-import { StyleSheet, TouchableOpacity } from "react-native";
-import { Text, View } from "react-native-ui-lib";
+import {Text, View ,  StyleSheet, TouchableOpacity } from "react-native";
 
 export default function NotFoundScreen({ navigation }) {
   return (

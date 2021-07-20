@@ -1,6 +1,6 @@
 import React from "react";
-import { StyleSheet, Image } from "react-native";
-import { View, Text, Colors } from "react-native-ui-lib";
+import { StyleSheet, Image, View, Text } from "react-native";
+import { useTheme } from "@react-navigation/native";
 import CaptureChart from "./CaptureChart";
 import { useSelector, useDispatch } from "react-redux";
 import CaptureButton from "./CaptureButton";
@@ -12,11 +12,10 @@ import { recordSpectrum } from "../../redux/reducers/RecordedSpectra";
 import CameraLoader from "../../components/CameraLoader";
 import { Ionicons } from "@expo/vector-icons";
 import CapturedList from "./CapturedList";
-const CHART_INSET = 24;
-const INNER_CIRCLE_SIZE = 70;
-const CIRCLE_RING_SPACE = 10;
 
+const CHART_INSET = 24;
 export default function CaptureScreen() {
+  const { colors } = useTheme();
   const previewImage = useSelector(selectPreviewImg);
   const intensityChart = useSelector(selectIntensityChart);
   const dispatch = useDispatch();
@@ -26,7 +25,7 @@ export default function CaptureScreen() {
       style={styles.alignSelf}
       name={"water-outline"}
       size={20}
-      color={Colors.primary}
+      color={colors.primary}
     />
   );
 
@@ -34,11 +33,11 @@ export default function CaptureScreen() {
     <View
       style={{
         ...styles.refPlaceholder,
-        backgroundColor: Colors.primary + "10",
-        borderColor: Colors.primary,
+        backgroundColor: colors.primary + "10",
+        borderColor: colors.primary,
       }}
     >
-      <Text style={{ ...styles.refText, color: Colors.primary }}>
+      <Text style={{ ...styles.refText, color: colors.primary }}>
         Select a spectrum and press {waterDrop}
         to use as reference{" "}
       </Text>

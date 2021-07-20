@@ -1,6 +1,7 @@
 import React from "react";
-import { StyleSheet, Image } from "react-native";
-import { View, Card, Button } from "react-native-ui-lib";
+import { StyleSheet, Image, View } from "react-native";
+import Button from "react-native-ui-lib/button";
+import Card from "react-native-ui-lib/card";
 import CalibrationChart from "./CalibrationChart";
 import { useSelector, useDispatch } from "react-redux";
 import { selectActivePointPlacement } from "../../redux/reducers/Calibration";
@@ -25,7 +26,11 @@ export default function CalibrationScreen() {
 
       <View style={styles.container}>
         <Card style={styles.previewImageCard}>
-          <Image style={styles.previewImage} fadeDuration={0}  source={{ uri: previewImage }} />
+          <Image
+            style={styles.previewImage}
+            fadeDuration={0}
+            source={{ uri: previewImage }}
+          />
         </Card>
         <Button
           label="Flip image"

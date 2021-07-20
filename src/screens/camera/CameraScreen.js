@@ -1,6 +1,7 @@
 import React, { useRef, useCallback, useEffect } from "react";
-import { StyleSheet } from "react-native";
-import { Text, View, Slider, Colors } from "react-native-ui-lib";
+import { StyleSheet, Text, View } from "react-native";
+import { useTheme } from "@react-navigation/native";
+import { Slider } from "react-native-ui-lib/slider";
 import DraggablePointsContainer from "./DraggablePointsContainer";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -11,6 +12,7 @@ import BottomHelper from "../../components/BottomHelper";
 import CameraLoader from "../../components/CameraLoader";
 
 export default function CameraScreen({ navigation }) {
+  const { colors } = useTheme();
   const readerWidth = useSelector(selectReaderWidth);
   const initialWidth = useRef(readerWidth).current;
   const dispatch = useDispatch();
@@ -26,8 +28,8 @@ export default function CameraScreen({ navigation }) {
           minimumValue={10}
           maximumValue={200}
           step={5}
-          minimumTrackTintColor={Colors.primary}
-          thumbTintColor={Colors.primary}
+          minimumTrackTintColor={colors.primary}
+          thumbTintColor={colors.primary}
         />
       </View>
     ),

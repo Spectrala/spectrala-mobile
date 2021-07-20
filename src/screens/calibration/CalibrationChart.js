@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet } from "react-native";
-import { Text, View } from "react-native-ui-lib";
+import { Text, View, StyleSheet } from "react-native";
 import { AreaChart, Grid } from "react-native-svg-charts";
 import { Defs } from "react-native-svg";
 import { useSelector } from "react-redux";
@@ -68,7 +67,10 @@ function CalibrationChart({ horizontalInset }) {
       >
         <Grid />
         <Defs>
-          <SpectrumGradientProvider chartData={intensityChart} id={ GRADIENT_ID} />
+          <SpectrumGradientProvider
+            chartData={intensityChart}
+            id={GRADIENT_ID}
+          />
         </Defs>
       </AreaChart>
 

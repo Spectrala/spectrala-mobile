@@ -1,15 +1,12 @@
 import React, { useState, useCallback } from "react";
-import { StyleSheet, ScrollView } from "react-native";
-import {
-  Text,
-  View,
-  ExpandableSection,
-  Colors,
-  Card,
-} from "react-native-ui-lib";
+import { Text, View, StyleSheet, ScrollView } from "react-native";
+import ExpandableSection from "react-native-ui-lib/expandableSection";
+import Card from "react-native-ui-lib/card";
 import { AntDesign } from "@expo/vector-icons";
+import { useTheme } from "@react-navigation/native";
 
 export default function BottomHelper({ utilityComponents, bodyText }) {
+  const { colors } = useTheme();
   const [helperExpanded, setExpanded] = useState(false);
 
   const Divider = () => {
@@ -24,7 +21,7 @@ export default function BottomHelper({ utilityComponents, bodyText }) {
           <AntDesign
             name={helperExpanded ? "downcircleo" : "upcircleo"}
             size={24}
-            color={Colors.background}
+            color={colors.background}
           />
         </View>
         {utilityComponents()}

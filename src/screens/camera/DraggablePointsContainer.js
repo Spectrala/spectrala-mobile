@@ -6,7 +6,7 @@ import React, {
   useMemo,
 } from "react";
 import PropTypes from "prop-types";
-import { StyleSheet, Animated, PanResponder } from "react-native";
+import { StyleSheet, Animated, PanResponder, View } from "react-native";
 import { Svg, Line } from "react-native-svg";
 import Victor from "victor";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,12 +15,14 @@ import {
   updateReaderBoxData,
   selectCorners,
 } from "../../redux/reducers/ReaderBox";
-import { Colors, View } from "react-native-ui-lib";
+
+import { useTheme } from "@react-navigation/native";
 import { fullDims } from "../../components/CameraLoader";
 
 const CIRCLE_RADIUS = 20;
 
 function DraggablePointsContainer({ width }) {
+  const { colors } = useTheme();
   const lineCoords = useSelector(selectLineCoords);
   const corners = useSelector(selectCorners);
   const dispatch = useDispatch();
@@ -126,7 +128,7 @@ function DraggablePointsContainer({ width }) {
             {...panResponder.panHandlers}
           >
             <View
-              style={{ ...styles.circle, backgroundColor: Colors.primary }}
+              style={{ ...styles.circle, backgroundColor: colors.primary }}
             />
           </Animated.View>
         )

@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { TouchableOpacity, StyleSheet } from "react-native";
-import { Text, View } from "react-native-ui-lib";
+import { TouchableOpacity, StyleSheet, Text, View  } from "react-native";
 import { format } from "date-fns";
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";

@@ -1,6 +1,5 @@
 import React, { useCallback } from "react";
-import { StyleSheet } from "react-native";
-import { View } from "react-native-ui-lib";
+import { StyleSheet, View } from "react-native";
 import ReviewCell from "./ReviewCell";
 import { useTheme } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";

@@ -1,22 +1,23 @@
 import React from "react";
-import { StyleSheet } from "react-native";
-import { View, Colors } from "react-native-ui-lib";
+import { StyleSheet, View } from "react-native";
 import { TouchableOpacity } from "react-native";
+import { useTheme } from "@react-navigation/native";
 
 const INNER_CIRCLE_SIZE = 70;
 const CIRCLE_RING_SPACE = 10;
 
 export default function CaptureButton({ onPress, style }) {
+  const { colors } = useTheme();
   return (
     <View style={{ ...styles.captureButtonContainer, ...style }}>
       <TouchableOpacity
         onPress={onPress}
-        style={{ ...styles.captureButtonArea, borderColor: Colors.primary }}
+        style={{ ...styles.captureButtonArea, borderColor: colors.primary }}
       >
         <View
           style={{
             ...styles.cameraCircle,
-            backgroundColor: Colors.primary,
+            backgroundColor: colors.primary,
           }}
         />
       </TouchableOpacity>
