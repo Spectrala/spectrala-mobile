@@ -1,7 +1,8 @@
 import React from "react";
 import { StyleSheet, Image, View } from "react-native";
-import Button from "react-native-ui-lib";
-import Card from "react-native-ui-lib";
+// TODO: Import less. Didn't work first attempt: https://wix.github.io/react-native-ui-lib/getting-started/setup
+import { Button } from "react-native-ui-lib";
+import { Card } from "react-native-ui-lib";
 import CalibrationChart from "./CalibrationChart";
 import { useSelector, useDispatch } from "react-redux";
 import { selectActivePointPlacement } from "../../redux/reducers/Calibration";

@@ -36,7 +36,15 @@ const HomeStack = createStackNavigator();
 export default function HomeNavigator({ navigation }) {
   const { colors } = useTheme();
   return (
-    // TODO: MARK: Make this "HomeScreen"
+    /**
+     * TODO: MARK: the initialRouteName prop in HomeStack.Navigator will
+     * define the first screen to load in the navigation stack.
+     * For production, make this "HomeScreen".
+     * In debug, use:
+     *  "CameraScreen", "CalibrationScreen", or "CaptureScreen".
+     * A con to this debug strategy is that you can't go back since previous
+     * screens were not loaded to the stack.
+     */
     <HomeStack.Navigator
       initialRouteName="CameraScreen"
       options={{ headerTintColor: colors.background }}
