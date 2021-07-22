@@ -92,7 +92,7 @@ export default function ReviewScreen({ route, navigation }) {
           onPress={() => setRenameVisible(true)}
         >
           <Text>{Spectrum.getName(spectrum)}</Text>
-          <Ionicons name={"pencil"} size={30} color={colors.primary} />
+          <Ionicons name={"pencil"} size={20} color={colors.primary} />
         </TouchableOpacity>
         {renameDialog()}
         <TouchableOpacity>{waterIconButton()}</TouchableOpacity>

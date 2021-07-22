@@ -3,7 +3,7 @@ import * as UncalibratedIntensity from "../types/UncalibratedIntensity";
 import * as ChartPt from "../types/ChartPoint";
 
 /**
- * Averages multiple arrays element-wise. 
+ * Averages multiple arrays element-wise.
  * @param {Array<Array<Number>>} intensityArrayHistory Previous intensity arrays
  * @returns {Array<Number>} All intensity arrays, averaged.
  */
@@ -44,14 +44,14 @@ export const getUncalibratedIntensities = (intensityArrayHistory) => {
 /**
  * Process for calibration:
  *
- * Input a raw array of pixel intensities and calibration points and output 
+ * Input a raw array of pixel intensities and calibration points and output
  * an array of wavelength and intensitiy pairs. The method used to do this is:
  *   1. Assign each calibration point an x value of placement and a y value of
  *      wavelength
- *   2. Use point-slope to get a straight line between the points with the 
+ *   2. Use point-slope to get a straight line between the points with the
  *      lowest x and highest x
  *   3. Use linearSpline to draw a linear spline through all points
- *   4. Create a wavelength(x) function which uses the line from step 3 for x 
+ *   4. Create a wavelength(x) function which uses the line from step 3 for x
  *      values between the two endpoints and otherwise the line from step 2
  *   5. Map all pixel intensities to wavelength values
  *      i. Calculate position fom 0 to 1 inside the array
@@ -98,14 +98,14 @@ export const computeIntensityChart = (uncalibratedIntensities, calibration) => {
  * @returns {Number} intensity from intensityChart
  */
 const getClosestIntensity = (testWavelength, intensityChart) => {
-  const closest = intensityChart.reduce((intensityA, intensityB) => {
-    const aWavelength = ChartPt.getWavelength(intensityA);
-    const bWavelength = ChartPt.getWavelength(intensityB);
-    const distanceA = Math.abs(testWavelength - aWavelength);
-    const distanceB = Math.abs(testWavelength - bWavelength);
-    return distanceA < distanceB ? wavelengthA : wavelengthB;
+  const closestPoint = intensityChart.reduce((pointA, pointB) => {
+    const wavelengthA = ChartPt.getWavelength(pointA);
+    const wavelengthB = ChartPt.getWavelength(pointB);
+    const distanceA = Math.abs(testWavelength - wavelengthA);
+    const distanceB = Math.abs(testWavelength - wavelengthB);
+    return distanceA < distanceB ? pointA : pointB;
   });
-  return ChartPt.getY(closest);
+  return ChartPt.getY(closestPoint);
 };
 
 /**

@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Image, View, Text, ScrollView } from "react-native";
 import { useTheme } from "@react-navigation/native";
-import SpectrumChart from "../../components/SpectrumChart";
+import SwitchableSpectrumChart from "../../components/SwitchableSpectrumChart";
 import { useSelector, useDispatch } from "react-redux";
 import CaptureButton from "./CaptureButton";
 import {
@@ -12,6 +12,7 @@ import { recordSpectrum } from "../../redux/reducers/RecordedSpectra";
 import CameraLoader from "../../components/CameraLoader";
 import { Ionicons } from "@expo/vector-icons";
 import CapturedList from "./CapturedList";
+import * as Spectrum from "../../types/Spectrum";
 
 const CHART_INSET = 24;
 
@@ -59,10 +60,9 @@ export default function CaptureScreen({ navigation }) {
           fadeDuration={0}
           source={{ uri: previewImage }}
         />
-        <SpectrumChart
+        <SwitchableSpectrumChart
           style={styles.chart}
-          horizontalInset={CHART_INSET}
-          intensities={intensityChart}
+          spectrum={Spectrum.construct(null, null, intensityChart)}
         />
 
         <View style={styles.tableMaster}>

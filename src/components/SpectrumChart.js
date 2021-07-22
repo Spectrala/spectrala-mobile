@@ -15,11 +15,6 @@ const GRADIENT_ID = "grad";
 
 function SpectrumChart({ intensities, yRange = [0, 100], style }) {
 
-  if (!intensities) {
-    return <Text>Loading...</Text>;
-  }
-
-
   const xRange = [
     ChartPt.getWavelength(intensities[0]),
     ChartPt.getWavelength(intensities[intensities.length - 1]),
