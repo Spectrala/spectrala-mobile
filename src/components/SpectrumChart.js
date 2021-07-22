@@ -2,10 +2,9 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { AreaChart, Grid, YAxis, XAxis } from "react-native-svg-charts";
 import { Defs } from "react-native-svg";
-import { curveBasis as d3ShapeCurveBasis} from "d3-shape";
+import { curveBasis as d3ShapeCurveBasis } from "d3-shape";
 import * as ChartPt from "../types/ChartPoint";
 import SpectrumGradientProvider from "./SpectrumGradientProvider";
-
 const CHART_HEIGHT = 160;
 const X_AXIS_HEIGHT = 10;
 const SHOWS_Y = false;
@@ -14,21 +13,23 @@ const INSET_TOP = SHOWS_Y ? 10 : 0;
 const INSET_BOTTOM = 5;
 const GRADIENT_ID = "grad";
 
-function SpectrumChart({ data, yRange = [0, 100], style }) {
-  if (!data) {
+function SpectrumChart({ intensities, yRange = [0, 100], style }) {
+
+  if (!intensities) {
     return <Text>Loading...</Text>;
   }
 
+
   const xRange = [
-    ChartPt.getWavelength(data[0]),
-    ChartPt.getWavelength(data[data.length - 1]),
+    ChartPt.getWavelength(intensities[0]),
+    ChartPt.getWavelength(intensities[intensities.length - 1]),
   ];
 
   return (
     <View style={{ ...styles.master, ...style }}>
       {SHOWS_Y && (
         <YAxis
-          data={data.map((p) => ChartPt.getY(p))}
+          data={intensities.map((p) => ChartPt.getY(p))}
           style={styles.yAxis}
           contentInset={{ top: INSET_TOP, bottom: INSET_BOTTOM }}
           svg={{ fontSize: AXES_FONT_SIZE, fill: "grey" }}
@@ -40,7 +41,7 @@ function SpectrumChart({ data, yRange = [0, 100], style }) {
       <View style={styles.innerView}>
         <AreaChart
           style={{ height: CHART_HEIGHT }}
-          data={data}
+          data={intensities}
           yAccessor={({ item }) => ChartPt.getY(item)}
           xAccessor={({ item }) => ChartPt.getWavelength(item)}
           yMax={yRange[1]}
@@ -55,14 +56,17 @@ function SpectrumChart({ data, yRange = [0, 100], style }) {
           svg={{ fill: `url(#${GRADIENT_ID})` }}
         >
           <Defs>
-            <SpectrumGradientProvider chartData={data} id={GRADIENT_ID} />
+            <SpectrumGradientProvider
+              chartData={intensities}
+              id={GRADIENT_ID}
+            />
           </Defs>
 
           <Grid />
         </AreaChart>
         <XAxis
           style={{ marginHorizontal: -10, height: X_AXIS_HEIGHT }}
-          data={data.map((p) => ChartPt.getWavelength(p))}
+          data={intensities.map((p) => ChartPt.getWavelength(p))}
           formatLabel={(value, index) => value}
           numberOfTicks={5}
           svg={{ fontSize: AXES_FONT_SIZE, fill: "grey" }}

@@ -5,6 +5,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
 import * as Spectrum from "../../types/Spectrum";
+import Dialog from "react-native-ui-lib/dialog";
+import Button from "react-native-ui-lib/button";
+import SpectrumChart from "../../components/SpectrumChart";
 import {
   updateSpectrum,
   selectReferenceKey,
@@ -14,10 +17,19 @@ import {
 
 export default function ReviewScreen({ route, navigation }) {
   const { colors } = useTheme();
-  const { spectrum, targetIndex } = route.params;
+  const [spectrum, setSpectrum] = useState(route.params.spectrum);
+  const [renameDialogVisible, setRenameVisible] = useState(false);
   const dispatch = useDispatch();
-  const [name, setName] = useState(Spectrum.getName(spectrum));
   const referenceKey = useSelector(selectReferenceKey);
+
+  const changeSpectrum = (newSpectrum) => {
+    setSpectrum(newSpectrum);
+    dispatch(
+      updateSpectrum({
+        spectrum: newSpectrum,
+      })
+    );
+  };
 
   const isReference = useCallback(
     () => referenceKey === Spectrum.getKey(spectrum),
@@ -28,7 +40,7 @@ export default function ReviewScreen({ route, navigation }) {
     if (isReference()) {
       dispatch(removeReference());
     } else {
-      dispatch(setReference({ key: Spectrum.getKey(spectrum) }));
+      dispatch(setReference({ spectrum }));
     }
   };
 
@@ -45,23 +57,69 @@ export default function ReviewScreen({ route, navigation }) {
     );
   };
 
+  const renameDialog = () => (
+    <Dialog
+      top
+      centerH
+      visible={renameDialogVisible}
+      migrate
+      useSafeArea
+      onDismiss={() => setRenameVisible(false)}
+    >
+      <View
+        style={{
+          ...styles.dialogView,
+          backgroundColor: colors.background,
+        }}
+      >
+        <Text>Edit Spectrum name</Text>
+        <TextInput
+          onChangeText={(text) =>
+            changeSpectrum(Spectrum.rename(spectrum, text))
+          }
+          value={Spectrum.getName(spectrum)}
+        />
+        <Text>Tap away to dismiss</Text>
+      </View>
+    </Dialog>
+  );
+
   return (
     <View>
-      <TextInput
-        onChangeText={(text) => {
-          setName(text);
-          dispatch(
-            updateSpectrum({
-              targetIndex,
-              spectrum: Spectrum.rename(spectrum, text),
-            })
-          );
-        }}
-        value={name}
-      />
-      <TouchableOpacity>{waterIconButton()}</TouchableOpacity>
+      <View style={styles.header}>
+        <TouchableOpacity
+          style={styles.nameButton}
+          onPress={() => setRenameVisible(true)}
+        >
+          <Text>{Spectrum.getName(spectrum)}</Text>
+          <Ionicons name={"pencil"} size={30} color={colors.primary} />
+        </TouchableOpacity>
+        {renameDialog()}
+        <TouchableOpacity>{waterIconButton()}</TouchableOpacity>
+      </View>
+      <SpectrumChart intensities={Spectrum.getIntensityChart(spectrum)} />
     </View>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  dialogView: {
+    height: 200,
+    width: "100%",
+    marginTop: 100,
+    borderRadius: 16,
+    justifyContent: "space-around",
+    paddingHorizontal: 16,
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    height: 50,
+  },
+  nameButton: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+});

@@ -62,7 +62,7 @@ export default function CaptureScreen({ navigation }) {
         <SpectrumChart
           style={styles.chart}
           horizontalInset={CHART_INSET}
-          data={intensityChart}
+          intensities={intensityChart}
         />
 
         <View style={styles.tableMaster}>

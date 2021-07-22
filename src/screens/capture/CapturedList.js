@@ -1,11 +1,9 @@
 import React from "react";
 import { StyleSheet, View, Text } from "react-native";
-import {
-  selectRecordedSpectra,
-} from "../../redux/reducers/RecordedSpectra";
-import { useSelector, useDispatch } from "react-redux";
+import { selectRecordedSpectra } from "../../redux/reducers/RecordedSpectra";
+import { useSelector } from "react-redux";
 import { AreaChart } from "react-native-svg-charts";
-import { curveBasis as d3ShapeCurveBasis} from "d3-shape";
+import { curveBasis as d3ShapeCurveBasis } from "d3-shape";
 import * as ChartPt from "../../types/ChartPoint";
 import * as Spectrum from "../../types/Spectrum";
 import { useTheme } from "@react-navigation/native";
@@ -13,8 +11,13 @@ import { TouchableOpacity } from "react-native";
 
 function CapturedCell({ navigation, spectrum, idx }) {
   const { colors } = useTheme();
-  const dispatch = useDispatch();
 
+  /**
+   * TODO: Once a capture is started, reset the scanner line history.
+   * Once desired exposure is reached, record the spectrum. Animate
+   * this cell with this:
+   * https://wix.github.io/react-native-ui-lib/docs/AnimatedScanner/
+   */
   return (
     <TouchableOpacity
       style={styles.cellContainer}
@@ -42,8 +45,8 @@ function CapturedCell({ navigation, spectrum, idx }) {
 
 export default function CapturedList({ navigation, style }) {
   const recordedSpectra = useSelector(selectRecordedSpectra);
-  const spectraBackwards = [...recordedSpectra].reverse();
-  const list = spectraBackwards.map((spectrum, idx) => (
+
+  const list = recordedSpectra.map((spectrum, idx) => (
     <CapturedCell
       navigation={navigation}
       spectrum={spectrum}

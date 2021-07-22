@@ -67,10 +67,12 @@ export const { updateFeed, setPreviewImage, resetIntensityArrayHistory } =
 export const selectPreviewImg = (state) => state.spectrumFeed.previewImage;
 
 export const selectIntensityChart = (state) => {
-  const uncalibrated = state.spectrumFeed.uncalibratedIntensities;
+  const uncalibratedIntensities = state.spectrumFeed.uncalibratedIntensities;
   const calibration = state.calibration.calibration;
-  if (!uncalibrated || !calibration) return null;
-  return computeIntensityChart(uncalibrated, calibration);
+  if (!uncalibratedIntensities || !calibration) {
+    return null;
+  }
+  return computeIntensityChart(uncalibratedIntensities, calibration);
 };
 
 export default spectrumFeedSlice.reducer;

@@ -37,7 +37,7 @@ export default function HomeNavigator({ navigation }) {
      * screens were not loaded to the stack.
      */
     <HomeStack.Navigator
-      initialRouteName="CalibrationScreen"
+      initialRouteName="CaptureScreen"
       options={{ headerTintColor: colors.background }}
       screenOptions={{ gestureEnabled: false }}
     >
@@ -126,17 +126,6 @@ export default function HomeNavigator({ navigation }) {
             backgroundColor: colors.background,
           },
           headerTintColor: colors.text,
-          headerRight: () => (
-            <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
-              <Item
-                title="Save"
-                onPress={() => {
-                  alert("Save");
-                  navigation.popToTop();
-                }}
-              />
-            </HeaderButtons>
-          ),
         }}
       />
       <HomeStack.Screen
@@ -144,7 +133,6 @@ export default function HomeNavigator({ navigation }) {
         component={ReviewScreen}
         options={{
           title: "Review",
-
           headerStyle: {
             backgroundColor: colors.background,
           },
