@@ -4,7 +4,6 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import SpectrumChart from "./SpectrumChart";
 import {
   selectReferenceSpectrum,
-  selectReferenceKey,
 } from "../redux/reducers/RecordedSpectra";
 import { useSelector } from "react-redux";
 import * as Spectrum from "../types/Spectrum";

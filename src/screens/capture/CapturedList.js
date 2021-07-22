@@ -1,7 +1,10 @@
 import React from "react";
 import { StyleSheet, View, Text } from "react-native";
-import { selectRecordedSpectra } from "../../redux/reducers/RecordedSpectra";
-import { useSelector } from "react-redux";
+import {
+  selectRecordedSpectra,
+  selectReferenceSpectrum,
+} from "../../redux/reducers/RecordedSpectra";
+import { useSelector, useDispatch } from "react-redux";
 import { AreaChart } from "react-native-svg-charts";
 import { curveBasis as d3ShapeCurveBasis } from "d3-shape";
 import * as ChartPt from "../../types/ChartPoint";
@@ -9,25 +12,10 @@ import * as Spectrum from "../../types/Spectrum";
 import { useTheme } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native";
 
-function CapturedCell({ navigation, spectrum, idx }) {
+export function CapturedCell({ spectrum }) {
   const { colors } = useTheme();
-
-  /**
-   * TODO: Once a capture is started, reset the scanner line history.
-   * Once desired exposure is reached, record the spectrum. Animate
-   * this cell with this:
-   * https://wix.github.io/react-native-ui-lib/docs/AnimatedScanner/
-   */
   return (
-    <TouchableOpacity
-      style={styles.cellContainer}
-      onPress={() => {
-        navigation.navigate("ReviewScreen", {
-          spectrum,
-          targetIndex: idx,
-        });
-      }}
-    >
+    <View style={styles.cellContainer}>
       <Text style={styles.name}>{Spectrum.getName(spectrum)}</Text>
       <AreaChart
         style={styles.chart}
@@ -39,21 +27,49 @@ function CapturedCell({ navigation, spectrum, idx }) {
         curve={d3ShapeCurveBasis}
         svg={{ fill: colors.primary + "30", stroke: colors.primary }}
       />
+    </View>
+  );
+}
+
+function PressableCapturedCell({ navigation, spectrum }) {
+  /**
+   * TODO: Once a capture is started, reset the scanner line history.
+   * Once desired exposure is reached, record the spectrum. Animate
+   * this cell with this:
+   * https://wix.github.io/react-native-ui-lib/docs/AnimatedScanner/
+   */
+  return (
+    <TouchableOpacity
+      onPress={() => navigation.navigate("ReviewScreen", { spectrum })}
+    >
+      <CapturedCell spectrum={spectrum} />
     </TouchableOpacity>
   );
 }
 
 export default function CapturedList({ navigation, style }) {
   const recordedSpectra = useSelector(selectRecordedSpectra);
+  const referenceSpectrum = useSelector(selectReferenceSpectrum);
 
-  const list = recordedSpectra.map((spectrum, idx) => (
-    <CapturedCell
-      navigation={navigation}
-      spectrum={spectrum}
-      idx={idx}
-      key={`sm${idx}`}
-    />
-  ));
+  const isReference = (spectrum) => {
+    return (
+      referenceSpectrum &&
+      spectrum &&
+      Spectrum.getKey(spectrum) === Spectrum.getKey(referenceSpectrum)
+    );
+  };
+
+  const list = recordedSpectra.map(
+    (spectrum, idx) =>
+      isReference(spectrum) || (
+        <PressableCapturedCell
+          navigation={navigation}
+          spectrum={spectrum}
+          idx={idx}
+          key={`sm${idx}`}
+        />
+      )
+  );
 
   return <View style={style}>{list}</View>;
 }

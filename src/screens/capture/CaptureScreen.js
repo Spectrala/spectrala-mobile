@@ -8,18 +8,21 @@ import {
   selectPreviewImg,
   selectIntensityChart,
 } from "../../redux/reducers/SpectrumFeed";
-import { recordSpectrum } from "../../redux/reducers/RecordedSpectra";
+import {
+  recordSpectrum,
+  selectReferenceSpectrum,
+} from "../../redux/reducers/RecordedSpectra";
 import CameraLoader from "../../components/CameraLoader";
 import { Ionicons } from "@expo/vector-icons";
-import CapturedList from "./CapturedList";
+import CapturedList, { CapturedCell } from "./CapturedList";
 import * as Spectrum from "../../types/Spectrum";
-
 const CHART_INSET = 24;
 
 export default function CaptureScreen({ navigation }) {
   const { colors } = useTheme();
   const previewImage = useSelector(selectPreviewImg);
   const intensityChart = useSelector(selectIntensityChart);
+  const referenceSpectrum = useSelector(selectReferenceSpectrum);
   const dispatch = useDispatch();
 
   const waterDrop = (
@@ -45,6 +48,14 @@ export default function CaptureScreen({ navigation }) {
     </View>
   );
 
+  const getReferenceCell = () => {
+    if (referenceSpectrum) {
+      return <CapturedCell spectrum={referenceSpectrum} />;
+    } else {
+      return refPlaceholder;
+    }
+  };
+
   return (
     <>
       <View style={{ ...styles.container, opacity: 0 }}>
@@ -67,7 +78,7 @@ export default function CaptureScreen({ navigation }) {
 
         <View style={styles.tableMaster}>
           <Text text50>Reference</Text>
-          {refPlaceholder}
+          {getReferenceCell()}
           <Text text50>Test</Text>
           <CapturedList navigation={navigation} style={styles.list} />
         </View>

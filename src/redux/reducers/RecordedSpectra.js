@@ -75,14 +75,4 @@ export const selectRecordedSpectra = (state) => {
   return arr;
 };
 
-/**
- * Return the key of the reference spectrum. If there is not a
- * current reference spectrum, returns null.
- * @param {Object} state Redux store state
- * @returns {Number | null} current referenece spectrum key
- */
-export const selectReferenceKey = (state) => {
-  return state.spectra.referenceKey;
-};
-
 export default spectrumSlice.reducer;

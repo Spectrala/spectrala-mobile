@@ -7,20 +7,20 @@ import { TouchableOpacity } from "react-native";
 import * as Spectrum from "../../types/Spectrum";
 import Dialog from "react-native-ui-lib/dialog";
 import Button from "react-native-ui-lib/button";
-import SpectrumChart from "../../components/SpectrumChart";
 import {
   updateSpectrum,
-  selectReferenceKey,
+  selectReferenceSpectrum,
   setReference,
   removeReference,
 } from "../../redux/reducers/RecordedSpectra";
+import SwitchableSpectrumChart from "../../components/SwitchableSpectrumChart";
 
 export default function ReviewScreen({ route, navigation }) {
   const { colors } = useTheme();
   const [spectrum, setSpectrum] = useState(route.params.spectrum);
   const [renameDialogVisible, setRenameVisible] = useState(false);
   const dispatch = useDispatch();
-  const referenceKey = useSelector(selectReferenceKey);
+  const referenceSpectrum = useSelector(selectReferenceSpectrum);
 
   const changeSpectrum = (newSpectrum) => {
     setSpectrum(newSpectrum);
@@ -32,8 +32,8 @@ export default function ReviewScreen({ route, navigation }) {
   };
 
   const isReference = useCallback(
-    () => referenceKey === Spectrum.getKey(spectrum),
-    [spectrum, referenceKey]
+    () => referenceSpectrum && Spectrum.getKey(referenceSpectrum) === Spectrum.getKey(spectrum),
+    [spectrum, referenceSpectrum]
   );
 
   const onToggleReference = () => {
@@ -97,7 +97,7 @@ export default function ReviewScreen({ route, navigation }) {
         {renameDialog()}
         <TouchableOpacity>{waterIconButton()}</TouchableOpacity>
       </View>
-      <SpectrumChart intensities={Spectrum.getIntensityChart(spectrum)} />
+      <SwitchableSpectrumChart spectrum={spectrum} />
     </View>
   );
 }
