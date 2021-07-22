@@ -50,7 +50,7 @@ export default function CaptureScreen({ navigation }) {
 
   const getReferenceCell = () => {
     if (referenceSpectrum) {
-      return <CapturedCell spectrum={referenceSpectrum} />;
+      return <CapturedCell navigation={navigation} spectrum={referenceSpectrum} />;
     } else {
       return refPlaceholder;
     }

@@ -12,37 +12,33 @@ import * as Spectrum from "../../types/Spectrum";
 import { useTheme } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native";
 
-export function CapturedCell({ spectrum }) {
-  const { colors } = useTheme();
-  return (
-    <View style={styles.cellContainer}>
-      <Text style={styles.name}>{Spectrum.getName(spectrum)}</Text>
-      <AreaChart
-        style={styles.chart}
-        data={Spectrum.getIntensityChart(spectrum)}
-        yAccessor={({ item }) => ChartPt.getY(item)}
-        xAccessor={({ item }) => ChartPt.getWavelength(item)}
-        yMax={100}
-        yMin={0}
-        curve={d3ShapeCurveBasis}
-        svg={{ fill: colors.primary + "30", stroke: colors.primary }}
-      />
-    </View>
-  );
-}
+export function CapturedCell({ navigation, spectrum }) {
 
-function PressableCapturedCell({ navigation, spectrum }) {
   /**
    * TODO: Once a capture is started, reset the scanner line history.
    * Once desired exposure is reached, record the spectrum. Animate
    * this cell with this:
    * https://wix.github.io/react-native-ui-lib/docs/AnimatedScanner/
    */
+
+  const { colors } = useTheme();
   return (
     <TouchableOpacity
       onPress={() => navigation.navigate("ReviewScreen", { spectrum })}
     >
-      <CapturedCell spectrum={spectrum} />
+      <View style={styles.cellContainer}>
+        <Text style={styles.name}>{Spectrum.getName(spectrum)}</Text>
+        <AreaChart
+          style={styles.chart}
+          data={Spectrum.getIntensityChart(spectrum)}
+          yAccessor={({ item }) => ChartPt.getY(item)}
+          xAccessor={({ item }) => ChartPt.getWavelength(item)}
+          yMax={100}
+          yMin={0}
+          curve={d3ShapeCurveBasis}
+          svg={{ fill: colors.primary + "30", stroke: colors.primary }}
+        />
+      </View>
     </TouchableOpacity>
   );
 }
@@ -62,7 +58,7 @@ export default function CapturedList({ navigation, style }) {
   const list = recordedSpectra.map(
     (spectrum, idx) =>
       isReference(spectrum) || (
-        <PressableCapturedCell
+        <CapturedCell
           navigation={navigation}
           spectrum={spectrum}
           idx={idx}
