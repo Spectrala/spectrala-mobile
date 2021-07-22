@@ -12,7 +12,6 @@ export default function loadAssets() {
   const [localLoadingComplete, setLocalLoadingComplete] = useState(false);
 
   const loadingIsComplete = () => tfIsReady && localLoadingComplete;
-  // const loadingIsComplete = () => localLoadingComplete;
 
   const loadLocalFonts = async () => {
     await expoFontLoadAsync({

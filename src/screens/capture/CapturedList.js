@@ -44,7 +44,8 @@ function CapturedCell({ navigation, spectrum, idx }) {
 
 export default function CapturedList({ navigation, style }) {
   const recordedSpectra = useSelector(selectRecordedSpectra);
-  const list = recordedSpectra.map((spectrum, idx) => (
+  const spectraBackwards = [...recordedSpectra].reverse();
+  const list = spectraBackwards.map((spectrum, idx) => (
     <CapturedCell
       navigation={navigation}
       spectrum={spectrum}
@@ -55,10 +56,6 @@ export default function CapturedList({ navigation, style }) {
 
   return <View style={style}>{list}</View>;
 }
-
-// CapturedList.propTypes = {
-//   selectedMode: PropTypes.string,
-// };
 
 const styles = StyleSheet.create({
   cellContainer: {

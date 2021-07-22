@@ -11,19 +11,10 @@ import {
   HeaderButtons,
   HeaderButton,
   Item,
-  HiddenItem,
 } from "react-navigation-header-buttons";
 import { useTheme } from "@react-navigation/native";
 
 const NextPageButton = ({ onPress }) => <Item title="Next" onPress={onPress} />;
-
-const HelpButton = ({ onPress }) => (
-  <Item title="search" iconName="ios-help" onPress={onPress} />
-);
-
-const ReusableHiddenItem = ({ onPress }) => (
-  <HiddenItem title="hidden2" onPress={onPress} />
-);
 
 const IoniconsHeaderButton = (props) => (
   // the `props` here come from <Item ... />
@@ -46,7 +37,7 @@ export default function HomeNavigator({ navigation }) {
      * screens were not loaded to the stack.
      */
     <HomeStack.Navigator
-      initialRouteName="CameraScreen"
+      initialRouteName="CaptureScreen"
       options={{ headerTintColor: colors.background }}
       screenOptions={{ gestureEnabled: false }}
     >
@@ -153,12 +144,12 @@ export default function HomeNavigator({ navigation }) {
         component={ReviewScreen}
         options={{
           title: "Review",
-          
+
           headerStyle: {
             backgroundColor: colors.background,
           },
           headerTintColor: colors.text,
-headerRight: () => (
+          headerRight: () => (
             <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
               <Item
                 title="Save"

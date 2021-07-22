@@ -8,6 +8,7 @@ import { store } from "../redux/store/Store";
 import { Camera } from "expo-camera";
 import { cameraWithTensors } from "@tensorflow/tfjs-react-native";
 import { useFocusEffect } from "@react-navigation/native";
+import { DEBUG_TIME_LOGGING } from "../util/tfUtil";
 
 export const CAMERA_VISIBILITY_OPTIONS = {
   full: "full",
@@ -75,6 +76,8 @@ export default function CameraLoader({ collectsFrames }) {
     requestCameraPermission();
   }, [collectsFrames]);
 
+  let lastDate = new Date();
+
   const updateLineData = async (imgTensor, state) => {
     if (!imgTensor) return;
     if (collectsFrames) {
@@ -86,6 +89,13 @@ export default function CameraLoader({ collectsFrames }) {
       if (intensities && Math.max(...intensities) > 0) {
         dispatch(updateFeed({ intensities, previewUri }));
       }
+    }
+    if (DEBUG_TIME_LOGGING) {
+      const now = new Date();
+      const delta = now - lastDate;
+      lastDate = now;
+      console.log(`${delta} Plus capture`);
+      console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     }
   };
 

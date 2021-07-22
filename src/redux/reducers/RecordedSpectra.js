@@ -27,9 +27,8 @@ export const spectrumSlice = createSlice({
       state.referenceKey = null;
     },
     setReference: (state, action) => {
-      const idx = action.payload.targetIndex;
-      const reference = state.recordedSpectra[idx];
-      state.referenceKey = Spectrum.getKey(reference);
+      const key = action.payload.key;
+      state.referenceKey = key;
     },
   },
 });
@@ -69,6 +68,16 @@ export const selectHighestKey = (state) => state.spectra.highestKey;
  */
 export const selectRecordedSpectra = (state) => {
   return state.spectra.recordedSpectra;
+};
+
+/**
+ * Return the key of the reference spectrum. If there is not a
+ * current reference spectrum, returns null.
+ * @param {Object} state Redux store state
+ * @returns {Number | null} current referenece spectrum key
+ */
+export const selectReferenceKey = (state) => {
+  return state.spectra.referenceKey;
 };
 
 export default spectrumSlice.reducer;
