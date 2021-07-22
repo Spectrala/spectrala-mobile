@@ -37,7 +37,7 @@ export default function HomeNavigator({ navigation }) {
      * screens were not loaded to the stack.
      */
     <HomeStack.Navigator
-      initialRouteName="CaptureScreen"
+      initialRouteName="CalibrationScreen"
       options={{ headerTintColor: colors.background }}
       screenOptions={{ gestureEnabled: false }}
     >

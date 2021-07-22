@@ -1,13 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { AreaChart, Grid, YAxis, XAxis } from "react-native-svg-charts";
 import { Defs } from "react-native-svg";
-import { useSelector } from "react-redux";
-import { selectIntensityChart } from "../../redux/reducers/SpectrumFeed";
 import { curveBasis as d3ShapeCurveBasis} from "d3-shape";
-import * as ChartPt from "../../types/ChartPoint";
-import { selectCalibrationPoints } from "../../redux/reducers/Calibration";
-import SpectrumGradientProvider from "../../components/SpectrumGradientProvider";
+import * as ChartPt from "../types/ChartPoint";
+import SpectrumGradientProvider from "./SpectrumGradientProvider";
 
 const CHART_HEIGHT = 160;
 const X_AXIS_HEIGHT = 10;
@@ -17,7 +14,7 @@ const INSET_TOP = SHOWS_Y ? 10 : 0;
 const INSET_BOTTOM = 5;
 const GRADIENT_ID = "grad";
 
-function CaptureChart({ data, yRange = [0, 100], style }) {
+function SpectrumChart({ data, yRange = [0, 100], style }) {
   if (!data) {
     return <Text>Loading...</Text>;
   }
@@ -92,4 +89,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CaptureChart;
+export default SpectrumChart;

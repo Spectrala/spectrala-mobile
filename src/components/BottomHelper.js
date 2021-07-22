@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from "react";
 import { Text, View, StyleSheet, ScrollView } from "react-native";
-import { ExpandableSection, Card } from "react-native-ui-lib";
+import ExpandableSection from "react-native-ui-lib/expandableSection";
+import Card from "react-native-ui-lib/card";
 import { AntDesign } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
 

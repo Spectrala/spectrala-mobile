@@ -1,15 +1,13 @@
-import React, { useCallback } from "react";
-import { StyleSheet, View, TextInput, Text } from "react-native";
+import React from "react";
+import { StyleSheet, View, Text } from "react-native";
 import {
   selectRecordedSpectra,
-  updateSpectrum,
 } from "../../redux/reducers/RecordedSpectra";
 import { useSelector, useDispatch } from "react-redux";
 import { AreaChart } from "react-native-svg-charts";
 import { curveBasis as d3ShapeCurveBasis} from "d3-shape";
 import * as ChartPt from "../../types/ChartPoint";
 import * as Spectrum from "../../types/Spectrum";
-
 import { useTheme } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native";
 

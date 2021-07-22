@@ -26,19 +26,24 @@ export default function ReviewScreen({ route, navigation }) {
 
   const onToggleReference = () => {
     if (isReference()) {
+      dispatch(removeReference());
+    } else {
       dispatch(setReference({ key: Spectrum.getKey(spectrum) }));
     }
   };
 
-  const waterIconButton = () => (
-    <TouchableOpacity onPress={onToggleReference}>
-      <Ionicons
-        name={isReference() ? "water" : "water-outline"}
-        size={30}
-        color={colors.primary}
-      />
-    </TouchableOpacity>
-  );
+  const waterIconButton = () => {
+    const ref = isReference();
+    return (
+      <TouchableOpacity onPress={onToggleReference}>
+        <Ionicons
+          name={ref ? "water" : "water-outline"}
+          size={ref ? 30 : 27}
+          color={colors.primary}
+        />
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <View>

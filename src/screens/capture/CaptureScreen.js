@@ -1,17 +1,14 @@
 import React from "react";
 import { StyleSheet, Image, View, Text, ScrollView } from "react-native";
 import { useTheme } from "@react-navigation/native";
-import CaptureChart from "./CaptureChart";
+import SpectrumChart from "../../components/SpectrumChart";
 import { useSelector, useDispatch } from "react-redux";
 import CaptureButton from "./CaptureButton";
 import {
   selectPreviewImg,
   selectIntensityChart,
 } from "../../redux/reducers/SpectrumFeed";
-import {
-  recordSpectrum,
-  selectHighestKey,
-} from "../../redux/reducers/RecordedSpectra";
+import { recordSpectrum } from "../../redux/reducers/RecordedSpectra";
 import CameraLoader from "../../components/CameraLoader";
 import { Ionicons } from "@expo/vector-icons";
 import CapturedList from "./CapturedList";
@@ -62,7 +59,7 @@ export default function CaptureScreen({ navigation }) {
           fadeDuration={0}
           source={{ uri: previewImage }}
         />
-        <CaptureChart
+        <SpectrumChart
           style={styles.chart}
           horizontalInset={CHART_INSET}
           data={intensityChart}
