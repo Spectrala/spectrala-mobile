@@ -1,7 +1,8 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, FlatList } from "react-native";
 import PropTypes from "prop-types";
-import SessionList from "./SessionList";
+import SessionCell from "./SessionCell";
+import { useTheme } from "@react-navigation/native";
 
 const SESSIONS = [
   {
@@ -30,12 +31,26 @@ const onSelectSession = (session, navigation) => {
 };
 
 function HomeScreen({ navigation }) {
+  const { colors } = useTheme();
   return (
-    <View style={styles.container}>
-      <SessionList
-        sessions={SESSIONS}
-        inSelectionMode={true}
-        onSelectCell={(session) => onSelectSession(session, navigation)}
+    <View
+      style={{
+        ...styles.container,
+        backgroundColor: colors.foreground,
+      }}
+    >
+      <FlatList
+        style={styles.list}
+        data={SESSIONS}
+        renderItem={({ item }) => (
+          <SessionCell
+            name={item.name}
+            date={item.date}
+            onSelect={() => console.log(item)}
+          />
+        )}
+        keyExtractor={(item) => String(item.name)}
+        showsVerticalScrollIndicator={true}
       />
     </View>
   );
@@ -48,10 +63,14 @@ HomeScreen.propTypes = {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: "100%",
+    alignSelf: "center",
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "white",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingHorizontal: 20,
+    marginHorizontal: 16,
   },
   title: {
     fontSize: 20,

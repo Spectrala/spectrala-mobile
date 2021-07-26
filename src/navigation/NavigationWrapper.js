@@ -12,7 +12,8 @@ const reactNavigationTheme = {
   colors: {
     ...DefaultTheme.colors,
     primary: "#FD893A",
-    background: "#F7FDFF",
+    background: "#F3F3EC",
+    foreground: "#FBFCFF",
     text: "#161316",
     successColor: "#63ED8C",
     infoColor: "#0790F9",

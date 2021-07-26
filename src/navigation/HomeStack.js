@@ -7,6 +7,7 @@ import CaptureScreen from "../screens/capture/CaptureScreen";
 import ReviewScreen from "../screens/review/ReviewScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import HomeScreen from "../screens/home/HomeScreen";
+import { View, Text } from "react-native";
 import {
   HeaderButtons,
   HeaderButton,
@@ -14,13 +15,17 @@ import {
 } from "react-navigation-header-buttons";
 import { useTheme } from "@react-navigation/native";
 
-const NextPageButton = ({ onPress }) => <Item title="Next" onPress={onPress} />;
+const TextHeaderButton = ({ onPress, text }) => (
+  <Item title={text} onPress={onPress} />
+);
 
-const IoniconsHeaderButton = (props) => (
-  // the `props` here come from <Item ... />
-  // you may access them and pass something else to `HeaderButton` if you like
+const IconHeaderButton = (props) => (
   <HeaderButton IconComponent={Ionicons} iconSize={23} {...props} />
 );
+
+function TitleHeader({ title }) {
+  return <Text style={{ fontSize: 20, fontWeight: "600" }}>{title}</Text>;
+}
 
 const HomeStack = createStackNavigator();
 
@@ -37,41 +42,19 @@ export default function HomeNavigator({ navigation }) {
      * screens were not loaded to the stack.
      */
     <HomeStack.Navigator
-      initialRouteName="CaptureScreen"
-      options={{ headerTintColor: colors.background }}
+      initialRouteName="HomeScreen"
       screenOptions={{ gestureEnabled: false }}
     >
       <HomeStack.Screen
         name="HomeScreen"
         component={HomeScreen}
         options={{
-          title: "Sessions",
-          headerLeft: () => (
-            <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
-              <Item
-                title="Settings"
-                iconName="settings"
-                onPress={() => {
-                  navigation.navigate("SettingsScreen");
-                }}
-              />
-            </HeaderButtons>
-          ),
-
+          headerTitle: () => <TitleHeader title="Sessions" />,
+          headerTitleAlign: "left",
           headerStyle: {
             backgroundColor: colors.background,
+            shadowColor: "transparent",
           },
-          headerTintColor: colors.text,
-          headerRight: () => (
-            <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
-              <Item
-                title="Select"
-                onPress={() => {
-                  alert("Start selecting");
-                }}
-              />
-            </HeaderButtons>
-          ),
         }}
       />
       <HomeStack.Screen
@@ -91,9 +74,10 @@ export default function HomeNavigator({ navigation }) {
           },
           headerTintColor: colors.text,
           headerRight: () => (
-            <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
-              <NextPageButton
+            <HeaderButtons HeaderButtonComponent={IconHeaderButton}>
+              <TextHeaderButton
                 onPress={() => navigation.navigate("CalibrationScreen")}
+                text={"Next"}
               />
             </HeaderButtons>
           ),
@@ -109,9 +93,10 @@ export default function HomeNavigator({ navigation }) {
           },
           headerTintColor: colors.text,
           headerRight: () => (
-            <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
-              <NextPageButton
+            <HeaderButtons HeaderButtonComponent={IconHeaderButton}>
+              <TextHeaderButton
                 onPress={() => navigation.navigate("CaptureScreen")}
+                text={"Next"}
               />
             </HeaderButtons>
           ),
@@ -138,7 +123,7 @@ export default function HomeNavigator({ navigation }) {
           },
           headerTintColor: colors.text,
           headerRight: () => (
-            <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
+            <HeaderButtons HeaderButtonComponent={IconHeaderButton}>
               <Item
                 title="Save"
                 onPress={() => {

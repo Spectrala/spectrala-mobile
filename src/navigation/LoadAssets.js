@@ -15,9 +15,9 @@ export default function loadAssets() {
 
   const loadLocalFonts = async () => {
     await expoFontLoadAsync({
-      Heebo: require("../../assets/fonts/Heebo/static/Heebo-Regular.ttf"),
-      "Heebo-SemiBold": {
-        uri: require("../../assets/fonts/Heebo/static/Heebo-SemiBold.ttf"),
+      EncodeSans: require("../../assets/fonts/EncodeSans/EncodeSans-Regular.ttf"),
+      "EncodeSans-SemiBold": {
+        uri: require("../../assets/fonts/EncodeSans/EncodeSans-SemiBold.ttf"),
         display: FontDisplay.FALLBACK,
       },
     });

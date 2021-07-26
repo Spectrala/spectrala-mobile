@@ -44,40 +44,15 @@ function StackedChart(props) {
     },
   ];
 
-  /**
-   * Converts a string of an rgb color formatted like "rgb(0,2,255)"
-   * to a hex string like "#0002FF"
-   * @param {string} str - the rgb string to convert to hex
-   * @returns {string} the reformatted string
-   */
-  const rgbToHexColor = (str) => {
-    return (
-      "#" +
-      str
-        .replace("rgb(", "")
-        .replace(")", "")
-        .split(",")
-        .map((x) => parseInt(x).toString(16).padStart(2, "0"))
-        .join("")
-        .toUpperCase()
-    );
-  };
-
   const baseColor = colors.primary;
   const chartColors = data.map((_, idx) => {
     const alphaPct = 1 - idx / data.length;
     const alphaDec = Math.floor(255 * alphaPct);
     const alpha = alphaDec.toString(16);
-    return rgbToHexColor(baseColor) + alpha;
+    return baseColor + alpha;
   });
-  const keys = ["apples", "bananas", "cherries", "dates"];
-  const svgs = [
-    { onPress: () => console.log("apples") },
-    { onPress: () => console.log("bananas") },
-    { onPress: () => console.log("cherries") },
-    { onPress: () => console.log("dates") },
-  ];
 
+  const keys = ["apples", "bananas", "cherries", "dates"];
   return (
     <StackedAreaChart
       style={styles.rightBox}
@@ -86,7 +61,6 @@ function StackedChart(props) {
       colors={chartColors}
       curve={d3ShapeCurveBasis}
       showGrid={false}
-      svgs={svgs}
     />
   );
 }
@@ -99,7 +73,6 @@ const styles = StyleSheet.create({
     height: "auto",
     paddingTop: 8,
     marginLeft: "auto",
-    marginRight: 12,
   },
 });
 
