@@ -10,6 +10,7 @@ import {
 } from "../../redux/reducers/ReaderBox";
 import BottomHelper from "../../components/BottomHelper";
 import CameraLoader from "../../components/CameraLoader";
+import { ScrollView } from "react-native";
 
 export default function CameraScreen({ navigation }) {
   const { colors } = useTheme();
@@ -17,57 +18,54 @@ export default function CameraScreen({ navigation }) {
   const initialWidth = useRef(readerWidth).current;
   const dispatch = useDispatch();
 
-  const helperHeader = useCallback(
-    () => (
-      <View style={styles.helperBody}>
-        <Text>Width</Text>
-        <Slider
-          containerStyle={styles.slider}
-          value={initialWidth}
-          onValueChange={(value) => dispatch(updateReaderWidth({ value }))}
-          minimumValue={10}
-          maximumValue={200}
-          step={5}
-          minimumTrackTintColor={colors.primary}
-          thumbTintColor={colors.primary}
-        />
-      </View>
-    ),
-    []
-  );
-
   return (
-    <>
-      <View style={styles.container}>
-        <CameraLoader capturesFrames={false} />
+    <ScrollView style={styles.container }>
+      <View style={styles.cameraMaster}>
+        <View style={styles.cameraChild}>
+          <CameraLoader capturesFrames={false} />
+        </View>
+        <View style={styles.cameraChild}>
+          <DraggablePointsContainer width={readerWidth} />
+        </View>
       </View>
-      <View style={styles.container}>
-        <DraggablePointsContainer width={readerWidth} />
-        <BottomHelper
-          utilityComponents={helperHeader}
-          bodyText={
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur in\
-nisi maximus, vehicula nibh pulvinar, pulvinar massa. Maecenas quis\
-lectus elit. Aliquam tempus felis rutrum ex blandit, eu laoreet sapien\
-tincidunt. Nam convallis, velit at rutrum rutrum, mauris nunc\
-vestibulum velit, et mollis sapien elit eu nibh. Sed eget nulla orci.\
-Etiam a lorem rhoncus, tempus erat nec, lobortis odio. Maecenas semper\
-sagittis auctor."
-          }
-        />
-      </View>
-    </>
+
+      <Slider
+        containerStyle={styles.slider}
+        value={initialWidth}
+        onValueChange={(value) => dispatch(updateReaderWidth({ value }))}
+        minimumValue={10}
+        maximumValue={200}
+        step={5}
+        minimumTrackTintColor={colors.primary}
+        thumbTintColor={colors.primary}
+      />
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    marginHorizontal: 16,
+  },
+  cameraChild: {
     position: "absolute",
     top: 0,
     left: 0,
     right: 0,
+    bottom: 0,
+    borderRadius: 16,
+    overflow: "hidden",
+  },
+  cameraMaster: {
     flex: 1,
-    height: "100%",
+    height: 300,
+  },
+  camera: {
+    flex: 1,
+    borderRadius: 16,
+    overflow: "hidden",
+    marginHorizontal: 16,
+    marginBottom: 500,
   },
   helperBody: {
     padding: 16,

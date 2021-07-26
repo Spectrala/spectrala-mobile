@@ -136,14 +136,8 @@ export default function CameraLoader({ collectsFrames }) {
 
 const styles = StyleSheet.create({
   camera: {
-    width: "100%",
-    aspectRatio: scaledDims.width / scaledDims.height,
-  },
-  image: {
-    paddingHorizontal: 10,
-    borderWidth: 2,
-    borderColor: "black",
-    width: "100%",
-    height: 250,
+    flex: 1,
+    resizeMode: "repeat"
+    // aspectRatio: scaledDims.width / scaledDims.height,
   },
 });

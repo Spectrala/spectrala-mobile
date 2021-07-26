@@ -46,7 +46,7 @@ export default function HomeNavigator({ navigation }) {
      * screens were not loaded to the stack.
      */
     <HomeStack.Navigator
-      initialRouteName="HomeScreen"
+      initialRouteName="CameraScreen"
       screenOptions={{ gestureEnabled: false }}
     >
       <HomeStack.Screen
@@ -75,6 +75,7 @@ export default function HomeNavigator({ navigation }) {
           title: "Setup Box",
           headerStyle: {
             backgroundColor: colors.background,
+            shadowColor: "transparent",
           },
           headerBackTitleVisible: false,
           headerTintColor: colors.text,
@@ -97,6 +98,7 @@ export default function HomeNavigator({ navigation }) {
           title: "Setup Calibration",
           headerStyle: {
             backgroundColor: colors.background,
+            shadowColor: "transparent",
           },
           headerTintColor: colors.text,
           headerRight: () => (
@@ -116,6 +118,7 @@ export default function HomeNavigator({ navigation }) {
           title: "Capture",
           headerStyle: {
             backgroundColor: colors.background,
+            shadowColor: "transparent",
           },
           headerTintColor: colors.text,
         }}
@@ -127,6 +130,7 @@ export default function HomeNavigator({ navigation }) {
           title: "Review",
           headerStyle: {
             backgroundColor: colors.background,
+            shadowColor: "transparent",
           },
           headerTintColor: colors.text,
           headerRight: () => (

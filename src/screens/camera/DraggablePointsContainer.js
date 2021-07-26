@@ -198,14 +198,11 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
   container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
     position: "absolute",
     top: 0,
     left: 0,
     width: "100%",
-    aspectRatio: fullDims.width / fullDims.height,
+    height: "100%",
   },
   titleText: {
     fontSize: 14,
