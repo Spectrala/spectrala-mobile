@@ -2,9 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { TouchableOpacity, StyleSheet, Text, View } from "react-native";
 import { format } from "date-fns";
-import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
-import StackedChart from "./StackedChart";
 /**
  * https://icons.expo.fyi
  *
@@ -32,7 +30,6 @@ SessionCell.propTypes = {
   name: PropTypes.string.isRequired,
   date: PropTypes.instanceOf(Date).isRequired,
   onSelect: PropTypes.func,
-  inSelectionMode: PropTypes.bool.isRequired,
   isUploaded: PropTypes.bool,
   isSelected: PropTypes.bool,
 };

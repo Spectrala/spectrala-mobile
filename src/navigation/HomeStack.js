@@ -27,6 +27,10 @@ function TitleHeader({ title }) {
   return <Text style={{ fontSize: 20, fontWeight: "600" }}>{title}</Text>;
 }
 
+function ProgressHeader({ title }) {
+  return TitleHeader(title);
+}
+
 const HomeStack = createStackNavigator();
 
 export default function HomeNavigator({ navigation }) {
@@ -46,7 +50,7 @@ export default function HomeNavigator({ navigation }) {
       screenOptions={{ gestureEnabled: false }}
     >
       <HomeStack.Screen
-        name="HomeScreen"
+        name="Sessions"
         component={HomeScreen}
         options={{
           headerTitle: () => <TitleHeader title="Sessions" />,
@@ -58,7 +62,7 @@ export default function HomeNavigator({ navigation }) {
         }}
       />
       <HomeStack.Screen
-        name="SettingsScreen"
+        name="Settings"
         component={SettingsScreen}
         options={{
           title: "Settings",
@@ -72,7 +76,10 @@ export default function HomeNavigator({ navigation }) {
           headerStyle: {
             backgroundColor: colors.background,
           },
+          headerBackTitleVisible: false,
           headerTintColor: colors.text,
+          headerTitle: () => <TitleHeader title="Camera" />,
+          headerTitleAlign: "left",
           headerRight: () => (
             <HeaderButtons HeaderButtonComponent={IconHeaderButton}>
               <TextHeaderButton

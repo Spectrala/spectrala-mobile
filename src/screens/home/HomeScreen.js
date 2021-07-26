@@ -3,6 +3,8 @@ import { StyleSheet, View, FlatList } from "react-native";
 import PropTypes from "prop-types";
 import SessionCell from "./SessionCell";
 import { useTheme } from "@react-navigation/native";
+import { TouchableOpacity } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
 const SESSIONS = [
   {
@@ -30,6 +32,9 @@ const onSelectSession = (session, navigation) => {
   navigation.navigate("CameraScreen");
 };
 
+const ADD_DIAMETER = 90;
+const ADD_ICON_WIDTH = 70;
+
 function HomeScreen({ navigation }) {
   const { colors } = useTheme();
   return (
@@ -52,6 +57,17 @@ function HomeScreen({ navigation }) {
         keyExtractor={(item) => String(item.name)}
         showsVerticalScrollIndicator={true}
       />
+      <TouchableOpacity
+        style={styles.bottomBar}
+        onPress={() => navigation.navigate("CameraScreen")}
+      >
+        <Ionicons
+          style={styles.addIcon}
+          name={"add-outline"}
+          size={ADD_ICON_WIDTH}
+          color={colors.foreground}
+        />
+      </TouchableOpacity>
     </View>
   );
 }
@@ -80,6 +96,24 @@ const styles = StyleSheet.create({
     marginVertical: 30,
     height: 1,
     width: "80%",
+  },
+  bottomBar: {
+    backgroundColor: "orange",
+    height: ADD_DIAMETER,
+    width: ADD_DIAMETER,
+    borderRadius: ADD_DIAMETER / 2,
+    bottom: 32,
+    shadowRadius: 30,
+    shadowColor: "gray",
+    shadowOpacity: 0.4,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  addIcon: {
+    height: ADD_ICON_WIDTH,
+    width: ADD_ICON_WIDTH,
+    paddingLeft: 2,
+    paddingBottom: 2,
   },
 });
 

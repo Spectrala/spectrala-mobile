@@ -5,7 +5,6 @@ import { OverflowMenuProvider } from "react-navigation-header-buttons";
 import NotFoundScreen from "../screens/NotFoundScreen";
 import HomeStack from "./HomeStack";
 
-
 // Generate colors here: https://colors.eva.design
 const reactNavigationTheme = {
   ...DefaultTheme,
@@ -23,7 +22,7 @@ const reactNavigationTheme = {
 };
 
 // Docs: https://reactnavigation.org/docs/getting-started
-export default function Navigation({ colorScheme }) {
+export default function Navigation() {
   return (
     <NavigationContainer theme={reactNavigationTheme}>
       <OverflowMenuProvider>
