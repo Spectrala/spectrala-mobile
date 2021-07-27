@@ -8,7 +8,6 @@ import { store } from "../redux/store/Store";
 import { Camera } from "expo-camera";
 import { cameraWithTensors } from "@tensorflow/tfjs-react-native";
 import { useFocusEffect } from "@react-navigation/native";
-import { DEBUG_TIME_LOGGING } from "../util/tfUtil";
 
 export const CAMERA_VISIBILITY_OPTIONS = {
   full: "full",
@@ -76,12 +75,11 @@ export default function CameraLoader({ collectsFrames }) {
     requestCameraPermission();
   }, [collectsFrames]);
 
-  let lastDate = new Date();
 
-  const updateLineData = async (imgTensor, state) => {
+  const updateLineData = async (imgTensor, readerBox) => {
     if (!imgTensor) return;
     if (collectsFrames) {
-      const readerBox = state.readerBox;
+      console.log(`AFTER ${readerBox.angle}`);
       const { intensities, previewUri } = await getLineData(
         imgTensor,
         readerBox
@@ -90,50 +88,43 @@ export default function CameraLoader({ collectsFrames }) {
         dispatch(updateFeed({ intensities, previewUri }));
       }
     }
-    if (DEBUG_TIME_LOGGING) {
-      const now = new Date();
-      const delta = now - lastDate;
-      lastDate = now;
-      console.log(`${delta} Plus capture`);
-      console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-    }
   };
 
   const handleCameraStream = (images, updatePreview, gl) => {
+    const state = store.store.getState();
+    console.log(`WAY BACK ${state.readerBox.angle}`);
     const loop = () => {
       // Call when starting a session with tensors to prevent leaks
+      // const state = store.store.getState();
+      // console.log(`BEFORE ${state.readerBox.angle}`);
       tfEngine().startScope();
-      const state = store.store.getState();
       if (!state.calibration.activePointPlacement) {
         const nextImg = images.next().value;
-        collectsFrames && nextImg && updateLineData(nextImg, state);
+        collectsFrames && nextImg && updateLineData(nextImg, state.readerBox);
       }
       rafID = requestAnimationFrame(loop);
     };
     loop();
   };
 
-  const getTensorCameraComponent = () => {
-    return (
-      <TensorCamera
-        style={styles.camera}
-        key={cameraKey}
-        type={cameraType}
-        zoom={0}
-        cameraTextureHeight={fullDims.height}
-        cameraTextureWidth={fullDims.width}
-        resizeHeight={scaledDims.height}
-        resizeWidth={scaledDims.width}
-        resizeDepth={3}
-        onReady={handleCameraStream}
-        autorender={true}
-      />
-    );
-  };
+  const getTensorCameraComponent = () => (
+    <TensorCamera
+      style={styles.camera}
+      key={cameraKey}
+      type={cameraType}
+      zoom={0}
+      cameraTextureHeight={fullDims.height}
+      cameraTextureWidth={fullDims.width}
+      resizeHeight={scaledDims.height}
+      resizeWidth={scaledDims.width}
+      resizeDepth={3}
+      onReady={handleCameraStream}
+      autorender={true}
+    />
+  );
 
   return hasCameraPermission && getTensorCameraComponent();
 }
-
 
 const styles = StyleSheet.create({
   camera: {
