@@ -17,6 +17,7 @@ export const readerBoxSlice = createSlice({
   reducers: {
     updateReaderBoxData: (state, action) => {
       state = { ...state, ...action.payload.value };
+      console.log(state);
     },
     updateReaderWidth: (state, action) => {
       state.width = action.payload.value;

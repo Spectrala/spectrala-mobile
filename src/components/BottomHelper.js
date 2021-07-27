@@ -21,7 +21,7 @@ export default function BottomHelper({ utilityComponents, bodyText }) {
           <AntDesign
             name={helperExpanded ? "downcircleo" : "upcircleo"}
             size={24}
-            color={colors.background}
+            color={colors.text}
           />
         </View>
         {utilityComponents()}
@@ -71,6 +71,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     justifyContent: "flex-end",
     flexDirection: "row",
+    shadowRadius: 10,
+    shadowOpacity: 0.4,
+    shadowColor: "white",
   },
   scrollContainer: {
     width: "100%",

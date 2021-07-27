@@ -134,10 +134,10 @@ export default function CameraLoader({ collectsFrames }) {
   return hasCameraPermission && getTensorCameraComponent();
 }
 
+
 const styles = StyleSheet.create({
   camera: {
-    flex: 1,
-    resizeMode: "repeat"
-    // aspectRatio: scaledDims.width / scaledDims.height,
+    width: "100%",
+    aspectRatio: scaledDims.width / scaledDims.height,
   },
 });

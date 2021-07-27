@@ -3,7 +3,7 @@ import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { OverflowMenuProvider } from "react-navigation-header-buttons";
 import NotFoundScreen from "../screens/NotFoundScreen";
-import HomeStack from "./HomeStack";
+import NavStack from "./NavStack";
 
 // Generate colors here: https://colors.eva.design
 const reactNavigationTheme = {
@@ -39,7 +39,7 @@ const Stack = createStackNavigator();
 function RootNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Root" component={HomeStack} />
+      <Stack.Screen name="Root" component={NavStack} />
       <Stack.Screen
         name="NotFound"
         component={NotFoundScreen}

@@ -31,13 +31,13 @@ function ProgressHeader({ title }) {
   return TitleHeader(title);
 }
 
-const HomeStack = createStackNavigator();
+const NavStack = createStackNavigator();
 
 export default function HomeNavigator({ navigation }) {
   const { colors } = useTheme();
   return (
     /**
-     * TODO: MARK: the initialRouteName prop in HomeStack.Navigator will
+     * TODO: MARK: the initialRouteName prop in NavStack.Navigator will
      * define the first screen to load in the navigation stack.
      * For production, make this "HomeScreen".
      * In debug, use:
@@ -45,11 +45,12 @@ export default function HomeNavigator({ navigation }) {
      * A con to this debug strategy is that you can't go back since previous
      * screens were not loaded to the stack.
      */
-    <HomeStack.Navigator
+    <NavStack.Navigator
       initialRouteName="CameraScreen"
       screenOptions={{ gestureEnabled: false }}
+      mode="modal"
     >
-      <HomeStack.Screen
+      <NavStack.Screen
         name="Sessions"
         component={HomeScreen}
         options={{
@@ -61,26 +62,28 @@ export default function HomeNavigator({ navigation }) {
           },
         }}
       />
-      <HomeStack.Screen
+      <NavStack.Screen
         name="Settings"
         component={SettingsScreen}
         options={{
           title: "Settings",
         }}
       />
-      <HomeStack.Screen
+      <NavStack.Screen
         name="CameraScreen"
         component={CameraScreen}
         options={{
           title: "Setup Box",
           headerStyle: {
-            backgroundColor: colors.background,
+            backgroundColor: "black",
             shadowColor: "transparent",
           },
           headerBackTitleVisible: false,
           headerTintColor: colors.text,
-          headerTitle: () => <TitleHeader title="Camera" />,
-          headerTitleAlign: "left",
+          headerTitle: () => (
+            <Text style={{ fontSize: 18, fontWeight: "300", color:colors.foreground}}>Camera</Text>
+          ),
+          headerTitleAlign: "center",
           headerRight: () => (
             <HeaderButtons HeaderButtonComponent={IconHeaderButton}>
               <TextHeaderButton
@@ -91,7 +94,7 @@ export default function HomeNavigator({ navigation }) {
           ),
         }}
       />
-      <HomeStack.Screen
+      <NavStack.Screen
         name="CalibrationScreen"
         component={CalibrationScreen}
         options={{
@@ -111,7 +114,7 @@ export default function HomeNavigator({ navigation }) {
           ),
         }}
       />
-      <HomeStack.Screen
+      <NavStack.Screen
         name="CaptureScreen"
         component={CaptureScreen}
         options={{
@@ -123,7 +126,7 @@ export default function HomeNavigator({ navigation }) {
           headerTintColor: colors.text,
         }}
       />
-      <HomeStack.Screen
+      <NavStack.Screen
         name="ReviewScreen"
         component={ReviewScreen}
         options={{
@@ -146,7 +149,7 @@ export default function HomeNavigator({ navigation }) {
           ),
         }}
       />
-    </HomeStack.Navigator>
+    </NavStack.Navigator>
   );
 }
 

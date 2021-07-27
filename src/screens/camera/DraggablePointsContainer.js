@@ -20,6 +20,7 @@ import { useTheme } from "@react-navigation/native";
 import { fullDims } from "../../components/CameraLoader";
 
 const CIRCLE_RADIUS = 20;
+const HIT_SLOP = 20;
 
 function DraggablePointsContainer({ width }) {
   const { colors } = useTheme();
@@ -125,6 +126,7 @@ function DraggablePointsContainer({ width }) {
               top: initial.y * viewDims.height - CIRCLE_RADIUS,
               transform: [{ translateX: pan.x }, { translateY: pan.y }],
             }}
+            hitSlop={{top: HIT_SLOP, bottom: HIT_SLOP, left: HIT_SLOP, right: HIT_SLOP}}
             {...panResponder.panHandlers}
           >
             <View
@@ -190,7 +192,7 @@ DraggablePointsContainer.propTypes = {
  * covered by the points container.
  *
  */
-const styles = StyleSheet.create({
+ const styles = StyleSheet.create({
   list: {
     width: "100%",
   },
@@ -198,11 +200,14 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
   container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
     position: "absolute",
     top: 0,
     left: 0,
     width: "100%",
-    height: "100%",
+    aspectRatio: fullDims.width / fullDims.height,
   },
   titleText: {
     fontSize: 14,
