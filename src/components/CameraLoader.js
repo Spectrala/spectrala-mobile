@@ -76,12 +76,12 @@ export default function CameraLoader({ collectsFrames }) {
     requestCameraPermission();
   }, [collectsFrames]);
 
-  const updateLineData = async (imgTensor, state) => {
+  const updateLineData = async (imgTensor, readerBox) => {
     if (!imgTensor) return;
     if (collectsFrames) {
       const { intensities, previewUri } = await getLineData(
         imgTensor,
-        state.readerBox
+        readerBox
       );
       if (intensities && Math.max(...intensities) > 0) {
         dispatch(updateFeed({ intensities, previewUri }));
@@ -91,12 +91,10 @@ export default function CameraLoader({ collectsFrames }) {
 
   const handleCameraStream = (images, updatePreview, gl) => {
     const state = store.store.getState();
-    console.log(`WAY BACK ${state.readerBox.angle}`);
     const loop = () => {
       // Call when starting a session with tensors to prevent leaks
-      // const state = store.store.getState();
-      // console.log(`BEFORE ${state.readerBox.angle}`);
       tfEngine().startScope();
+      const state = store.store.getState();
       if (!state.calibration.activePointPlacement) {
         const nextImg = images.next().value;
         collectsFrames && nextImg && updateLineData(nextImg, state.readerBox);

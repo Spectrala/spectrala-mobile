@@ -38,12 +38,18 @@ export default function CameraScreen({ navigation }) {
 
   return (
     <>
+      <View
+        style={{
+          backgroundColor: "black",
+          flex: 1,
+        }}
+      />
       <View style={styles.container}>
         <CameraLoader capturesFrames={false} />
       </View>
       <View style={styles.container}>
         <DraggablePointsContainer width={readerWidth} />
-        {/* <BottomHelper
+        <BottomHelper
           utilityComponents={helperHeader}
           bodyText={
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur in\
@@ -54,7 +60,7 @@ vestibulum velit, et mollis sapien elit eu nibh. Sed eget nulla orci.\
 Etiam a lorem rhoncus, tempus erat nec, lobortis odio. Maecenas semper\
 sagittis auctor."
           }
-        /> */}
+        />
       </View>
     </>
   );

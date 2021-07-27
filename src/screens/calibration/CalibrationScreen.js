@@ -1,6 +1,5 @@
 import React from "react";
-import { StyleSheet, Image, View } from "react-native";
-import Button from "react-native-ui-lib/button";
+import { StyleSheet, Image, View, Button } from "react-native";
 import Card from "react-native-ui-lib/card";
 import CalibrationChart from "./CalibrationChart";
 import { useSelector, useDispatch } from "react-redux";
@@ -11,12 +10,14 @@ import {
   resetIntensityArrayHistory,
 } from "../../redux/reducers/SpectrumFeed";
 import CameraLoader from "../../components/CameraLoader";
+import { useTheme } from "@react-navigation/native";
 const CHART_INSET = 24;
 
 export default function CalibrationScreen() {
   const previewImage = useSelector(selectPreviewImg);
   const isActivelyPlacing = useSelector(selectActivePointPlacement);
   const dispatch = useDispatch();
+  const { colors } = useTheme();
 
   return (
     <>
@@ -25,24 +26,21 @@ export default function CalibrationScreen() {
       </View>
 
       <View style={styles.container}>
-        <Card style={styles.previewImageCard}>
-          <Image
-            style={styles.previewImage}
-            fadeDuration={0}
-            source={{ uri: previewImage }}
-          />
-        </Card>
+        <Image
+          style={styles.previewImage}
+          fadeDuration={0}
+          source={{ uri: previewImage }}
+        />
         <Button
-          label="Flip image"
+          title="Flip Image"
+          color={colors.text}
           onPress={() => {
             dispatch(toggleIsFlipped());
             dispatch(resetIntensityArrayHistory());
           }}
           style={styles.flipButton}
         />
-        <Card style={styles.chart}>
-          <CalibrationChart horizontalInset={CHART_INSET} />
-        </Card>
+        <CalibrationChart horizontalInset={CHART_INSET} />
       </View>
     </>
   );
@@ -61,15 +59,9 @@ const styles = StyleSheet.create({
     height: 300,
     marginBottom: 20,
   },
-  previewImageCard: {
+  previewImage: {
     width: "100%",
     height: 100,
-    marginBottom: 20,
-  },
-  previewImage: {
-    flex: 1,
-    marginBottom: 20,
-    marginHorizontal: CHART_INSET,
     resizeMode: "stretch",
   },
   flipButton: {

@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     flexDirection: "row",
     shadowRadius: 10,
-    shadowOpacity: 0.4,
+    shadowOpacity: 0.2,
     shadowColor: "white",
   },
   scrollContainer: {

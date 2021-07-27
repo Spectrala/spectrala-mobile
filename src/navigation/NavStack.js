@@ -7,7 +7,7 @@ import CaptureScreen from "../screens/capture/CaptureScreen";
 import ReviewScreen from "../screens/review/ReviewScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import HomeScreen from "../screens/home/HomeScreen";
-import { View, Text } from "react-native";
+import { Text } from "react-native";
 import {
   HeaderButtons,
   HeaderButton,
@@ -25,10 +25,6 @@ const IconHeaderButton = (props) => (
 
 function TitleHeader({ title }) {
   return <Text style={{ fontSize: 20, fontWeight: "600" }}>{title}</Text>;
-}
-
-function ProgressHeader({ title }) {
-  return TitleHeader(title);
 }
 
 const NavStack = createStackNavigator();
@@ -88,7 +84,7 @@ export default function HomeNavigator({ navigation }) {
             <HeaderButtons HeaderButtonComponent={IconHeaderButton}>
               <TextHeaderButton
                 onPress={() => navigation.navigate("CalibrationScreen")}
-                text={"Next"}
+                text={"Next Step"}
               />
             </HeaderButtons>
           ),
@@ -98,17 +94,19 @@ export default function HomeNavigator({ navigation }) {
         name="CalibrationScreen"
         component={CalibrationScreen}
         options={{
-          title: "Setup Calibration",
+          headerTitle: () => <TitleHeader title="Calibration" />,
           headerStyle: {
             backgroundColor: colors.background,
             shadowColor: "transparent",
           },
+          headerBackTitleVisible: false,
           headerTintColor: colors.text,
+          headerTitleAlign: "left",
           headerRight: () => (
             <HeaderButtons HeaderButtonComponent={IconHeaderButton}>
               <TextHeaderButton
                 onPress={() => navigation.navigate("CaptureScreen")}
-                text={"Next"}
+                text={"Next Step"}
               />
             </HeaderButtons>
           ),
