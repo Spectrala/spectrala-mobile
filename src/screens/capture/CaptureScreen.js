@@ -50,7 +50,9 @@ export default function CaptureScreen({ navigation }) {
 
   const getReferenceCell = () => {
     if (referenceSpectrum) {
-      return <CapturedCell navigation={navigation} spectrum={referenceSpectrum} />;
+      return (
+        <CapturedCell navigation={navigation} spectrum={referenceSpectrum} />
+      );
     } else {
       return refPlaceholder;
     }
@@ -77,9 +79,9 @@ export default function CaptureScreen({ navigation }) {
         />
 
         <View style={styles.tableMaster}>
-          <Text text50>Reference</Text>
+          <Text style={styles.sectionText}>Reference</Text>
           {getReferenceCell()}
-          <Text text50>Test</Text>
+          <Text style={styles.sectionText}>Test</Text>
           <CapturedList navigation={navigation} style={styles.list} />
         </View>
       </ScrollView>
@@ -103,7 +105,15 @@ const styles = StyleSheet.create({
     marginBottom: 120,
   },
   tableMaster: {
-    marginHorizontal: 8,
+    padding: 16,
+    margin: 8,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    height: "100%",
+    backgroundColor: "white",
+    shadowColor: "gray",
+    shadowRadius: 10,
+    shadowOpacity: 0.12,
   },
   refPlaceholder: {
     height: 48,
@@ -126,5 +136,10 @@ const styles = StyleSheet.create({
   captureButton: {
     position: "absolute",
     bottom: 40,
+  },
+  sectionText: {
+    fontWeight: "600",
+    fontSize: 20,
+    marginBottom: 16,
   },
 });

@@ -23,8 +23,10 @@ const IconHeaderButton = (props) => (
   <HeaderButton IconComponent={Ionicons} iconSize={23} {...props} />
 );
 
-function TitleHeader({ title }) {
-  return <Text style={{ fontSize: 20, fontWeight: "600" }}>{title}</Text>;
+function TitleHeader({ title, color }) {
+  return (
+    <Text style={{ fontSize: 20, fontWeight: "600", color }}>{title}</Text>
+  );
 }
 
 const NavStack = createStackNavigator();
@@ -42,7 +44,7 @@ export default function HomeNavigator({ navigation }) {
      * screens were not loaded to the stack.
      */
     <NavStack.Navigator
-      initialRouteName="CameraScreen"
+      initialRouteName="HomeScreen"
       screenOptions={{ gestureEnabled: false }}
       mode="modal"
     >
@@ -76,10 +78,11 @@ export default function HomeNavigator({ navigation }) {
           },
           headerBackTitleVisible: false,
           headerTintColor: colors.text,
+          headerTintColor: colors.background,
           headerTitle: () => (
-            <Text style={{ fontSize: 18, fontWeight: "300", color:colors.foreground}}>Camera</Text>
+            <TitleHeader title="Select Spectrum" color={"white"} />
           ),
-          headerTitleAlign: "center",
+          headerTitleAlign: "left",
           headerRight: () => (
             <HeaderButtons HeaderButtonComponent={IconHeaderButton}>
               <TextHeaderButton
@@ -116,12 +119,22 @@ export default function HomeNavigator({ navigation }) {
         name="CaptureScreen"
         component={CaptureScreen}
         options={{
-          title: "Capture",
+          headerTitle: () => <TitleHeader title="Capture Spectra" />,
           headerStyle: {
             backgroundColor: colors.background,
             shadowColor: "transparent",
           },
+          headerTitleAlign: "left",
+          headerBackTitleVisible: false,
           headerTintColor: colors.text,
+          headerRight: () => (
+            <HeaderButtons HeaderButtonComponent={IconHeaderButton}>
+              <TextHeaderButton
+                onPress={() => navigation.navigate("CaptureScreen")}
+                text={"Finish"}
+              />
+            </HeaderButtons>
+          ),
         }}
       />
       <NavStack.Screen
