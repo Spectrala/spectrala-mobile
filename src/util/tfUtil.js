@@ -175,7 +175,6 @@ const convertIntensityAsync = async (imgTrimmed) => {
 const reduceHorizontal = (intensities) => Math.round(Math.max(...intensities));
 
 export const getLineData = async (tensor, readerBox) => {
-  let times = [];
   const { corners, angle, isFlipped } = readerBox;
   const rotated = tfTidy(() => {
     const crude = flagAndCrop(tensor, corners);

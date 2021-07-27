@@ -1,7 +1,7 @@
 import { engine as tfEngine } from "@tensorflow/tfjs";
 import React, { useState, useEffect, useCallback } from "react";
 import { StyleSheet } from "react-native";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updateFeed } from "../redux/reducers/SpectrumFeed";
 import { getLineData } from "../util/tfUtil";
 import { store } from "../redux/store/Store";
@@ -60,6 +60,7 @@ export default function CameraLoader({ collectsFrames }) {
 
   const unsubscribeTensorCamera = () => {
     cancelAnimationFrame(rafID);
+    
   };
 
   useFocusEffect(
@@ -75,14 +76,12 @@ export default function CameraLoader({ collectsFrames }) {
     requestCameraPermission();
   }, [collectsFrames]);
 
-
-  const updateLineData = async (imgTensor, readerBox) => {
+  const updateLineData = async (imgTensor, state) => {
     if (!imgTensor) return;
     if (collectsFrames) {
-      console.log(`AFTER ${readerBox.angle}`);
       const { intensities, previewUri } = await getLineData(
         imgTensor,
-        readerBox
+        state.readerBox
       );
       if (intensities && Math.max(...intensities) > 0) {
         dispatch(updateFeed({ intensities, previewUri }));
