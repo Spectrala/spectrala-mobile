@@ -16,9 +16,7 @@ export const readerBoxSlice = createSlice({
   },
   reducers: {
     updateReaderBoxData: (state, action) => {
-      const {lineCoords,
-        corners,
-        angle} = action.payload.value;
+      const {lineCoords, corners, angle} = action.payload.value;
       state.lineCoords = lineCoords;
       state.corners = corners;
       state.angle = angle;
