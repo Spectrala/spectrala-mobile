@@ -7,13 +7,15 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   selectReaderWidth,
   updateReaderWidth,
+  selectReaderBox
 } from "../../redux/reducers/ReaderBox";
 import BottomHelper from "../../components/BottomHelper";
 import CameraLoader from "../../components/CameraLoader";
 
+
 export default function CameraScreen({ navigation }) {
   const { colors } = useTheme();
-  const readerWidth = useSelector(selectReaderWidth);
+  const readerWidth = useSelector(selectReaderWidth, () => false);
   const initialWidth = useRef(readerWidth).current;
   const dispatch = useDispatch();
 
@@ -43,7 +45,7 @@ export default function CameraScreen({ navigation }) {
       </View>
       <View style={styles.container}>
         <DraggablePointsContainer width={readerWidth} />
-        {/* <BottomHelper
+        <BottomHelper
           utilityComponents={helperHeader}
           bodyText={
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur in\
@@ -54,7 +56,7 @@ vestibulum velit, et mollis sapien elit eu nibh. Sed eget nulla orci.\
 Etiam a lorem rhoncus, tempus erat nec, lobortis odio. Maecenas semper\
 sagittis auctor."
           }
-        /> */}
+        />
       </View>
     </>
   );

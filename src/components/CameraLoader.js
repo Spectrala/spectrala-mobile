@@ -1,14 +1,13 @@
 import { engine as tfEngine } from "@tensorflow/tfjs";
 import React, { useState, useEffect, useCallback } from "react";
 import { StyleSheet } from "react-native";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updateFeed } from "../redux/reducers/SpectrumFeed";
 import { getLineData } from "../util/tfUtil";
 import { store } from "../redux/store/Store";
 import { Camera } from "expo-camera";
 import { cameraWithTensors } from "@tensorflow/tfjs-react-native";
 import { useFocusEffect } from "@react-navigation/native";
-import { DEBUG_TIME_LOGGING } from "../util/tfUtil";
 
 export const CAMERA_VISIBILITY_OPTIONS = {
   full: "full",
@@ -61,6 +60,7 @@ export default function CameraLoader({ collectsFrames }) {
 
   const unsubscribeTensorCamera = () => {
     cancelAnimationFrame(rafID);
+    
   };
 
   useFocusEffect(
@@ -76,26 +76,16 @@ export default function CameraLoader({ collectsFrames }) {
     requestCameraPermission();
   }, [collectsFrames]);
 
-  let lastDate = new Date();
-
   const updateLineData = async (imgTensor, state) => {
     if (!imgTensor) return;
     if (collectsFrames) {
-      const readerBox = state.readerBox;
       const { intensities, previewUri } = await getLineData(
         imgTensor,
-        readerBox
+        state.readerBox
       );
       if (intensities && Math.max(...intensities) > 0) {
         dispatch(updateFeed({ intensities, previewUri }));
       }
-    }
-    if (DEBUG_TIME_LOGGING) {
-      const now = new Date();
-      const delta = now - lastDate;
-      lastDate = now;
-      console.log(`${delta} Plus capture`);
-      console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     }
   };
 

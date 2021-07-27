@@ -14,6 +14,7 @@ import {
   selectLineCoords,
   updateReaderBoxData,
   selectCorners,
+  selectReaderBox,
 } from "../../redux/reducers/ReaderBox";
 
 import { useTheme } from "@react-navigation/native";
@@ -27,6 +28,7 @@ function DraggablePointsContainer({ width }) {
   const lineCoords = useSelector(selectLineCoords);
   const corners = useSelector(selectCorners);
   const dispatch = useDispatch();
+
 
   const [viewDims, setViewDims] = useState(null);
 

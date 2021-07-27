@@ -20,9 +20,9 @@ export const isNotOversaturated = (val) => val < OVERSATURATION_CEILING;
 export const spectrumFeedSlice = createSlice({
   name: "spectrumFeed",
   initialState: {
-    previewImage: undefined,
+    previewImage: null,
     intensityArrayHistory: [],
-    uncalibratedIntensities: undefined,
+    uncalibratedIntensities: null,
   },
   reducers: {
     updateFeed: (state, action) => {

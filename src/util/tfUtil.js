@@ -13,9 +13,6 @@ const convert = require("color-convert");
 const FLAG_PIXEL_OFFSET = -2;
 const PADDING = 5;
 
-// TODO: For production, get rid of time analysis feature
-export const DEBUG_TIME_LOGGING = false;
-
 const getPaddedRange = (coordinates, idx, padding, limit) => {
   const vals = coordinates.map((val) => val[idx]);
   const min = Math.min(...vals);
@@ -177,56 +174,19 @@ const convertIntensityAsync = async (imgTrimmed) => {
  */
 const reduceHorizontal = (intensities) => Math.round(Math.max(...intensities));
 
-
-const addTime = (arr, description) => {
-  DEBUG_TIME_LOGGING && arr.push({
-    date: new Date(),
-    description,
-  });
-};
-
-const logTimes = (arr) => {
-  if (arr.length === 0) return;
-
-  let timeElapsed = 0;
-  console.log("Time|Description");
-  console.log("----------------");
-  for (let i = 1; i < arr.length; i++) {
-    const { date, description } = arr[i];
-    const { date: lastDate } = arr[i - 1];
-    const timeDelta = date - lastDate;
-    timeElapsed += timeDelta;
-    console.log(`${String(timeDelta).padEnd(4)}|${description}`);
-  }
-  console.log(`${timeElapsed}  ~TOTAL`);
-};
-
-
 export const getLineData = async (tensor, readerBox) => {
-  let times = [];
   const { corners, angle, isFlipped } = readerBox;
   const rotated = tfTidy(() => {
-    addTime(times, "Start");
     const crude = flagAndCrop(tensor, corners);
-    addTime(times, "flagAndCrop");
     const padded = padTensor(crude);
-    addTime(times, "padTensor");
     const rotated = rotate(padded, angle);
-    addTime(times, "rotate");
     return isFlipped ? flip(rotated) : rotated;
   });
-  addTime(times, "flip");
   const trimmed = await trim(rotated);
-  addTime(times, "trim");
   const previewUri = await getPreviewUri(trimmed);
-  addTime(times, "getPreviewUri");
   const transposed = trimmed.transpose([1, 0, 2]);
-  addTime(times, "transpose");
   const intensities2d = await convertIntensityAsync(transposed);
-  addTime(times, "convertIntensityAsync");
   tfEngine().endScope(); // Tensorflow operations are over; clean up.
   const intensities1d = intensities2d.map((row) => reduceHorizontal(row));
-  addTime(times, "intensities1d");
-  logTimes(times);
   return { intensities: intensities1d, previewUri };
 };

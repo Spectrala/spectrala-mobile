@@ -1,8 +1,8 @@
 import { combineReducers } from "redux";
 import calibrationReducer from "./Calibration";
 import readerBoxReducer from "./ReaderBox";
-import spectrumReducer from "./RecordedSpectra";
 import spectrumFeedReducer from "./SpectrumFeed";
+import spectrumReducer from "./RecordedSpectra";
 
 const rootReducer = combineReducers({
   calibration: calibrationReducer,
