@@ -1,10 +1,8 @@
 import React, { useCallback, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, ActivityIndicator } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import SpectrumChart from "./SpectrumChart";
-import {
-  selectReferenceSpectrum,
-} from "../redux/reducers/RecordedSpectra";
+import { selectReferenceSpectrum } from "../redux/reducers/RecordedSpectra";
 import { useSelector } from "react-redux";
 import * as Spectrum from "../types/Spectrum";
 import {
@@ -28,8 +26,9 @@ const viewOptions = [
 
 export default function SwitchableSpectrumChart({ spectrum, style }) {
   if (!spectrum || !Spectrum.getIntensityChart(spectrum)) {
-    return <Text>Loading...</Text>;
+    return <ActivityIndicator />;
   }
+
   const intensities = Spectrum.getIntensityChart(spectrum);
   const reference = useSelector(selectReferenceSpectrum);
   const [selectedOption, setSelectedOption] = useState(

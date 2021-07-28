@@ -14,6 +14,7 @@ import {
   removeReference,
 } from "../../redux/reducers/RecordedSpectra";
 import SwitchableSpectrumChart from "../../components/SwitchableSpectrumChart";
+import { CapturedCell } from "../capture/CapturedList";
 
 export default function ReviewScreen({ route, navigation }) {
   const { colors } = useTheme();
@@ -32,7 +33,9 @@ export default function ReviewScreen({ route, navigation }) {
   };
 
   const isReference = useCallback(
-    () => referenceSpectrum && Spectrum.getKey(referenceSpectrum) === Spectrum.getKey(spectrum),
+    () =>
+      referenceSpectrum &&
+      Spectrum.getKey(referenceSpectrum) === Spectrum.getKey(spectrum),
     [spectrum, referenceSpectrum]
   );
 
@@ -91,7 +94,6 @@ export default function ReviewScreen({ route, navigation }) {
           style={styles.nameButton}
           onPress={() => setRenameVisible(true)}
         >
-          <Text>{Spectrum.getName(spectrum)}</Text>
           <Ionicons name={"pencil"} size={20} color={colors.primary} />
         </TouchableOpacity>
         {renameDialog()}

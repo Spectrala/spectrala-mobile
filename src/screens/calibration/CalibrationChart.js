@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, ActivityIndicator } from "react-native";
 import { AreaChart, Grid } from "react-native-svg-charts";
 import { Defs } from "react-native-svg";
 import { useSelector } from "react-redux";
 import { selectIntensityChart } from "../../redux/reducers/SpectrumFeed";
-import { curveBasis as d3ShapeCurveBasis} from "d3-shape";
+import { curveBasis as d3ShapeCurveBasis } from "d3-shape";
 import * as ChartPt from "../../types/ChartPoint";
 import Tick from "./Tick";
 import { selectCalibrationPoints } from "../../redux/reducers/Calibration";
@@ -16,12 +16,13 @@ const BOTTOM_TICK_Y = 255;
 const GRADIENT_ID = "grad";
 
 function CalibrationChart({ horizontalInset }) {
+
   const intensityChart = useSelector(selectIntensityChart);
   const calibrationPoints = useSelector(selectCalibrationPoints);
   const [tickViewDims, setTickDims] = useState(undefined);
 
   if (!intensityChart) {
-    return <Text>Loading...</Text>;
+    return <ActivityIndicator />;
   }
 
   const getTicks = () => {
@@ -40,7 +41,6 @@ function CalibrationChart({ horizontalInset }) {
       );
     });
   };
-
 
   // https://stackoverflow.com/questions/60503898/how-to-apply-gradient-color-on-react-native-stackedareachart
   return (

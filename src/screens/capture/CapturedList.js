@@ -13,7 +13,6 @@ import { useTheme } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native";
 
 export function CapturedCell({ navigation, spectrum }) {
-
   /**
    * TODO: Once a capture is started, reset the scanner line history.
    * Once desired exposure is reached, record the spectrum. Animate

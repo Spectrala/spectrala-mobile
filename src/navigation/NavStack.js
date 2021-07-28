@@ -14,6 +14,7 @@ import {
   Item,
 } from "react-navigation-header-buttons";
 import { useTheme } from "@react-navigation/native";
+import * as Spectrum from "../types/Spectrum";
 
 const TextHeaderButton = ({ onPress, text }) => (
   <Item title={text} onPress={onPress} />
@@ -25,7 +26,7 @@ const IconHeaderButton = (props) => (
 
 function TitleHeader({ title, color }) {
   return (
-    <Text style={{ fontSize: 20, fontWeight: "600", color }}>{title}</Text>
+    <Text style={{ fontSize: 24, fontWeight: "600", color }}>{title}</Text>
   );
 }
 
@@ -44,8 +45,17 @@ export default function HomeNavigator({ navigation }) {
      * screens were not loaded to the stack.
      */
     <NavStack.Navigator
-      initialRouteName="HomeScreen"
-      screenOptions={{ gestureEnabled: false }}
+      initialRouteName="CaptureScreen"
+      screenOptions={{
+        gestureEnabled: false,
+        headerTitleAlign: "left",
+        headerBackTitleVisible: false,
+        headerTintColor: colors.text,
+        headerStyle: {
+          backgroundColor: colors.background,
+          shadowColor: "transparent",
+        },
+      }}
       mode="modal"
     >
       <NavStack.Screen
@@ -53,11 +63,6 @@ export default function HomeNavigator({ navigation }) {
         component={HomeScreen}
         options={{
           headerTitle: () => <TitleHeader title="Sessions" />,
-          headerTitleAlign: "left",
-          headerStyle: {
-            backgroundColor: colors.background,
-            shadowColor: "transparent",
-          },
         }}
       />
       <NavStack.Screen
@@ -76,13 +81,9 @@ export default function HomeNavigator({ navigation }) {
             backgroundColor: "black",
             shadowColor: "transparent",
           },
-          headerBackTitleVisible: false,
-          headerTintColor: colors.text,
-          headerTintColor: colors.background,
           headerTitle: () => (
             <TitleHeader title="Select Spectrum" color={"white"} />
           ),
-          headerTitleAlign: "left",
           headerRight: () => (
             <HeaderButtons HeaderButtonComponent={IconHeaderButton}>
               <TextHeaderButton
@@ -98,13 +99,6 @@ export default function HomeNavigator({ navigation }) {
         component={CalibrationScreen}
         options={{
           headerTitle: () => <TitleHeader title="Calibration" />,
-          headerStyle: {
-            backgroundColor: colors.background,
-            shadowColor: "transparent",
-          },
-          headerBackTitleVisible: false,
-          headerTintColor: colors.text,
-          headerTitleAlign: "left",
           headerRight: () => (
             <HeaderButtons HeaderButtonComponent={IconHeaderButton}>
               <TextHeaderButton
@@ -120,37 +114,10 @@ export default function HomeNavigator({ navigation }) {
         component={CaptureScreen}
         options={{
           headerTitle: () => <TitleHeader title="Capture Spectra" />,
-          headerStyle: {
-            backgroundColor: colors.background,
-            shadowColor: "transparent",
-          },
-          headerTitleAlign: "left",
-          headerBackTitleVisible: false,
-          headerTintColor: colors.text,
-          headerRight: () => (
-            <HeaderButtons HeaderButtonComponent={IconHeaderButton}>
-              <TextHeaderButton
-                onPress={() => navigation.navigate("CaptureScreen")}
-                text={"Finish"}
-              />
-            </HeaderButtons>
-          ),
-        }}
-      />
-      <NavStack.Screen
-        name="ReviewScreen"
-        component={ReviewScreen}
-        options={{
-          title: "Review",
-          headerStyle: {
-            backgroundColor: colors.background,
-            shadowColor: "transparent",
-          },
-          headerTintColor: colors.text,
           headerRight: () => (
             <HeaderButtons HeaderButtonComponent={IconHeaderButton}>
               <Item
-                title="Save"
+                title="Finish"
                 onPress={() => {
                   alert("Save");
                   navigation.popToTop();
@@ -159,6 +126,15 @@ export default function HomeNavigator({ navigation }) {
             </HeaderButtons>
           ),
         }}
+      />
+      <NavStack.Screen
+        name="ReviewScreen"
+        component={ReviewScreen}
+        options={({ route }) => ({
+          headerTitle: () => (
+            <TitleHeader title={Spectrum.getName(route.params.spectrum)} />
+          ),
+        })}
       />
     </NavStack.Navigator>
   );
