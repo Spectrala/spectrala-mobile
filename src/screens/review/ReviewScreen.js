@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { StyleSheet, Text, View, TextInput } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
@@ -6,7 +6,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
 import * as Spectrum from "../../types/Spectrum";
 import Dialog from "react-native-ui-lib/dialog";
-import Button from "react-native-ui-lib/button";
 import {
   updateSpectrum,
   selectReferenceSpectrum,
@@ -14,7 +13,7 @@ import {
   removeReference,
 } from "../../redux/reducers/RecordedSpectra";
 import SwitchableSpectrumChart from "../../components/SwitchableSpectrumChart";
-import { CapturedCell } from "../capture/CapturedList";
+import TitleHeader from "../../components/TitleHeader";
 
 export default function ReviewScreen({ route, navigation }) {
   const { colors } = useTheme();
@@ -53,7 +52,7 @@ export default function ReviewScreen({ route, navigation }) {
       <TouchableOpacity onPress={onToggleReference}>
         <Ionicons
           name={ref ? "water" : "water-outline"}
-          size={ref ? 30 : 27}
+          size={27}
           color={colors.primary}
         />
       </TouchableOpacity>
@@ -67,7 +66,9 @@ export default function ReviewScreen({ route, navigation }) {
       visible={renameDialogVisible}
       migrate
       useSafeArea
-      onDismiss={() => setRenameVisible(false)}
+      onDismiss={() => {
+        setRenameVisible(false), changeSpectrum(spectrum);
+      }}
     >
       <View
         style={{
@@ -88,13 +89,13 @@ export default function ReviewScreen({ route, navigation }) {
   );
 
   return (
-    <View>
+    <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.nameButton}
           onPress={() => setRenameVisible(true)}
         >
-          <Ionicons name={"pencil"} size={20} color={colors.primary} />
+          <TitleHeader title={Spectrum.getName(spectrum)} />
         </TouchableOpacity>
         {renameDialog()}
         <TouchableOpacity>{waterIconButton()}</TouchableOpacity>
@@ -105,10 +106,19 @@ export default function ReviewScreen({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    marginHorizontal: 16,
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    backgroundColor: "white",
+    height: "100%",
+  },
   dialogView: {
     height: 200,
     width: "100%",
-    marginTop: 100,
+    marginTop: 40,
     borderRadius: 16,
     justifyContent: "space-around",
     paddingHorizontal: 16,
@@ -120,8 +130,11 @@ const styles = StyleSheet.create({
     height: 50,
   },
   nameButton: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    borderWidth: 0.5,
+    borderColor: "gray",
+    borderRadius: 4,
+    marginRight: 16,
+    flex: 1,
+    padding: 4,
   },
 });

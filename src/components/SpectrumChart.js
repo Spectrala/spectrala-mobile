@@ -78,6 +78,7 @@ const styles = StyleSheet.create({
     padding: 0,
     flexDirection: "row",
     height: CHART_HEIGHT,
+    marginBottom: 16,
   },
   innerView: {
     flex: 1,

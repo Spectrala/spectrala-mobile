@@ -7,7 +7,7 @@ import CaptureScreen from "../screens/capture/CaptureScreen";
 import ReviewScreen from "../screens/review/ReviewScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import HomeScreen from "../screens/home/HomeScreen";
-import { Text } from "react-native";
+import { Text, TouchableOpacity } from "react-native";
 import {
   HeaderButtons,
   HeaderButton,
@@ -15,6 +15,7 @@ import {
 } from "react-navigation-header-buttons";
 import { useTheme } from "@react-navigation/native";
 import * as Spectrum from "../types/Spectrum";
+import TitleHeader from "../components/TitleHeader";
 
 const TextHeaderButton = ({ onPress, text }) => (
   <Item title={text} onPress={onPress} />
@@ -23,12 +24,6 @@ const TextHeaderButton = ({ onPress, text }) => (
 const IconHeaderButton = (props) => (
   <HeaderButton IconComponent={Ionicons} iconSize={23} {...props} />
 );
-
-function TitleHeader({ title, color }) {
-  return (
-    <Text style={{ fontSize: 24, fontWeight: "600", color }}>{title}</Text>
-  );
-}
 
 const NavStack = createStackNavigator();
 
@@ -130,11 +125,7 @@ export default function HomeNavigator({ navigation }) {
       <NavStack.Screen
         name="ReviewScreen"
         component={ReviewScreen}
-        options={({ route }) => ({
-          headerTitle: () => (
-            <TitleHeader title={Spectrum.getName(route.params.spectrum)} />
-          ),
-        })}
+        options={{ headerTitle: "" }}
       />
     </NavStack.Navigator>
   );

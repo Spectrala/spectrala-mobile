@@ -9,6 +9,7 @@ import {
   computeAbsorptionChart,
   computeTransmittanceChart,
 } from "../util/spectroscopyMath";
+import { useTheme } from "@react-navigation/native";
 const CHART_HEIGHT = 160;
 const MODE_BUTTON_HEIGHT = 24;
 
@@ -25,15 +26,14 @@ const viewOptions = [
 ];
 
 export default function SwitchableSpectrumChart({ spectrum, style }) {
-  if (!spectrum || !Spectrum.getIntensityChart(spectrum)) {
-    return <ActivityIndicator />;
-  }
+  const { colors } = useTheme();
 
   const intensities = Spectrum.getIntensityChart(spectrum);
   const reference = useSelector(selectReferenceSpectrum);
   const [selectedOption, setSelectedOption] = useState(
     SPECTRUM_VIEW_OPTION_NAMES.INTENSITY
   );
+
 
   const hasValidReference = () => {
     if (!reference) return false;
@@ -71,7 +71,10 @@ export default function SwitchableSpectrumChart({ spectrum, style }) {
               key={idx}
               style={{
                 ...styles.modeButton,
-                ...(option === selectedOption && styles.selectedButton),
+                ...(option === selectedOption && {
+                  ...styles.selectedButton,
+                  backgroundColor: colors.primary,
+                }),
               }}
               onPress={() => setSelectedOption(option)}
             >
@@ -90,6 +93,9 @@ export default function SwitchableSpectrumChart({ spectrum, style }) {
     );
   };
 
+  if (!spectrum || !Spectrum.getIntensityChart(spectrum)) {
+    return <ActivityIndicator />;
+  }
   return (
     <>
       <SpectrumChart intensities={getChartData()} style={style} />
@@ -110,20 +116,18 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     flexDirection: "row",
     alignContent: "center",
-    marginBottom: 4,
   },
   modeButton: {
     justifyContent: "center",
     height: MODE_BUTTON_HEIGHT,
   },
   selectedButton: {
-    backgroundColor: "black",
     paddingHorizontal: 10,
     borderRadius: 4,
   },
   modeButtonText: {
     fontSize: 14,
-    fontWeight: "bold",
+    fontWeight: "300",
   },
   disabledText: {
     fontWeight: "normal",

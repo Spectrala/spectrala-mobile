@@ -98,9 +98,6 @@ const styles = StyleSheet.create({
     left: 0,
     height: "100%",
   },
-  chart: {
-    marginBottom: 16,
-  },
   list: {
     marginBottom: 120,
   },
