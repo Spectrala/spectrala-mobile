@@ -1,6 +1,5 @@
 import React from "react";
 import { StyleSheet, Image, View, Button } from "react-native";
-import Card from "react-native-ui-lib/card";
 import CalibrationChart from "./CalibrationChart";
 import { useSelector, useDispatch } from "react-redux";
 import { selectActivePointPlacement } from "../../redux/reducers/Calibration";

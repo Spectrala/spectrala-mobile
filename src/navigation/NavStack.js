@@ -7,15 +7,14 @@ import CaptureScreen from "../screens/capture/CaptureScreen";
 import ReviewScreen from "../screens/review/ReviewScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import HomeScreen from "../screens/home/HomeScreen";
-import { Text, TouchableOpacity } from "react-native";
 import {
   HeaderButtons,
   HeaderButton,
   Item,
 } from "react-navigation-header-buttons";
 import { useTheme } from "@react-navigation/native";
-import * as Spectrum from "../types/Spectrum";
 import TitleHeader from "../components/TitleHeader";
+import { storeCurrentSession } from "../navigation/SessionStorage";
 
 const TextHeaderButton = ({ onPress, text }) => (
   <Item title={text} onPress={onPress} />
@@ -40,7 +39,7 @@ export default function HomeNavigator({ navigation }) {
      * screens were not loaded to the stack.
      */
     <NavStack.Navigator
-      initialRouteName="CaptureScreen"
+      initialRouteName="HomeScreen"
       screenOptions={{
         gestureEnabled: false,
         headerTitleAlign: "left",
@@ -113,8 +112,8 @@ export default function HomeNavigator({ navigation }) {
             <HeaderButtons HeaderButtonComponent={IconHeaderButton}>
               <Item
                 title="Finish"
-                onPress={() => {
-                  alert("Save");
+                onPress={async () => {
+                  await storeCurrentSession();
                   navigation.popToTop();
                 }}
               />
