@@ -39,8 +39,8 @@ function SpectrumChart({ intensities, yRange = [0, 100], style }) {
           data={intensities}
           yAccessor={({ item }) => ChartPt.getY(item)}
           xAccessor={({ item }) => ChartPt.getWavelength(item)}
-          yMax={yRange[1]}
           yMin={yRange[0]}
+          yMax={yRange[1]}
           min={xRange[0]}
           max={xRange[1]}
           contentInset={{

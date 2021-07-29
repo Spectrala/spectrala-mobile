@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
+import { useFocusEffect } from "@react-navigation/core";
 import { StyleSheet, View, FlatList } from "react-native";
-import { getSessions } from "../../navigation/SessionStorage";
+import { getSessions, eraseSessions } from "../../navigation/SessionStorage";
 import PropTypes from "prop-types";
 import SessionCell from "./SessionCell";
 import { useTheme } from "@react-navigation/native";
@@ -16,19 +17,22 @@ function HomeScreen({ navigation }) {
   const [sessions, setSessions] = useState([]);
 
   const fetchSessions = async () => {
-    console.log("fetched sessions");
     const savedSessions = await getSessions();
-    console.log(savedSessions);
     setSessions(savedSessions);
   };
 
-  useEffect(() => fetchSessions, []);
+  useFocusEffect(
+    useCallback(() => {
+      // eraseSessions();
+      fetchSessions();
+    }, [])
+  );
 
   const sessionList = () => (
     <FlatList
       data={sessions}
       renderItem={({ item: session }) => {
-        const date = Date.parse(Session.getLastEditDate(session));
+        const date = new Date(Session.getLastEditDate(session));
         const name = Session.getName(session);
         return (
           <SessionCell
