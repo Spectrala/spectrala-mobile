@@ -77,7 +77,9 @@ const getImageInfo = (img) => {
 // 2. Crude crop
 const flagAndCrop = (tensor, corners) => {
   // Convert from 0-255 to 0-1
-  const { img, height, width } = getImageInfo(tensor.mul(1 / 255));
+  const { img: i, height, width } = getImageInfo(tensor.mul(1 / 255));
+
+  const img = flip(i);
 
   // Shape is [yIndex, xIndex, 3 for rgb]
   const cornerIndicies = corners.map(({ x, y }) => [

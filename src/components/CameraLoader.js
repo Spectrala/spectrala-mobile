@@ -90,7 +90,6 @@ export default function CameraLoader({ collectsFrames }) {
   };
 
   const handleCameraStream = (images, updatePreview, gl) => {
-    const state = store.store.getState();
     const loop = () => {
       // Call when starting a session with tensors to prevent leaks
       tfEngine().startScope();
