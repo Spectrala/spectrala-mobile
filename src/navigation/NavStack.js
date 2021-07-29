@@ -75,6 +75,7 @@ export default function HomeNavigator({ navigation }) {
             backgroundColor: "black",
             shadowColor: "transparent",
           },
+          headerTintColor: "white",
           headerTitle: () => (
             <TitleHeader title="Select Spectrum" color={"white"} />
           ),
