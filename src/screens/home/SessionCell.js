@@ -21,7 +21,6 @@ function SessionCell(props) {
           {format(props.date, "eeee, MMMM d, yyyy")}
         </Text>
       </View>
-      {/* <StackedChart /> */}
     </TouchableOpacity>
   );
 }
@@ -34,8 +33,6 @@ SessionCell.propTypes = {
   isSelected: PropTypes.bool,
 };
 
-// TODO: Add preview of spectra
-// TODO: Adjust for long names
 
 const styles = StyleSheet.create({
   container: {

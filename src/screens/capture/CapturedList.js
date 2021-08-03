@@ -75,9 +75,12 @@ const styles = StyleSheet.create({
     height: 48,
     flexDirection: "row",
     alignItems: "center",
+    marginBottom: 8, 
   },
   name: {
     flex: 3,
+    fontSize: 18,
+    fontWeight: "400"
   },
   chart: {
     flex: 2,

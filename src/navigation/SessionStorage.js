@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { store } from "../redux/store/Store";
 import * as Session from "../types/Session";
 
-const DEFAULT_NAME = "New Session ";
+const DEFAULT_NAME = "Session ";
 const SESSION_STORAGE_KEY = "@spectrala_sessions";
 
 /**

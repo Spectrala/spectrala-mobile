@@ -30,7 +30,11 @@ function HomeScreen({ navigation }) {
 
   const sessionList = () => (
     <FlatList
-      data={sessions}
+      data={sessions.sort(
+        (a, b) =>
+          new Date(Session.getLastEditDate(b)) -
+          new Date(Session.getLastEditDate(a))
+      )}
       renderItem={({ item: session }) => {
         const date = new Date(Session.getLastEditDate(session));
         const name = Session.getName(session);
@@ -38,7 +42,7 @@ function HomeScreen({ navigation }) {
           <SessionCell
             name={name}
             date={date}
-            onSelect={() => console.log(item)}
+            onSelect={() => console.log(session)}
           />
         );
       }}

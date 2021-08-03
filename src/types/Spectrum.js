@@ -12,7 +12,7 @@
  */
 
 // Default name prefix for saving a spectrum. Will start naming as DEFAULT_NAME 1.
-const DEFAULT_NAME = "New Spectrum ";
+const DEFAULT_NAME = "Spectrum ";
 
 /**
  * Constructs a Spectrum
@@ -29,7 +29,7 @@ export const construct = (key, name, intensityChart) => ({
 
 /**
  * Constructs a Spectrum with a default name.
- * Example: {key: 4, name: "New Spectrum 4", intensityChart }
+ * Example: {key: 4, name: "Spectrum 4", intensityChart }
  * @param {Array<ChartPt>} intensityChart calibrated intensities
  * @param {Number} key unique integer for the spectrum
  * @returns {Spectrum} spectrum with intensities and generated key, name fields.

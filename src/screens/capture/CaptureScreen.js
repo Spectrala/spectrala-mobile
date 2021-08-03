@@ -51,7 +51,9 @@ export default function CaptureScreen({ navigation }) {
   const getReferenceCell = () => {
     if (referenceSpectrum) {
       return (
-        <CapturedCell navigation={navigation} spectrum={referenceSpectrum} />
+        <View style={styles.referenceCellContainer}>
+          <CapturedCell navigation={navigation} spectrum={referenceSpectrum} />
+        </View>
       );
     } else {
       return refPlaceholder;
@@ -78,9 +80,11 @@ export default function CaptureScreen({ navigation }) {
           spectrum={Spectrum.construct(null, null, intensityChart)}
         />
 
-        <View style={styles.tableMaster}>
+        <View style={styles.referenceMaster}>
           <Text style={styles.sectionText}>Reference</Text>
           {getReferenceCell()}
+        </View>
+        <View style={styles.testMaster}>
           <Text style={styles.sectionText}>Test</Text>
           <CapturedList navigation={navigation} style={styles.list} />
         </View>
@@ -101,7 +105,7 @@ const styles = StyleSheet.create({
   list: {
     marginBottom: 120,
   },
-  tableMaster: {
+  testMaster: {
     padding: 16,
     margin: 8,
     borderTopLeftRadius: 16,
@@ -111,6 +115,16 @@ const styles = StyleSheet.create({
     shadowColor: "gray",
     shadowRadius: 10,
     shadowOpacity: 0.12,
+  },
+  referenceMaster: {
+    padding: 16,
+    margin: 8,
+    marginTop: 16,
+    borderRadius: 16, 
+    backgroundColor: "white",
+    shadowColor: "gray",
+    shadowRadius: 10,
+    shadowOpacity: 0.25,
   },
   refPlaceholder: {
     height: 48,
@@ -136,7 +150,8 @@ const styles = StyleSheet.create({
   },
   sectionText: {
     fontWeight: "600",
+    color: "#888",
     fontSize: 20,
-    marginBottom: 16,
+    marginBottom: 8,
   },
 });

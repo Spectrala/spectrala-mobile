@@ -4,13 +4,7 @@ import { StyleSheet } from "react-native";
 import { StackedAreaChart } from "react-native-svg-charts";
 import { curveBasis as d3ShapeCurveBasis } from "d3-shape";
 
-/**
- * https://icons.expo.fyi
- *
- * Ionicons:
- * arrow-up-circle
- * arrow-up-circle-outline
- */
+
 function StackedChart(props) {
   const { colors } = useTheme();
   const data = [

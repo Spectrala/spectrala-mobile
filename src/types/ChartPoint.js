@@ -12,15 +12,18 @@
  */
 
 /**
- * Constructs a calibration point
+ * Constructs a calibration point, rounding wavelength to the nearest tenth.
  * @param {number} wavelength wavelength to be associated with xPosition
  * @param {number} y intensity, transmittance, or absorbance
  * @returns {ChartPt}
  */
-export const construct = (wavelength, y) => ({
-  w: wavelength,
-  y,
-});
+export const construct = (wavelength, y) => {
+  const w = Math.round(wavelength * 10) / 10;
+  return {
+    w,
+    y,
+  };
+};
 
 /**
  * Return the wavelength of a chart point
@@ -31,7 +34,7 @@ export const getWavelength = (chartPoint) => chartPoint.w;
 
 /**
  * Return the y value of a chart point
- * @param {ChartPt} chartPoint 
+ * @param {ChartPt} chartPoint
  * @returns {number} y: the intensity, transmittance, or absorption
  */
 export const getY = (chartPoint) => chartPoint.y;
