@@ -3,40 +3,51 @@ import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { format } from "date-fns";
 import { Ionicons } from "@expo/vector-icons";
+import * as Session from "../../types/Session";
 
 export default function SessionDetailScreen({ route }) {
   const { colors } = useTheme();
-  const { name, date: dateUnix } = route.params;
+  const { session } = route.params;
 
-  const date = new Date(dateUnix);
+  const date = new Date(Session.getLastEditDateUnix(session));
+  const name = Session.getName(session);
+  const spectra = Session.getSpectra(session);
 
-  const actionOption = () => {
+  const ActionOption = ({ iconName, text, onPress }) => {
     return (
-      <TouchableOpacity style={styles.actionRow}>
-        <Ionicons
-          style={styles.icon}
-          name={"enter-outline"}
-          size={27}
-          // color={colors.primary}
-        />
-        <Text style={styles.actionText}>Re-enter Session</Text>
+      <TouchableOpacity style={styles.actionRow} onPress={onPress}>
+        <Ionicons style={styles.icon} name={iconName} size={27} />
+        <Text style={styles.actionText}>{text}</Text>
       </TouchableOpacity>
     );
   };
 
+  const onPressEdit = () => {
+    console.log("edit");
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={{ ...styles.sectionTitle, color: colors.primary + "CC" }}>
-        {name}
-      </Text>
+      <TouchableOpacity onPress={onPressEdit}>
+        <Text style={{ ...styles.sectionTitle, color: colors.primary + "CC" }}>
+          {name}
+        </Text>
+      </TouchableOpacity>
       <Text style={styles.sectionSubtitle}>
         {format(date, "h:mmaaa eeee, MMMM d, yyyy")}
       </Text>
       <View style={styles.actionContainer}>
-        {actionOption()}
-        {actionOption()}
-        {actionOption()}
-        {actionOption()}
+        <ActionOption
+          iconName="arrow-forward"
+          text="Re-enter Session"
+          onPress={() => console.log("asdf")}
+        />
+        <ActionOption
+          iconName="share-outline"
+          text="Export Data"
+          onPress={() => console.log("asdf")}
+        />
+        <ActionOption iconName="pencil" text="Rename" onPress={onPressEdit} />
       </View>
       <TouchableOpacity style={styles.closeButton}>
         <Text>Close</Text>

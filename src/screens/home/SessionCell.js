@@ -29,7 +29,7 @@ function SessionCell({ name, date: dateUnix, onSelect }) {
 
 SessionCell.propTypes = {
   name: PropTypes.string.isRequired,
-  date: PropTypes.instanceOf(Date).isRequired,
+  date: PropTypes.number.isRequired,
   onSelect: PropTypes.func,
   isUploaded: PropTypes.bool,
   isSelected: PropTypes.bool,

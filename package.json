@@ -39,6 +39,7 @@
     "react-native-svg-charts": "^5.4.0",
     "react-native-ui-lib": "^5.27.0",
     "react-native-unimodules": "~0.14.6",
+    "react-navigation": "^4.4.4",
     "react-navigation-header-buttons": "^7.0.0",
     "react-redux": "^7.2.4",
     "redux": "^4.0.5",

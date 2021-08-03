@@ -36,8 +36,8 @@ export const construct = (name, created, readerBox, calibration, spectra) => ({
 });
 
 export const getName = (session) => session.name;
-export const getCreatedDate = (session) => session.created;
-export const getLastEditDate = (session) => session.lastEdited;
+export const getCreatedDateUnix = (session) => session.created;
+export const getLastEditDateUnix = (session) => session.lastEdited;
 export const getReaderBox = (session) => session.readerBox;
 export const getCalibration = (session) => session.calibration;
 export const getSpectra = (session) => session.spectra;

@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { useFocusEffect } from "@react-navigation/core";
+import React, { useState, useCallback } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import { StyleSheet, View, FlatList } from "react-native";
 import { getSessions, eraseSessions } from "../../navigation/SessionStorage";
 import PropTypes from "prop-types";
@@ -32,19 +32,17 @@ function HomeScreen({ navigation }) {
     <FlatList
       data={sessions.sort(
         (a, b) =>
-          new Date(Session.getLastEditDate(b)) -
-          new Date(Session.getLastEditDate(a))
+          new Date(Session.getLastEditDateUnix(b)) -
+          new Date(Session.getLastEditDateUnix(a))
       )}
       renderItem={({ item: session }) => {
-        const date = Session.getLastEditDate(session);
+        const date = Session.getLastEditDateUnix(session);
         const name = Session.getName(session);
         return (
           <SessionCell
             name={name}
             date={date}
-            onSelect={() =>
-              navigation.navigate("SessionDetail", { name, date })
-            }
+            onSelect={() => navigation.navigate("SessionDetail", { session })}
           />
         );
       }}
