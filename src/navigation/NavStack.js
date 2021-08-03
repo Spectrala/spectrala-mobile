@@ -5,8 +5,8 @@ import CameraScreen from "../screens/camera/CameraScreen";
 import CalibrationScreen from "../screens/calibration/CalibrationScreen";
 import CaptureScreen from "../screens/capture/CaptureScreen";
 import ReviewScreen from "../screens/review/ReviewScreen";
-import SettingsScreen from "../screens/SettingsScreen";
 import HomeScreen from "../screens/home/HomeScreen";
+import SessionDetailScreen from "../screens/sessionDetail/SessionDetailScreen";
 import {
   HeaderButtons,
   HeaderButton,
@@ -15,7 +15,6 @@ import {
 import { useTheme } from "@react-navigation/native";
 import TitleHeader from "../components/TitleHeader";
 import { storeCurrentSession } from "../navigation/SessionStorage";
-
 const TextHeaderButton = ({ onPress, text }) => (
   <Item title={text} onPress={onPress} />
 );
@@ -60,10 +59,10 @@ export default function HomeNavigator({ navigation }) {
         }}
       />
       <NavStack.Screen
-        name="Settings"
-        component={SettingsScreen}
+        name="SessionDetail"
+        component={SessionDetailScreen}
         options={{
-          title: "Settings",
+          headerTitle: "",
         }}
       />
       <NavStack.Screen
@@ -129,8 +128,4 @@ export default function HomeNavigator({ navigation }) {
       />
     </NavStack.Navigator>
   );
-}
-
-function TabBarIcon(props) {
-  return <Ionicons size={30} style={{ marginBottom: -3 }} {...props} />;
 }

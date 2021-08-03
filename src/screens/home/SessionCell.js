@@ -10,15 +10,17 @@ import { useTheme } from "@react-navigation/native";
  * arrow-up-circle
  * arrow-up-circle-outline
  */
-function SessionCell(props) {
+function SessionCell({ name, date: dateUnix, onSelect }) {
   const { colors } = useTheme();
 
+  const date = new Date(dateUnix);
+
   return (
-    <TouchableOpacity onPress={props.onSelect} style={styles.container}>
+    <TouchableOpacity onPress={onSelect} style={styles.container}>
       <View style={styles.centerBox}>
-        <Text style={styles.title}>{props.name}</Text>
+        <Text style={styles.title}>{name}</Text>
         <Text style={{ color: colors.text }}>
-          {format(props.date, "eeee, MMMM d, yyyy")}
+          {format(date, "h:mmaaa eeee, MMMM d, yyyy")}
         </Text>
       </View>
     </TouchableOpacity>
@@ -32,7 +34,6 @@ SessionCell.propTypes = {
   isUploaded: PropTypes.bool,
   isSelected: PropTypes.bool,
 };
-
 
 const styles = StyleSheet.create({
   container: {

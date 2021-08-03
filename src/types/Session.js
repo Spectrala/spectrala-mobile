@@ -4,8 +4,8 @@
  * This module works with objects in the form
  * {
  *  name: String,
- *  lastEdited: Date,
- *  created: Date,
+ *  lastEdited: Number,
+ *  created: Number,
  *  readerBox: Object (from redux slice),
  *  calibration: Object (from redux slice),
  *  spectra: Object (from redux slice)
@@ -13,12 +13,14 @@
  *
  * These represent the state a spectrum-capturing session and can be used to
  * completely restore state from one of these sessions.
+ * 
+ * Dates must be stored as milliseconds since 1970 to be serializable. 
  */
 
 /**
  * Constructs a Session
  * @param {String} name Session title
- * @param {Date} created Time the session was first saved
+ * @param {Number} created Unix time the session was first saved
  * @param {Object} readerBox State from redux regarding placement of the box
  * @param {Object} calibration State from redux regarding placement of calibration points
  * @param {Object} spectra State from redux regarding recorded spectra

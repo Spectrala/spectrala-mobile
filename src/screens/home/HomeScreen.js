@@ -36,13 +36,15 @@ function HomeScreen({ navigation }) {
           new Date(Session.getLastEditDate(a))
       )}
       renderItem={({ item: session }) => {
-        const date = new Date(Session.getLastEditDate(session));
+        const date = Session.getLastEditDate(session);
         const name = Session.getName(session);
         return (
           <SessionCell
             name={name}
             date={date}
-            onSelect={() => console.log(session)}
+            onSelect={() =>
+              navigation.navigate("SessionDetail", { name, date })
+            }
           />
         );
       }}
