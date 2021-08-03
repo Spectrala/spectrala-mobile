@@ -4,7 +4,7 @@ import {
   selectRecordedSpectra,
   selectReferenceSpectrum,
 } from "../../redux/reducers/RecordedSpectra";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { AreaChart } from "react-native-svg-charts";
 import { curveBasis as d3ShapeCurveBasis } from "d3-shape";
 import * as ChartPt from "../../types/ChartPoint";

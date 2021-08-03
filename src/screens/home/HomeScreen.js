@@ -68,7 +68,7 @@ function HomeScreen({ navigation }) {
 
       <TouchableOpacity
         style={styles.addButton}
-        onPress={() => navigation.navigate("CameraScreen")}
+        onPress={() => navigation.push("CameraScreen")}
       >
         <Ionicons
           style={styles.addIcon}

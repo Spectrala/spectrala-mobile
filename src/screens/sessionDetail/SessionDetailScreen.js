@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import { Ionicons } from "@expo/vector-icons";
 import * as Session from "../../types/Session";
 
-export default function SessionDetailScreen({ route }) {
+export default function SessionDetailScreen({ navigation, route }) {
   const { colors } = useTheme();
   const { session } = route.params;
 
@@ -49,7 +49,10 @@ export default function SessionDetailScreen({ route }) {
         />
         <ActionOption iconName="pencil" text="Rename" onPress={onPressEdit} />
       </View>
-      <TouchableOpacity style={styles.closeButton}>
+      <TouchableOpacity
+        style={styles.closeButton}
+        onPress={() => navigation.popToTop()}
+      >
         <Text>Close</Text>
       </TouchableOpacity>
     </View>
@@ -62,8 +65,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flex: 1,
     padding: 16,
+    backgroundColor: "#FFFFFF00",
   },
-
   sectionTitle: {
     fontWeight: "600",
     color: "#888",

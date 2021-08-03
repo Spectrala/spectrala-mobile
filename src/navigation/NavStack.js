@@ -25,7 +25,7 @@ const IconHeaderButton = (props) => (
 
 const NavStack = createStackNavigator();
 
-export default function HomeNavigator({ navigation }) {
+export default function HomeStack({ navigation }) {
   const { colors } = useTheme();
   return (
     /**
@@ -48,6 +48,7 @@ export default function HomeNavigator({ navigation }) {
           backgroundColor: colors.background,
           shadowColor: "transparent",
         },
+        gestureDirection: "horizontal",
       }}
       mode="modal"
     >
@@ -62,7 +63,8 @@ export default function HomeNavigator({ navigation }) {
         name="SessionDetail"
         component={SessionDetailScreen}
         options={{
-          headerTitle: "",
+          headerShown: false,
+          presentation: "transparentModal",
         }}
       />
       <NavStack.Screen
@@ -81,7 +83,7 @@ export default function HomeNavigator({ navigation }) {
           headerRight: () => (
             <HeaderButtons HeaderButtonComponent={IconHeaderButton}>
               <TextHeaderButton
-                onPress={() => navigation.navigate("CalibrationScreen")}
+                onPress={() => navigation.push("CalibrationScreen")}
                 text={"Next Step"}
               />
             </HeaderButtons>
@@ -96,7 +98,7 @@ export default function HomeNavigator({ navigation }) {
           headerRight: () => (
             <HeaderButtons HeaderButtonComponent={IconHeaderButton}>
               <TextHeaderButton
-                onPress={() => navigation.navigate("CaptureScreen")}
+                onPress={() => navigation.push("CaptureScreen")}
                 text={"Next Step"}
               />
             </HeaderButtons>
@@ -124,7 +126,7 @@ export default function HomeNavigator({ navigation }) {
       <NavStack.Screen
         name="ReviewScreen"
         component={ReviewScreen}
-        options={{ headerTitle: "" }}
+        options={{ headerShown: false }}
       />
     </NavStack.Navigator>
   );

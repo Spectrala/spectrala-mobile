@@ -12,7 +12,6 @@ const SESSION_STORAGE_KEY = "@spectrala_sessions";
 export const getSessions = async () => {
   try {
     const jsonValue = await AsyncStorage.getItem(SESSION_STORAGE_KEY);
-    console.log(jsonValue);
     return jsonValue ? JSON.parse(jsonValue) : null;
   } catch (e) {
     console.error(e);
