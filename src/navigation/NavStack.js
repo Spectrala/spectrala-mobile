@@ -15,6 +15,7 @@ import {
 import { useTheme } from "@react-navigation/native";
 import TitleHeader from "../components/TitleHeader";
 import { storeCurrentSession } from "../navigation/SessionStorage";
+
 const TextHeaderButton = ({ onPress, text }) => (
   <Item title={text} onPress={onPress} />
 );
@@ -50,7 +51,6 @@ export default function HomeStack({ navigation }) {
         },
         gestureDirection: "horizontal",
       }}
-      mode="modal"
     >
       <NavStack.Screen
         name="Sessions"

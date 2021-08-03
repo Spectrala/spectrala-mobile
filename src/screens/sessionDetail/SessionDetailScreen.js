@@ -52,6 +52,7 @@ export default function SessionDetailScreen({ navigation, route }) {
       <TouchableOpacity
         style={styles.closeButton}
         onPress={() => navigation.popToTop()}
+        hitSlop={{ left: 60, right: 60, top: 20, bottom: 60 }}
       >
         <Text>Close</Text>
       </TouchableOpacity>
@@ -93,6 +94,7 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     marginBottom: 48,
+    alignItems: "center",
   },
   actionText: {
     fontSize: 16,
