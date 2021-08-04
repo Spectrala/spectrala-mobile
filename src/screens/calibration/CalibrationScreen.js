@@ -24,7 +24,9 @@ export default function CalibrationScreen() {
         <CameraLoader collectsFrames={!isActivelyPlacing} />
       </View>
 
-      <View style={styles.container}>
+      <View
+        style={{ ...styles.container, backgroundColor: colors.backgroundDark }}
+      >
         <Image
           style={styles.previewImage}
           fadeDuration={0}
@@ -32,7 +34,7 @@ export default function CalibrationScreen() {
         />
         <Button
           title="Flip Image"
-          color={colors.text}
+          color={colors.textDark}
           onPress={() => {
             dispatch(toggleIsFlipped());
             dispatch(resetIntensityArrayHistory());
@@ -66,7 +68,6 @@ const styles = StyleSheet.create({
   flipButton: {
     width: "40%",
     height: 40,
-    color: "white",
     alignSelf: "center",
     marginBottom: 20,
   },

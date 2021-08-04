@@ -15,6 +15,12 @@ import {
 import { useTheme } from "@react-navigation/native";
 import TitleHeader from "../components/TitleHeader";
 import { storeCurrentSession } from "../navigation/SessionStorage";
+import {
+  selectShowsRecalibrateHint,
+  dismissRecalibrateHint,
+} from "../redux/reducers/Sessions";
+import Hint from "react-native-ui-lib/hint";
+import { useSelector, useDispatch } from "react-redux";
 
 const TextHeaderButton = ({ onPress, text }) => (
   <Item title={text} onPress={onPress} />
@@ -28,6 +34,9 @@ const NavStack = createStackNavigator();
 
 export default function HomeStack({ navigation }) {
   const { colors } = useTheme();
+  const dispatch = useDispatch();
+  const showsRecalibrateHint = useSelector(selectShowsRecalibrateHint);
+
   return (
     /**
      * TODO: MARK: the initialRouteName prop in NavStack.Navigator will
@@ -43,7 +52,7 @@ export default function HomeStack({ navigation }) {
       screenOptions={{
         gestureEnabled: false,
         headerTitleAlign: "center",
-        // headerBackTitleVisible: false,
+        headerBackTitleVisible: false,
         headerTintColor: colors.text,
         headerStyle: {
           backgroundColor: colors.background,
@@ -78,7 +87,7 @@ export default function HomeStack({ navigation }) {
           },
           headerTintColor: "white",
           headerTitle: () => (
-            <TitleHeader title="Select Spectrum" color={"white"} />
+            <TitleHeader title="Select Spectrum" color="white" />
           ),
           headerRight: () => (
             <HeaderButtons HeaderButtonComponent={IconHeaderButton}>
@@ -94,7 +103,12 @@ export default function HomeStack({ navigation }) {
         name="CalibrationScreen"
         component={CalibrationScreen}
         options={{
-          headerTitle: () => <TitleHeader title="Calibration" />,
+          headerStyle: {
+            backgroundColor: "black",
+            shadowColor: "transparent",
+          },
+          headerTintColor: "white",
+          headerTitle: () => <TitleHeader title="Calibration" color="white" />,
           headerRight: () => (
             <HeaderButtons HeaderButtonComponent={IconHeaderButton}>
               <TextHeaderButton
@@ -112,20 +126,26 @@ export default function HomeStack({ navigation }) {
           headerLeft: () => (
             <HeaderButtons HeaderButtonComponent={IconHeaderButton}>
               <Item title="cancel" iconName="close" iconSize={34} />
-              <Item title="calibrate" iconName="beaker" />
+              <Hint
+                visible={showsRecalibrateHint}
+                color={colors.primary}
+                message="Select to recalibrate"
+                borderRadius={16}
+                marginLeft={22}
+                offset={4}
+                opacity={0.9}
+                onPress={() => dispatch(dismissRecalibrateHint())}
+              >
+                <Item
+                  title="calibrate"
+                  iconName="beaker"
+                  onPress={() => navigation.navigate("CameraScreen")}
+                />
+              </Hint>
             </HeaderButtons>
           ),
           headerTitle: () => <TitleHeader title="Capture Spectra" />,
           headerRight: () => (
-            // <HeaderButtons HeaderButtonComponent={IconHeaderButton}>
-            //   <Item
-            //     title="Finish"
-            //     onPress={async () => {
-            //       await storeCurrentSession();
-            //       navigation.popToTop();
-            //     }}
-            //   />
-            // </HeaderButtons>
             <HeaderButtons HeaderButtonComponent={IconHeaderButton}>
               <Item title="calibrate" iconName="save" />
             </HeaderButtons>
