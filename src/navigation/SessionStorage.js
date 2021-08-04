@@ -41,7 +41,6 @@ export const storeCurrentSession = async () => {
       name = DEFAULT_NAME + (numSessions + 1);
       newSessions = sessions;
     }
-    console.log(`Storing with time ${time}`);
     const session = Session.construct(
       name,
       time,

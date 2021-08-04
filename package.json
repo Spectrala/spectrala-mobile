@@ -23,6 +23,7 @@
     "color-convert": "^2.0.1",
     "date-fns": "^2.19.0",
     "expo": "^42.0.0",
+    "expo-blur": "~9.0.3",
     "expo-camera": "~11.2.2",
     "expo-constants": "~11.0.1",
     "expo-font": "~9.2.1",

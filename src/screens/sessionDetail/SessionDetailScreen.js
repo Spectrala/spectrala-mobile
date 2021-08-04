@@ -4,6 +4,7 @@ import { useTheme } from "@react-navigation/native";
 import { format } from "date-fns";
 import { Ionicons } from "@expo/vector-icons";
 import * as Session from "../../types/Session";
+import StackedChart from "./StackedChart";
 
 export default function SessionDetailScreen({ navigation, route }) {
   const { colors } = useTheme();
@@ -11,7 +12,7 @@ export default function SessionDetailScreen({ navigation, route }) {
 
   const date = new Date(Session.getLastEditDateUnix(session));
   const name = Session.getName(session);
-  const spectra = Session.getSpectra(session);
+  const spectra = Session.getSpectraList(session);
 
   const ActionOption = ({ iconName, text, onPress }) => {
     return (
@@ -27,7 +28,10 @@ export default function SessionDetailScreen({ navigation, route }) {
   };
 
   return (
-    <View style={styles.container}>
+    <View
+      style={{ ...styles.container, backgroundColor: colors.background + "ee" }}
+    >
+      <StackedChart style={ styles.chart} spectra={spectra} />
       <TouchableOpacity onPress={onPressEdit}>
         <Text style={{ ...styles.sectionTitle, color: colors.primary + "CC" }}>
           {name}
@@ -62,11 +66,9 @@ export default function SessionDetailScreen({ navigation, route }) {
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: "flex-end",
+    justifyContent: "center",
     alignItems: "center",
     flex: 1,
-    padding: 16,
-    backgroundColor: "#FFFFFF00",
   },
   sectionTitle: {
     fontWeight: "600",
@@ -82,7 +84,8 @@ const styles = StyleSheet.create({
   actionContainer: {
     width: "100%",
     alignItems: "flex-start",
-    padding: 18,
+    paddingVertical: 16,
+    paddingHorizontal: 32,
   },
   actionRow: {
     flexDirection: "row",
@@ -98,5 +101,8 @@ const styles = StyleSheet.create({
   },
   actionText: {
     fontSize: 16,
+  },
+  chart: {
+    marginBottom: 16,
   },
 });

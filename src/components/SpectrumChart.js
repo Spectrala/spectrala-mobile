@@ -5,6 +5,7 @@ import { Defs } from "react-native-svg";
 import { curveBasis as d3ShapeCurveBasis } from "d3-shape";
 import * as ChartPt from "../types/ChartPoint";
 import SpectrumGradientProvider from "./SpectrumGradientProvider";
+
 const CHART_HEIGHT = 160;
 const X_AXIS_HEIGHT = 10;
 const SHOWS_Y = false;

@@ -97,7 +97,7 @@ export const computeIntensityChart = (uncalibratedIntensities, calibration) => {
  * @param {Array<ChartPt>} intensityChart
  * @returns {Number} intensity from intensityChart
  */
-const getClosestIntensity = (testWavelength, intensityChart) => {
+export const getClosestIntensity = (testWavelength, intensityChart) => {
   const closestPoint = intensityChart.reduce((pointA, pointB) => {
     const wavelengthA = ChartPt.getWavelength(pointA);
     const wavelengthB = ChartPt.getWavelength(pointB);
