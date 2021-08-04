@@ -5,10 +5,15 @@ import { format } from "date-fns";
 import { Ionicons } from "@expo/vector-icons";
 import * as Session from "../../types/Session";
 import StackedChart from "./StackedChart";
+import { useDispatch } from "react-redux";
+import { restoreCalibration } from "../../redux/reducers/Calibration";
+import { restoreBox } from "../../redux/reducers/ReaderBox";
+import { restoreSpectra } from "../../redux/reducers/RecordedSpectra";
 
 export default function SessionDetailScreen({ navigation, route }) {
   const { colors } = useTheme();
   const { session } = route.params;
+  const dispatch = useDispatch();
 
   const date = new Date(Session.getLastEditDateUnix(session));
   const name = Session.getName(session);
@@ -27,11 +32,21 @@ export default function SessionDetailScreen({ navigation, route }) {
     console.log("edit");
   };
 
+  const enterSession = () => {
+    const calibration = Session.getReduxCalibration(session);
+    const box = Session.getReduxReaderBox(session);
+    const spectra = Session.getReduxSpectra(session);
+    dispatch(restoreCalibration({ value: calibration }));
+    dispatch(restoreBox({ value: box }));
+    dispatch(restoreSpectra({ value: spectra }));
+    navigation.navigate("CameraScreen");
+  };
+
   return (
     <View
       style={{ ...styles.container, backgroundColor: colors.background + "ee" }}
     >
-      <StackedChart style={ styles.chart} spectra={spectra} />
+      <StackedChart style={styles.chart} spectra={spectra} />
       <TouchableOpacity onPress={onPressEdit}>
         <Text style={{ ...styles.sectionTitle, color: colors.primary + "CC" }}>
           {name}
@@ -44,7 +59,7 @@ export default function SessionDetailScreen({ navigation, route }) {
         <ActionOption
           iconName="arrow-forward"
           text="Re-enter Session"
-          onPress={() => console.log("asdf")}
+          onPress={enterSession}
         />
         <ActionOption
           iconName="share-outline"

@@ -27,10 +27,19 @@ export const readerBoxSlice = createSlice({
     toggleIsFlipped: (state, action) => {
       state.isFlipped = !state.isFlipped;
     },
+    restoreBox: (state, action) => {
+      const { lineCoords, width, corners, angle, isFlipped } =
+        action.payload.value;
+      state.lineCoords = lineCoords;
+      state.width = width;
+      state.corners = corners;
+      state.angle = angle;
+      state.isFlipped = isFlipped;
+    },
   },
 });
 
-export const { updateReaderBoxData, updateReaderWidth, toggleIsFlipped } =
+export const { updateReaderBoxData, updateReaderWidth, toggleIsFlipped, restoreBox } =
   readerBoxSlice.actions;
 
 export const selectLineCoords = (state) => state.readerBox.lineCoords;

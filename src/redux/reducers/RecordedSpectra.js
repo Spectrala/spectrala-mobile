@@ -31,6 +31,12 @@ export const spectrumSlice = createSlice({
       const spectrum = action.payload.spectrum;
       state.referenceKey = Spectrum.getKey(spectrum);
     },
+    restoreSpectra: (state, action) => {
+      const { recordedSpectra, referenceKey, highestKey } = action.payload.value;
+      state.recordedSpectra = recordedSpectra;
+      state.referenceKey = referenceKey;
+      state.highestKey = highestKey;
+    }
   },
 });
 
@@ -40,6 +46,7 @@ export const {
   updateSpectrum,
   removeReference,
   setReference,
+  restoreSpectra,
 } = spectrumSlice.actions;
 
 /**

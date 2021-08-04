@@ -28,10 +28,15 @@ export const calibrationSlice = createSlice({
       const isActivePointPlacement = action.payload.value;
       state.activePointPlacement = isActivePointPlacement;
     },
+    restoreCalibration: (state, action) => {
+      const { calibration, activePointPlacement } = action.payload.value;
+      state.calibration = calibration;
+      state.activePointPlacement = activePointPlacement;
+    },
   },
 });
 
-export const { setPlacement, setPreset, setActivePointPlacement } =
+export const { setPlacement, setPreset, setActivePointPlacement, restoreCalibration} =
   calibrationSlice.actions;
 
 export const selectCalibrationPoints = (state) => {
