@@ -29,32 +29,51 @@ export const eraseSessions = async () => {
 /**
  * Package the redux store into a session and store it in localstorage.
  */
-export const storeCurrentSession = async () => {
-  const time = Date.now();
-  const { readerBox, calibration, spectra } = store.store.getState();
+export const storeSession = async (session, allSessions) => {
   try {
-    const sessions = await getSessions();
-    let name = DEFAULT_NAME + 1;
-    let newSessions = [];
-    if (sessions) {
-      const numSessions = sessions.length;
-      name = DEFAULT_NAME + (numSessions + 1);
-      newSessions = sessions;
-    }
-    const session = Session.construct(
-      name,
-      time,
-      readerBox,
-      calibration,
-      spectra
-    );
-    newSessions = [...newSessions, session];
     await AsyncStorage.setItem(
       SESSION_STORAGE_KEY,
-      JSON.stringify(newSessions)
+      JSON.stringify({ ...allSessions, ...session })
     );
   } catch (e) {
     // saving error
     console.error(e);
   }
+};
+
+export const buildNewSession = async () => {
+  const time = Date.now();
+  const { readerBox, calibration, spectra } = store.store.getState();
+  try {
+    const sessions = await getSessions();
+    const greatestKey = Math.max(
+      0,
+      ...Object.keys(sessions).map((k) => parseInt(k))
+    );
+    const newKey = greatestKey + 1;
+    const name = DEFAULT_NAME + newKey;
+    const session = Session.construct(
+      name,
+      time,
+      readerBox,
+      calibration,
+      spectra,
+      newKey
+    );
+    return session;
+  } catch (e) {
+    // accessing error
+    console.error(e);
+  }
+};
+
+export const combineSessions = async (oldSession, newSession) => {
+  return Session.construct(
+    Session.getName(oldSession),
+    Session.getCreatedDateUnix(oldSession), 
+    Session.getReduxReaderBox(newSession),
+    Session.getReduxCalibration(newSession),
+    Session.getReduxSpectra(newSession),
+    Session.getKey(oldSession)
+  );
 };

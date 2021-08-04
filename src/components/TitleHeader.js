@@ -5,8 +5,8 @@ export default function TitleHeader({ title, color }) {
   return (
     <Text
       style={{
-        fontSize: 24,
-        fontWeight: "600",
+        fontSize: 22,
+        fontWeight: "500",
         color,
       }}
     >

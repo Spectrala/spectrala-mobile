@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import { restoreCalibration } from "../../redux/reducers/Calibration";
 import { restoreBox } from "../../redux/reducers/ReaderBox";
 import { restoreSpectra } from "../../redux/reducers/RecordedSpectra";
+import { editSession } from "../../redux/reducers/Session";
 
 export default function SessionDetailScreen({ navigation, route }) {
   const { colors } = useTheme();
@@ -33,13 +34,14 @@ export default function SessionDetailScreen({ navigation, route }) {
   };
 
   const enterSession = () => {
+    dispatch(editSession({ value: session }));
     const calibration = Session.getReduxCalibration(session);
     const box = Session.getReduxReaderBox(session);
     const spectra = Session.getReduxSpectra(session);
     dispatch(restoreCalibration({ value: calibration }));
     dispatch(restoreBox({ value: box }));
     dispatch(restoreSpectra({ value: spectra }));
-    navigation.navigate("CameraScreen");
+    navigation.navigate("CaptureScreen");
   };
 
   return (

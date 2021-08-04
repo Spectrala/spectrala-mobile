@@ -26,13 +26,21 @@
  * @param {Object} spectra State from redux regarding recorded spectra
  * @returns Session
  */
-export const construct = (name, created, readerBox, calibration, spectra) => ({
+export const construct = (
   name,
-  lastEdited: created,
   created,
   readerBox,
   calibration,
   spectra,
+  key
+) => ({
+  name,
+  lastEdited: Date.now(),
+  created,
+  readerBox,
+  calibration,
+  spectra,
+  key,
 });
 
 export const getName = (session) => session.name;
@@ -47,3 +55,4 @@ export const getSpectraList = (session) => {
   const spectraList = Object.values(spectra);
   return spectraList;
 };
+export const getKey = (session) => session.key;

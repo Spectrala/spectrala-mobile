@@ -42,8 +42,8 @@ export default function HomeStack({ navigation }) {
       initialRouteName="HomeScreen"
       screenOptions={{
         gestureEnabled: false,
-        headerTitleAlign: "left",
-        headerBackTitleVisible: false,
+        headerTitleAlign: "center",
+        // headerBackTitleVisible: false,
         headerTintColor: colors.text,
         headerStyle: {
           backgroundColor: colors.background,
@@ -109,16 +109,25 @@ export default function HomeStack({ navigation }) {
         name="CaptureScreen"
         component={CaptureScreen}
         options={{
+          headerLeft: () => (
+            <HeaderButtons HeaderButtonComponent={IconHeaderButton}>
+              <Item title="cancel" iconName="close" iconSize={34} />
+              <Item title="calibrate" iconName="beaker" />
+            </HeaderButtons>
+          ),
           headerTitle: () => <TitleHeader title="Capture Spectra" />,
           headerRight: () => (
+            // <HeaderButtons HeaderButtonComponent={IconHeaderButton}>
+            //   <Item
+            //     title="Finish"
+            //     onPress={async () => {
+            //       await storeCurrentSession();
+            //       navigation.popToTop();
+            //     }}
+            //   />
+            // </HeaderButtons>
             <HeaderButtons HeaderButtonComponent={IconHeaderButton}>
-              <Item
-                title="Finish"
-                onPress={async () => {
-                  await storeCurrentSession();
-                  navigation.popToTop();
-                }}
-              />
+              <Item title="calibrate" iconName="save" />
             </HeaderButtons>
           ),
         }}
@@ -126,7 +135,7 @@ export default function HomeStack({ navigation }) {
       <NavStack.Screen
         name="ReviewScreen"
         component={ReviewScreen}
-        options={{ headerShown: false }}
+        // options={{ headerShown: false }}
       />
     </NavStack.Navigator>
   );
