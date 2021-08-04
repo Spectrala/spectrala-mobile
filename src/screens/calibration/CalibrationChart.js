@@ -3,9 +3,13 @@ import { Text, View, StyleSheet, ActivityIndicator } from "react-native";
 import { AreaChart, Grid } from "react-native-svg-charts";
 import { Defs } from "react-native-svg";
 import { useSelector } from "react-redux";
-import { selectIntensityChart } from "../../redux/reducers/SpectrumFeed";
+import {
+  selectIntensityChart,
+  selectUncalibratedIntensityChart,
+} from "../../redux/reducers/SpectrumFeed";
 import { curveBasis as d3ShapeCurveBasis } from "d3-shape";
 import * as ChartPt from "../../types/ChartPoint";
+import * as UncalibratedIntensity from "../../types/UncalibratedIntensity";
 import Tick from "./Tick";
 import { selectCalibrationPoints } from "../../redux/reducers/Calibration";
 import SpectrumGradientProvider from "../../components/SpectrumGradientProvider";
@@ -16,15 +20,17 @@ const BOTTOM_TICK_Y = 255;
 const GRADIENT_ID = "grad";
 
 function CalibrationChart({ horizontalInset }) {
-
   const intensityChart = useSelector(selectIntensityChart);
+  const uncalibratedChart = useSelector(selectUncalibratedIntensityChart);
+
   const calibrationPoints = useSelector(selectCalibrationPoints);
   const [tickViewDims, setTickDims] = useState(undefined);
 
-  if (!intensityChart) {
+  if (!intensityChart || !uncalibratedChart) {
     return <ActivityIndicator />;
   }
 
+  console.log(uncalibratedChart);
   const getTicks = () => {
     return calibrationPoints.map((_, idx) => {
       const isBottom = idx % 2 === 1;
@@ -47,6 +53,24 @@ function CalibrationChart({ horizontalInset }) {
     <View>
       <AreaChart
         style={{ height: CHART_HEIGHT }}
+        data={uncalibratedChart}
+        yAccessor={({ item }) => UncalibratedIntensity.getIntensity(item)}
+        xAccessor={({ item }) => UncalibratedIntensity.getXPosition(item)}
+        yMax={100}
+        yMin={0}
+        contentInset={{
+          top: 0,
+          bottom: 0,
+          left: horizontalInset,
+          right: horizontalInset,
+        }}
+        curve={d3ShapeCurveBasis}
+        svg={{ fill: `white` }}
+      >
+        <Grid />
+      </AreaChart>
+      {/* <AreaChart
+        style={{ height: CHART_HEIGHT }}
         data={intensityChart}
         yAccessor={({ item }) => ChartPt.getY(item)}
         xAccessor={({ item }) => ChartPt.getWavelength(item)}
@@ -68,7 +92,7 @@ function CalibrationChart({ horizontalInset }) {
             id={GRADIENT_ID}
           />
         </Defs>
-      </AreaChart>
+      </AreaChart> */}
 
       <View
         style={styles.tickContainer}

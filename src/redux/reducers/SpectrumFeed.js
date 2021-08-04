@@ -66,6 +66,10 @@ export const { updateFeed, setPreviewImage, resetIntensityArrayHistory } =
 
 export const selectPreviewImg = (state) => state.spectrumFeed.previewImage;
 
+export const selectUncalibratedIntensityChart = (state) => {
+  return state.spectrumFeed.uncalibratedIntensities;
+};
+
 export const selectIntensityChart = (state) => {
   const uncalibratedIntensities = state.spectrumFeed.uncalibratedIntensities;
   const calibration = state.calibration.calibration;
