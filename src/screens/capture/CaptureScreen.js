@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
   toastButtonText: {
     color: "white",
     fontWeight: "600",
-    marginLeft: 16,
+    marginLeft: 32,
   },
   toastButtonContainer: {
     flexDirection: "row",
