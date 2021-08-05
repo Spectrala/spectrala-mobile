@@ -23,9 +23,7 @@ export default function StackedChart({ spectra, style }) {
       spectrumCharts.forEach((chart, chartNum) => {
         const key = `s${chartNum}`;
         const point = chart[idx];
-        if (point) {
-          stackedPoint[key] = ChartPoint.getY(point);
-        }
+        stackedPoint[key] = point ? ChartPoint.getY(point) : 50;
       });
       stackedData.push(stackedPoint);
     }
@@ -36,7 +34,7 @@ export default function StackedChart({ spectra, style }) {
   const chartColors = Array.from(Array(numCharts).keys()).map((_, idx) => {
     const alphaPct = 1 - idx / numCharts;
     const alphaDec = Math.floor(255 * alphaPct);
-    const alpha = alphaDec.toString(16);
+    const alpha = alphaDec.toString(16).padStart(2, "0");
     return baseColor + alpha;
   });
 
@@ -54,6 +52,7 @@ export default function StackedChart({ spectra, style }) {
         showGrid={false}
       />
     </View>
+
   );
 }
 

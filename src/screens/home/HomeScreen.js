@@ -24,7 +24,6 @@ function HomeScreen({ navigation }) {
 
   const fetchSessions = async () => {
     const savedSessions = await getSessions();
-    // console.log(savedSessions);
     setSessions(savedSessions);
   };
 
