@@ -18,6 +18,7 @@ import { handleSaveSession } from "../navigation/SessionStorage";
 import {
   selectShowsRecalibrateHint,
   dismissRecalibrateHint,
+  endEditingSession,
 } from "../redux/reducers/Sessions";
 import Hint from "react-native-ui-lib/hint";
 import { useSelector, useDispatch } from "react-redux";
@@ -125,7 +126,16 @@ export default function HomeStack({ navigation }) {
         options={{
           headerLeft: () => (
             <HeaderButtons HeaderButtonComponent={IconHeaderButton}>
-              <Item title="cancel" iconName="close" iconSize={34} />
+              <Item
+                title="cancel"
+                iconName="close"
+                iconSize={34}
+                onPress={() => {
+                  console.error("TODO: implement are you sure");
+                  dispatch(endEditingSession());
+                  navigation.popToTop();
+                }}
+              />
               <Hint
                 visible={showsRecalibrateHint}
                 color={colors.primary}
@@ -152,6 +162,7 @@ export default function HomeStack({ navigation }) {
                 iconName="save"
                 onPress={async () => {
                   await handleSaveSession();
+                  dispatch(endEditingSession());
                   navigation.popToTop();
                 }}
               />
@@ -159,10 +170,7 @@ export default function HomeStack({ navigation }) {
           ),
         }}
       />
-      <NavStack.Screen
-        name="ReviewScreen"
-        component={ReviewScreen}
-      />
+      <NavStack.Screen name="ReviewScreen" component={ReviewScreen} />
     </NavStack.Navigator>
   );
 }

@@ -16,7 +16,7 @@ export const sessionsSlice = createSlice({
       state.activeEditingSession = session;
       state.showsRecalibrateHint = true;
     },
-    escapeEditingSession: (state, action) => {
+    endEditingSession: (state, action) => {
       state.activeEditingSession = null;
       state.showsRecalibrateHint = false;
     },
@@ -26,7 +26,7 @@ export const sessionsSlice = createSlice({
   },
 });
 
-export const { editSession, escapeEditingSession, dismissRecalibrateHint } = sessionsSlice.actions;
+export const { editSession, endEditingSession, dismissRecalibrateHint } = sessionsSlice.actions;
 
 export const selectActiveEditingSession = (state) => {
   return state.sessions.activeEditingSession;

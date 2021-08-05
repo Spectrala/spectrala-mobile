@@ -8,6 +8,11 @@ import { useTheme } from "@react-navigation/native";
 import { TouchableOpacity, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as Session from "../../types/Session";
+import {
+  DEFAULT_SPECTRUM_SLICE_STATE,
+  restoreSpectra,
+} from "../../redux/reducers/RecordedSpectra";
+import { useDispatch } from "react-redux";
 
 const ADD_DIAMETER = 90;
 const ADD_ICON_WIDTH = 70;
@@ -15,6 +20,7 @@ const ADD_ICON_WIDTH = 70;
 function HomeScreen({ navigation }) {
   const { colors } = useTheme();
   const [sessions, setSessions] = useState([]);
+  const dispatch = useDispatch();
 
   const fetchSessions = async () => {
     const savedSessions = await getSessions();
@@ -69,7 +75,10 @@ function HomeScreen({ navigation }) {
 
       <TouchableOpacity
         style={styles.addButton}
-        onPress={() => navigation.push("CameraScreen")}
+        onPress={() => {
+          navigation.push("CameraScreen");
+          dispatch(restoreSpectra({ value: DEFAULT_SPECTRUM_SLICE_STATE }));
+        }}
       >
         <Ionicons
           style={styles.addIcon}

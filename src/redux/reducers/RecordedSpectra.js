@@ -1,13 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 import * as Spectrum from "../../types/Spectrum";
 
+export const DEFAULT_SPECTRUM_SLICE_STATE = {
+  recordedSpectra: {},
+  referenceKey: null,
+  highestKey: 0,
+};
+
 export const spectrumSlice = createSlice({
   name: "spectra",
-  initialState: {
-    recordedSpectra: {},
-    referenceKey: null,
-    highestKey: 0,
-  },
+  initialState: DEFAULT_SPECTRUM_SLICE_STATE,
   reducers: {
     recordSpectrum: (state, action) => {
       const spectrum = action.payload.spectrum;
@@ -32,11 +34,12 @@ export const spectrumSlice = createSlice({
       state.referenceKey = Spectrum.getKey(spectrum);
     },
     restoreSpectra: (state, action) => {
-      const { recordedSpectra, referenceKey, highestKey } = action.payload.value;
+      const { recordedSpectra, referenceKey, highestKey } =
+        action.payload.value;
       state.recordedSpectra = recordedSpectra;
       state.referenceKey = referenceKey;
       state.highestKey = highestKey;
-    }
+    },
   },
 });
 

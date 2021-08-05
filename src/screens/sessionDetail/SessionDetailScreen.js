@@ -29,6 +29,10 @@ export default function SessionDetailScreen({ navigation, route }) {
     );
   };
 
+  const editSessionName = () => {
+    console.log("session name edit ");
+  };
+
   const beginEditingSession = () => {
     dispatch(editSession({ value: session }));
     const calibration = Session.getReduxCalibration(session);
@@ -45,7 +49,7 @@ export default function SessionDetailScreen({ navigation, route }) {
       style={{ ...styles.container, backgroundColor: colors.background + "ee" }}
     >
       <StackedChart style={styles.chart} spectra={spectra} />
-      <TouchableOpacity onPress={onPressEdit}>
+      <TouchableOpacity onPress={editSessionName}>
         <Text style={{ ...styles.sectionTitle, color: colors.primary + "CC" }}>
           {name}
         </Text>
@@ -64,7 +68,11 @@ export default function SessionDetailScreen({ navigation, route }) {
           text="Export Data"
           onPress={() => console.log("asdf")}
         />
-        <ActionOption iconName="pencil" text="Rename" onPress={onPressEdit} />
+        <ActionOption
+          iconName="pencil"
+          text="Rename"
+          onPress={editSessionName}
+        />
       </View>
       <TouchableOpacity
         style={styles.closeButton}
