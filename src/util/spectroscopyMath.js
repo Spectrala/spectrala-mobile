@@ -86,7 +86,7 @@ export const computeIntensityChart = (uncalibratedIntensities, calibration) => {
   };
 
   return uncalibratedIntensities.map(({ x: xPosition, i: intensity }) =>
-    ChartPt.construct(wavelength(xPosition), intensity)
+    ChartPt.construct(xPosition, wavelength(xPosition), intensity)
   );
 };
 
@@ -130,7 +130,8 @@ export const computeTransmittanceChart = (
     if (referenceIntensity !== 0) {
       transmittance = testIntensity / referenceIntensity;
     }
-    return ChartPt.construct(testWavelength, transmittance);
+    const xPosition = ChartPt.getXPosition(testPoint);
+    return ChartPt.construct(xPosition, testWavelength, transmittance);
   });
   return transmittanceChart;
 };
@@ -154,7 +155,8 @@ export const computeAbsorptionChart = (
     const wavelength = ChartPt.getWavelength(transmittancePoint);
     const transmittance = ChartPt.getY(transmittancePoint);
     const absorption = -Math.log10(transmittance);
-    return ChartPt.construct(wavelength, absorption);
+    const xPosition = ChartPt.getXPosition(transmittancePoint);
+    return ChartPt.construct(xPosition, wavelength, absorption);
   });
   return absorptionChart;
 };

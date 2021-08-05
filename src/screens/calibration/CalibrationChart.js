@@ -30,7 +30,6 @@ function CalibrationChart({ horizontalInset }) {
     return <ActivityIndicator />;
   }
 
-  console.log(uncalibratedChart);
   const getTicks = () => {
     return calibrationPoints.map((_, idx) => {
       const isBottom = idx % 2 === 1;
@@ -51,7 +50,7 @@ function CalibrationChart({ horizontalInset }) {
   // https://stackoverflow.com/questions/60503898/how-to-apply-gradient-color-on-react-native-stackedareachart
   return (
     <View>
-      <AreaChart
+      {/* <AreaChart
         style={{ height: CHART_HEIGHT }}
         data={uncalibratedChart}
         yAccessor={({ item }) => UncalibratedIntensity.getIntensity(item)}
@@ -68,12 +67,12 @@ function CalibrationChart({ horizontalInset }) {
         svg={{ fill: `white` }}
       >
         <Grid />
-      </AreaChart>
-      {/* <AreaChart
+      </AreaChart> */}
+      <AreaChart
         style={{ height: CHART_HEIGHT }}
         data={intensityChart}
         yAccessor={({ item }) => ChartPt.getY(item)}
-        xAccessor={({ item }) => ChartPt.getWavelength(item)}
+        xAccessor={({ item }) => ChartPt.getXPosition(item)}
         yMax={100}
         yMin={0}
         contentInset={{
@@ -92,7 +91,7 @@ function CalibrationChart({ horizontalInset }) {
             id={GRADIENT_ID}
           />
         </Defs>
-      </AreaChart> */}
+      </AreaChart>
 
       <View
         style={styles.tickContainer}
