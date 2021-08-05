@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 /**
  * activeEditingSession {Session} the current session being edited from re-enter session
+ * showsRecalibrateHint {bool} true if the "Press to calibrate" hint in capture is to be shown
  */
 export const sessionsSlice = createSlice({
   name: "sessions",

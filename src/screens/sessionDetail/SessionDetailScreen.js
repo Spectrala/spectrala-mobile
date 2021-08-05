@@ -29,11 +29,7 @@ export default function SessionDetailScreen({ navigation, route }) {
     );
   };
 
-  const onPressEdit = () => {
-    console.log("edit");
-  };
-
-  const enterSession = () => {
+  const beginEditingSession = () => {
     dispatch(editSession({ value: session }));
     const calibration = Session.getReduxCalibration(session);
     const box = Session.getReduxReaderBox(session);
@@ -61,7 +57,7 @@ export default function SessionDetailScreen({ navigation, route }) {
         <ActionOption
           iconName="arrow-forward"
           text="Re-enter Session"
-          onPress={enterSession}
+          onPress={beginEditingSession}
         />
         <ActionOption
           iconName="share-outline"

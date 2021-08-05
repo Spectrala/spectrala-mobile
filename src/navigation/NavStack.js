@@ -14,7 +14,7 @@ import {
 } from "react-navigation-header-buttons";
 import { useTheme } from "@react-navigation/native";
 import TitleHeader from "../components/TitleHeader";
-import { storeCurrentSession } from "../navigation/SessionStorage";
+import { handleSaveSession } from "../navigation/SessionStorage";
 import {
   selectShowsRecalibrateHint,
   dismissRecalibrateHint,
@@ -147,7 +147,14 @@ export default function HomeStack({ navigation }) {
           headerTitle: () => <TitleHeader title="Capture Spectra" />,
           headerRight: () => (
             <HeaderButtons HeaderButtonComponent={IconHeaderButton}>
-              <Item title="calibrate" iconName="save" />
+              <Item
+                title="calibrate"
+                iconName="save"
+                onPress={async () => {
+                  await handleSaveSession();
+                  navigation.popToTop();
+                }}
+              />
             </HeaderButtons>
           ),
         }}
@@ -155,7 +162,6 @@ export default function HomeStack({ navigation }) {
       <NavStack.Screen
         name="ReviewScreen"
         component={ReviewScreen}
-        // options={{ headerShown: false }}
       />
     </NavStack.Navigator>
   );

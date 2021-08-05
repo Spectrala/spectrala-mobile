@@ -43,7 +43,6 @@ const tensorToImageUrl = async (imageTensor) => {
     frameData[i] = buffer[offset];
     frameData[i + 1] = buffer[offset + 1];
     frameData[i + 2] = buffer[offset + 2];
-    frameData[i + 3] = 0xff;
 
     offset += 3;
   }
@@ -143,38 +142,61 @@ const flip = (img) => {
  * Function used to extract intensity from any given pixel
  * during reading an image from the box.
  *
- * Takes r,g,b from (0,255) and returns an intensity from 0-100.
+ * Takes r,g,b from (0,255) and returns an hsv value in the form
+ * {h: Number [0-360], s: Number [0-100], v: Number [0-100]}
  *
  * @param {number} r red value from 0 to 255
  * @param {number} g green value from 0 to 255
  * @param {number} b blue value from 0 to 255
- * @returns {number} intensity
+ * @returns {Object} {h, s, v} color
  */
-const rgbToIntensity = (r, g, b) => {
+const rgbToHSV = (r, g, b) => {
   // Take brightness to be "value" in HSV color space, 0-100.
   const hsv = convert.rgb.hsv.raw(r, g, b);
   // Indicies described: https://github.com/Qix-/color-convert/blob/HEAD/conversions.js
-  const value = hsv[2];
-  return value;
+  return { h: hsv[0], s: hsv[1], v: hsv[2] };
 };
 
 // Convert each pixel in tensor to an intensity value
-const convertIntensityAsync = async (imgTrimmed) => {
+const convertHSVArrayAsync = async (imgTrimmed) => {
   const arr = await imgTrimmed.mul(255).array();
   return arr.map((strip) =>
-    strip.map((pixel) => rgbToIntensity(pixel[0], pixel[1], pixel[2]))
+    strip.map((pixel) => rgbToHSV(pixel[0], pixel[1], pixel[2]))
   );
 };
 
 /**
- * Function to map a 2d reader box to a 1d reader line. Each
- * line perpendicular to the reader line (between the two dots)
- * and is represented by a 1d array of intensities (from rgbToIntensity).
+ * Function to map a 2d reader box to a 1d reader line.
+ * This is done by finding the most saturated horizontal line in the direction
+ * of the reader line. The saturation of each pixel in each line is simply added.
  *
- * @param {array} intensities array of intensities from rgbToIntensity
- * @returns {number} single intensity value from the given horizontal.
+ * @param {Array<Array<hsv>>} hsv2d 2d array of pixels from convertHSVArrayAsync
+ * @returns {Array<hsv>} single row of colors (most saturated)
  */
-const reduceHorizontal = (intensities) => Math.round(Math.max(...intensities));
+const getBestHorizontal = (hsv2d) => {
+  const saturations = hsv2d.map(
+    (row) => row.reduce((hsvA, hsvB) => hsvA.s + hsvB.s),
+    0
+  );
+  const saturatedIdx = saturations.reduce(
+    (bestIndexSoFar, currentlyTestedValue, currentlyTestedIndex, array) =>
+      currentlyTestedValue > array[bestIndexSoFar]
+        ? currentlyTestedIndex
+        : bestIndexSoFar,
+    0
+  );
+
+  return hsv2d[Math.floor(hsv2d.length / 2)];
+};
+
+/**
+ * Maps a row of hsv values to a row of intensity values. Intensity is defined
+ * as the value component of the hsv color and is in the range [0-100].
+ *
+ * @param {Array<hsv>} hsvRow array of pixels from getBestHorizontal
+ * @returns {Array<number>} array of intensities ready for calibration math
+ */
+const getIntensitiesFromHorizontal = (hsvRow) => hsvRow.map((hsv) => hsv.v);
 
 export const getLineData = async (tensor, readerBox) => {
   const { corners, angle, isFlipped } = readerBox;
@@ -186,9 +208,10 @@ export const getLineData = async (tensor, readerBox) => {
   });
   const trimmed = await trim(rotated);
   const previewUri = await getPreviewUri(trimmed);
-  const transposed = trimmed.transpose([1, 0, 2]);
-  const intensities2d = await convertIntensityAsync(transposed);
+  // const transposed = trimmed.transpose([1, 0, 2]);
+  const hsv2d = await convertHSVArrayAsync(trimmed);
   tfEngine().endScope(); // Tensorflow operations are over; clean up.
-  const intensities1d = intensities2d.map((row) => reduceHorizontal(row));
+  const bestHorizontal = getBestHorizontal(hsv2d);
+  const intensities1d = getIntensitiesFromHorizontal(bestHorizontal);
   return { intensities: intensities1d, previewUri };
 };

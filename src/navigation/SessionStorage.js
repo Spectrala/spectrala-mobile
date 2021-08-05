@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { store } from "../redux/store/Store";
 import * as Session from "../types/Session";
+import { selectActiveEditingSession } from "../redux/reducers/Sessions";
 
 const DEFAULT_NAME = "Session ";
 const SESSION_STORAGE_KEY = "@spectrala_sessions";
@@ -12,7 +13,7 @@ const SESSION_STORAGE_KEY = "@spectrala_sessions";
 export const getSessions = async () => {
   try {
     const jsonValue = await AsyncStorage.getItem(SESSION_STORAGE_KEY);
-    return jsonValue ? JSON.parse(jsonValue) : null;
+    return jsonValue ? JSON.parse(jsonValue) : [];
   } catch (e) {
     console.error(e);
   }
@@ -29,11 +30,11 @@ export const eraseSessions = async () => {
 /**
  * Package the redux store into a session and store it in localstorage.
  */
-export const storeSession = async (session, allSessions) => {
+const updateSessionStore = async (session, allSessions) => {
   try {
     await AsyncStorage.setItem(
       SESSION_STORAGE_KEY,
-      JSON.stringify({ ...allSessions, ...session })
+      JSON.stringify([...allSessions, session])
     );
   } catch (e) {
     // saving error
@@ -41,14 +42,14 @@ export const storeSession = async (session, allSessions) => {
   }
 };
 
-export const buildNewSession = async () => {
+const buildNewSession = async (reduxState) => {
   const time = Date.now();
-  const { readerBox, calibration, spectra } = store.store.getState();
+  const { readerBox, calibration, spectra } = reduxState;
   try {
     const sessions = await getSessions();
     const greatestKey = Math.max(
       0,
-      ...Object.keys(sessions).map((k) => parseInt(k))
+      ...sessions.map((session) => parseInt(Session.getKey(session)))
     );
     const newKey = greatestKey + 1;
     const name = DEFAULT_NAME + newKey;
@@ -60,20 +61,34 @@ export const buildNewSession = async () => {
       spectra,
       newKey
     );
-    return session;
+    return { sessions, session };
   } catch (e) {
     // accessing error
     console.error(e);
   }
 };
 
-export const combineSessions = async (oldSession, newSession) => {
+const combineSessions = (oldSession, newSession) => {
   return Session.construct(
     Session.getName(oldSession),
-    Session.getCreatedDateUnix(oldSession), 
+    Session.getCreatedDateUnix(oldSession),
     Session.getReduxReaderBox(newSession),
     Session.getReduxCalibration(newSession),
     Session.getReduxSpectra(newSession),
     Session.getKey(oldSession)
   );
+};
+
+export const handleSaveSession = async () => {
+  const reduxState = store.store.getState();
+  let { sessions: allSessions, session: currentSession } =
+    await buildNewSession(reduxState);
+  const editingSession = selectActiveEditingSession(reduxState);
+  if (editingSession) {
+    currentSession = combineSessions(editingSession, currentSession);
+    allSessions = allSessions.filter(
+      (session) => Session.getKey(session) !== Session.getKey(editingSession)
+    );
+  }
+  updateSessionStore(currentSession, allSessions);
 };
