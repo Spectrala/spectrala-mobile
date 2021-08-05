@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, Image, View, Text, ScrollView } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import SwitchableSpectrumChart from "../../components/SwitchableSpectrumChart";
@@ -16,6 +16,14 @@ import CameraLoader from "../../components/CameraLoader";
 import { Ionicons } from "@expo/vector-icons";
 import CapturedList, { CapturedCell } from "./CapturedList";
 import * as Spectrum from "../../types/Spectrum";
+import Toast from "react-native-ui-lib/toast";
+import { TouchableOpacity } from "react-native";
+import {
+  selectShowsOnExitToast,
+  setShowsOnExitToast,
+  endEditingSession
+} from "../../redux/reducers/Sessions";
+
 const CHART_INSET = 24;
 
 export default function CaptureScreen({ navigation }) {
@@ -24,6 +32,7 @@ export default function CaptureScreen({ navigation }) {
   const intensityChart = useSelector(selectIntensityChart);
   const referenceSpectrum = useSelector(selectReferenceSpectrum);
   const dispatch = useDispatch();
+  const showsOnExitToast = useSelector(selectShowsOnExitToast);
 
   const waterDrop = (
     <Ionicons
@@ -66,8 +75,34 @@ export default function CaptureScreen({ navigation }) {
         <CameraLoader collectsFrames />
       </View>
 
+      <Toast
+        visible={showsOnExitToast}
+        position={"top"}
+        backgroundColor={colors.primary}
+        style={styles.toast}
+        showDismiss={true}
+      >
+        <Text style={styles.toastText}>Exit without saving?</Text>
+        <View style={styles.toastButtonContainer}>
+          <TouchableOpacity
+            onPress={() => dispatch(setShowsOnExitToast({ value: false }))}
+          >
+            <Text style={styles.toastButtonText}>Stay</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              dispatch(setShowsOnExitToast({ value: false }));
+              dispatch(endEditingSession());
+              navigation.popToTop();
+            }}
+          >
+            <Text style={styles.toastButtonText}>Exit</Text>
+          </TouchableOpacity>
+        </View>
+      </Toast>
+
       <ScrollView
-        style={styles.container}
+        style={{ ...styles.container, opacity: showsOnExitToast ? 0.5 : 1 }}
         showsHorizontalScrollIndicator={false}
       >
         <Image
@@ -120,7 +155,7 @@ const styles = StyleSheet.create({
     padding: 16,
     margin: 8,
     marginTop: 16,
-    borderRadius: 16, 
+    borderRadius: 16,
     backgroundColor: "white",
     shadowColor: "gray",
     shadowRadius: 10,
@@ -153,5 +188,23 @@ const styles = StyleSheet.create({
     color: "#777",
     fontSize: 20,
     marginBottom: 8,
+  },
+  toast: {
+    height: 40,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+  },
+  toastText: {
+    color: "white",
+  },
+  toastButtonText: {
+    color: "white",
+    fontWeight: "600",
+    marginLeft: 16,
+  },
+  toastButtonContainer: {
+    flexDirection: "row",
   },
 });

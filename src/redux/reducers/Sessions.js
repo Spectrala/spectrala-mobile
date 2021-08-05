@@ -9,6 +9,7 @@ export const sessionsSlice = createSlice({
   initialState: {
     activeEditingSession: null,
     showsRecalibrateHint: false,
+    showsOnExitToast: false,
   },
   reducers: {
     editSession: (state, action) => {
@@ -23,10 +24,13 @@ export const sessionsSlice = createSlice({
     dismissRecalibrateHint: (state, action) => {
       state.showsRecalibrateHint = false;
     },
+    setShowsOnExitToast: (state, action) => {
+      state.showsOnExitToast = action.payload.value;
+    }
   },
 });
 
-export const { editSession, endEditingSession, dismissRecalibrateHint } = sessionsSlice.actions;
+export const { editSession, endEditingSession, dismissRecalibrateHint, setShowsOnExitToast } = sessionsSlice.actions;
 
 export const selectActiveEditingSession = (state) => {
   return state.sessions.activeEditingSession;
@@ -35,5 +39,9 @@ export const selectActiveEditingSession = (state) => {
 export const selectShowsRecalibrateHint = (state) => {
   return state.sessions.showsRecalibrateHint;
 };
+
+export const selectShowsOnExitToast = (state) => {
+  return state.sessions.showsOnExitToast;
+}
 
 export default sessionsSlice.reducer;

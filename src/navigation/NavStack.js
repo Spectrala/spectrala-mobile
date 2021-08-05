@@ -19,6 +19,7 @@ import {
   selectShowsRecalibrateHint,
   dismissRecalibrateHint,
   endEditingSession,
+  setShowsOnExitToast,
 } from "../redux/reducers/Sessions";
 import Hint from "react-native-ui-lib/hint";
 import { useSelector, useDispatch } from "react-redux";
@@ -130,11 +131,7 @@ export default function HomeStack({ navigation }) {
                 title="cancel"
                 iconName="close"
                 iconSize={34}
-                onPress={() => {
-                  console.error("TODO: implement are you sure");
-                  dispatch(endEditingSession());
-                  navigation.popToTop();
-                }}
+                onPress={() => dispatch(setShowsOnExitToast({ value: true }))}
               />
               <Hint
                 visible={showsRecalibrateHint}

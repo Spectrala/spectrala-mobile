@@ -12,7 +12,7 @@ export const readerBoxSlice = createSlice({
       { x: 0.8, y: 0.5679347826086957 },
     ],
     angle: 0,
-    isFlipped: true,
+    isFlipped: false,
   },
   reducers: {
     updateReaderBoxData: (state, action) => {
