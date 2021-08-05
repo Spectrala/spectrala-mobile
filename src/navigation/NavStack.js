@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { createStackNavigator } from "@react-navigation/stack";
 import CameraScreen from "../screens/camera/CameraScreen";
@@ -24,6 +24,8 @@ import {
 import Hint from "react-native-ui-lib/hint";
 import { useSelector, useDispatch } from "react-redux";
 
+const CALIBRATION_HINT_AUTO_HIDE_MS = 2000;
+
 const TextHeaderButton = ({ onPress, text }) => (
   <Item title={text} onPress={onPress} />
 );
@@ -38,6 +40,15 @@ export default function HomeStack({ navigation }) {
   const { colors } = useTheme();
   const dispatch = useDispatch();
   const showsRecalibrateHint = useSelector(selectShowsRecalibrateHint);
+
+  useEffect(() => {
+    if (showsRecalibrateHint) {
+      setTimeout(
+        () => dispatch(dismissRecalibrateHint()),
+        CALIBRATION_HINT_AUTO_HIDE_MS
+      );
+    }
+  }, [showsRecalibrateHint]);
 
   return (
     /**
