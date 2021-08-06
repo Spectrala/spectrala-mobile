@@ -6,7 +6,7 @@ import { selectReferenceSpectrum } from "../redux/reducers/RecordedSpectra";
 import { useSelector } from "react-redux";
 import * as Spectrum from "../types/Spectrum";
 import {
-  computeAbsorptionChart,
+  computeAbsorbanceChart,
   computeTransmittanceChart,
 } from "../util/spectroscopyMath";
 import { useTheme } from "@react-navigation/native";
@@ -16,13 +16,13 @@ const MODE_BUTTON_HEIGHT = 24;
 const SPECTRUM_VIEW_OPTION_NAMES = {
   INTENSITY: "Intensity",
   TRANSMITTANCE: "Transmittance",
-  ABSORPTION: "Absorption",
+  ABSORBANCE: "Absorbance",
 };
 
 const viewOptions = [
   SPECTRUM_VIEW_OPTION_NAMES.INTENSITY,
   SPECTRUM_VIEW_OPTION_NAMES.TRANSMITTANCE,
-  SPECTRUM_VIEW_OPTION_NAMES.ABSORPTION,
+  SPECTRUM_VIEW_OPTION_NAMES.ABSORBANCE,
 ];
 
 export default function SwitchableSpectrumChart({ spectrum, style }) {
@@ -52,8 +52,8 @@ export default function SwitchableSpectrumChart({ spectrum, style }) {
           intensities,
           Spectrum.getIntensityChart(reference)
         );
-      case SPECTRUM_VIEW_OPTION_NAMES.ABSORPTION:
-        return computeAbsorptionChart(
+      case SPECTRUM_VIEW_OPTION_NAMES.ABSORBANCE:
+        return computeAbsorbanceChart(
           intensities,
           Spectrum.getIntensityChart(reference)
         );

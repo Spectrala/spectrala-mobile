@@ -10,7 +10,7 @@ const GRADIENT_COLOR_STOPS = 20;
  * To be used in react-native-svg-charts charts.
  * Usage: set svg={{ fill: "url(#grad)" }}
  *
- * @param {Array<ChartPt>} chartData intensity/transmittance/absorption data
+ * @param {Array<ChartPt>} chartData intensity/transmittance/absorbance data
  * @param {String} id the CSS id to assign the gardient.
  * @returns <LinearGradient> svg component with given id
  */

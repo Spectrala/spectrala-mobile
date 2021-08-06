@@ -138,12 +138,12 @@ export const computeTransmittanceChart = (
 
 /**
  * Given a test spectrum and reference spectrum (both in terms of intensity),
- * returns the absorption spectrum.
+ * returns the absorbance spectrum.
  * @param {Array<ChartPt>} testIntensityChart intensity of test sample
  * @param {Array<ChartPt>} referenceIntensityChart intensity of reference sample
- * @returns {Array<ChartPt>} absorption of test sample
+ * @returns {Array<ChartPt>} absorbance of test sample
  */
-export const computeAbsorptionChart = (
+export const computeAbsorbanceChart = (
   testIntensityChart,
   referenceIntensityChart
 ) => {
@@ -151,12 +151,12 @@ export const computeAbsorptionChart = (
     testIntensityChart,
     referenceIntensityChart
   );
-  const absorptionChart = transmittanceChart.map((transmittancePoint) => {
+  const absorbanceChart = transmittanceChart.map((transmittancePoint) => {
     const wavelength = ChartPt.getWavelength(transmittancePoint);
     const transmittance = ChartPt.getY(transmittancePoint);
-    const absorption = -Math.log10(transmittance);
+    const absorbance = -Math.log10(transmittance);
     const xPosition = ChartPt.getXPosition(transmittancePoint);
-    return ChartPt.construct(xPosition, wavelength, absorption);
+    return ChartPt.construct(xPosition, wavelength, absorbance);
   });
-  return absorptionChart;
+  return absorbanceChart;
 };

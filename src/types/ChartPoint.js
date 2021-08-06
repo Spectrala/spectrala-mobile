@@ -8,7 +8,7 @@
  * }
  *
  * These represent points on either an intensity, transmittance, or
- * absorption chart
+ * absorbance chart
  */
 
 /**
@@ -47,6 +47,6 @@ export const getWavelength = (chartPoint) => chartPoint.w;
 /**
  * Return the y value of a chart point
  * @param {ChartPt} chartPoint
- * @returns {number} y: the intensity, transmittance, or absorption
+ * @returns {number} y: the intensity, transmittance, or absorbance
  */
 export const getY = (chartPoint) => chartPoint.y;
