@@ -8,9 +8,7 @@ import {
   selectPreviewImg,
   selectIntensityChart,
 } from "../../redux/reducers/SpectrumFeed";
-import {
-  selectReferenceSpectrum,
-} from "../../redux/reducers/RecordedSpectra";
+import { selectReferenceSpectrum } from "../../redux/reducers/RecordedSpectra";
 import CameraLoader from "../../components/CameraLoader";
 import { Ionicons } from "@expo/vector-icons";
 import CapturedList, { CapturedCell } from "./CapturedList";
@@ -98,16 +96,17 @@ export default function CaptureScreen({ navigation }) {
         </View>
       </Toast>
 
+      <Image
+        style={styles.previewImage}
+        fadeDuration={0}
+        source={{ uri: previewImage }}
+      />
       <ScrollView
         style={{ ...styles.container, opacity: showsOnExitToast ? 0.5 : 1 }}
         showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={ false}
         scrollEnabled={!showsOnExitToast}
       >
-        <Image
-          style={styles.previewImage}
-          fadeDuration={0}
-          source={{ uri: previewImage }}
-        />
         <SwitchableSpectrumChart
           style={styles.chart}
           spectrum={Spectrum.construct(null, null, intensityChart)}
@@ -122,7 +121,7 @@ export default function CaptureScreen({ navigation }) {
           <CapturedList navigation={navigation} style={styles.list} />
         </View>
       </ScrollView>
-      <CaptureButton style={styles.captureButton} disabled={ showsOnExitToast} />
+      <CaptureButton style={styles.captureButton} disabled={showsOnExitToast} />
     </>
   );
 }
@@ -130,10 +129,11 @@ export default function CaptureScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     position: "absolute",
-    top: 0,
-    right: 0,
+    top: 80,
+    paddingTop: 20,
     left: 0,
-    height: "100%",
+    right: 0,
+    bottom: 0,
   },
   list: {
     marginBottom: 120,
@@ -172,9 +172,10 @@ const styles = StyleSheet.create({
     textAlignVertical: "center",
   },
   previewImage: {
+    position: "absolute",
     width: "100%",
     height: 80,
-    marginBottom: 20,
+    top: 0,
     resizeMode: "stretch",
   },
   captureButton: {
