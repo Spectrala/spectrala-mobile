@@ -90,7 +90,7 @@ export default function CaptureScreen({ navigation }) {
             onPress={() => {
               dispatch(setShowsOnExitToast({ value: false }));
               dispatch(endEditingSession());
-              navigation.popToTop();
+              navigation.canGoBack() && navigation.popToTop();
             }}
           >
             <Text style={styles.toastButtonText}>Exit</Text>

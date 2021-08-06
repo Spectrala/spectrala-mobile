@@ -1,5 +1,11 @@
 import React from "react";
-import { StyleSheet, View, Text, TouchableOpacity, SafeAreaView} from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  SafeAreaView,
+} from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { format } from "date-fns";
 import { Ionicons } from "@expo/vector-icons";
@@ -76,7 +82,7 @@ export default function SessionDetailScreen({ navigation, route }) {
       </View>
       <TouchableOpacity
         style={styles.closeButton}
-        onPress={() => navigation.popToTop()}
+        onPress={() => navigation.canGoBack() && navigation.popToTop()}
         hitSlop={{ left: 60, right: 60, top: 20, bottom: 60 }}
       >
         <Text>Close</Text>
