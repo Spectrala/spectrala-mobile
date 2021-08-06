@@ -9,7 +9,6 @@ import {
   selectIntensityChart,
 } from "../../redux/reducers/SpectrumFeed";
 import {
-  recordSpectrum,
   selectReferenceSpectrum,
 } from "../../redux/reducers/RecordedSpectra";
 import CameraLoader from "../../components/CameraLoader";
@@ -21,7 +20,7 @@ import { TouchableOpacity } from "react-native";
 import {
   selectShowsOnExitToast,
   setShowsOnExitToast,
-  endEditingSession
+  endEditingSession,
 } from "../../redux/reducers/Sessions";
 
 export default function CaptureScreen({ navigation }) {
@@ -102,6 +101,7 @@ export default function CaptureScreen({ navigation }) {
       <ScrollView
         style={{ ...styles.container, opacity: showsOnExitToast ? 0.5 : 1 }}
         showsHorizontalScrollIndicator={false}
+        scrollEnabled={!showsOnExitToast}
       >
         <Image
           style={styles.previewImage}
@@ -122,7 +122,7 @@ export default function CaptureScreen({ navigation }) {
           <CapturedList navigation={navigation} style={styles.list} />
         </View>
       </ScrollView>
-      <CaptureButton style={styles.captureButton} onPress={recordSpectrum} />
+      <CaptureButton style={styles.captureButton} disabled={ showsOnExitToast} />
     </>
   );
 }

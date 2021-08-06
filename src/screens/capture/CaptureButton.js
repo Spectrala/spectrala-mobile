@@ -13,14 +13,14 @@ const INNER_CIRCLE_SIZE = 70;
 
 const CIRCLE_RING_SPACE = 10;
 
-export default function CaptureButton({ onPress, style }) {
+export default function CaptureButton({ style, disabled }) {
   const { colors } = useTheme();
   const dispatch = useDispatch();
   const highestKey = useSelector(selectHighestKey);
 
   const intensityChart = useSelector(selectIntensityChart);
 
-  const rec = () => {
+  const captureSpectrum = () => {
     const spectrum = Spectrum.constructDefault(intensityChart, highestKey + 1);
     if (intensityChart) {
       dispatch(recordSpectrum({ spectrum }));
@@ -32,8 +32,9 @@ export default function CaptureButton({ onPress, style }) {
   return (
     <View style={{ ...styles.captureButtonContainer, ...style }}>
       <TouchableOpacity
-        onPress={rec}
         style={{ ...styles.captureButtonArea, borderColor: colors.primary }}
+        disabled={disabled}
+        onPress={captureSpectrum}
       >
         <View
           style={{

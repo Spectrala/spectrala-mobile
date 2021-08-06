@@ -1,6 +1,6 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 import { StyleSheet, Text, View, TextInput } from "react-native";
-import { useTheme } from "@react-navigation/native";
+import { useTheme, useFocusEffect } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
@@ -11,6 +11,7 @@ import {
   setReference,
   removeReference,
   selectAllSpectrumNames,
+  selectAllSpectra,
 } from "../../redux/reducers/RecordedSpectra";
 import SwitchableSpectrumChart from "../../components/SwitchableSpectrumChart";
 import { SafeAreaView } from "react-native";
@@ -25,21 +26,14 @@ const CLOSE_BUTTON_DIAMETER = 64;
 
 export default function ReviewScreen({ route, navigation }) {
   const { colors } = useTheme();
-  const [spectrum, setSpectrum] = useState(route.params.spectrum);
-  const [textIsEditing, setTextIsEditing] = useState(false);
+  const spectrumKey = Spectrum.getKey(route.params.spectrum);
+  const allSpectra = useSelector(selectAllSpectra);
+  const spectrum = useMemo(() => allSpectra[spectrumKey], [allSpectra]);
   const dispatch = useDispatch();
   const referenceSpectrum = useSelector(selectReferenceSpectrum);
   const [renameErrorMessage, setRenameErrorMessage] = useState(null);
   const spectrumNames = useSelector(selectAllSpectrumNames);
-  const [editedName, setEditedName] = useState(null);
-
-  useEffect(() => {
-    if (textIsEditing) {
-      setEditedName(Spectrum.getName(spectrum));
-    } else {
-      setEditedName(null);
-    }
-  }, [textIsEditing]);
+  const [editedName, setEditedName] = useState(Spectrum.getName(spectrum));
 
   /**
    * Check if an attempted spectrum rename is a duplicate of an existant spectrum.
@@ -50,19 +44,6 @@ export default function ReviewScreen({ route, navigation }) {
     return spectrumNames.includes(name);
   };
 
-  useEffect(() => {
-    return () => dispatch(updateSpectrum({ spectrum }));
-  }, []);
-
-  /**
-   * Update the focal spectrum of the review screen in both the
-   * local state and the redux state.
-   * @param {Spectrum} newSpectrum the updated spectrum to replace spectrum.
-   */
-  const changeSpectrum = (newSpectrum) => {
-    setSpectrum(newSpectrum);
-  };
-
   /**
    * Returns true if the focal spectrum is the reference spectrum.
    */
@@ -70,7 +51,7 @@ export default function ReviewScreen({ route, navigation }) {
     () =>
       referenceSpectrum &&
       Spectrum.getKey(referenceSpectrum) === Spectrum.getKey(spectrum),
-    [spectrum, referenceSpectrum]
+    [allSpectra, referenceSpectrum]
   );
 
   /**
@@ -80,7 +61,7 @@ export default function ReviewScreen({ route, navigation }) {
     if (isReference()) {
       dispatch(removeReference());
     } else {
-      dispatch(setReference({ spectrum }));
+      dispatch(setReference({ spectrum: spectrum }));
     }
   };
 
@@ -101,6 +82,14 @@ export default function ReviewScreen({ route, navigation }) {
     );
   };
 
+  const endTextEdit = () => {
+    if (!renameErrorMessage) {
+      dispatch(
+        updateSpectrum({ spectrum: Spectrum.rename(spectrum, editedName) })
+      );
+    }
+  };
+
   return (
     <SafeAreaView
       style={{ ...styles.master, backgroundColor: colors.background + "e0" }}
@@ -119,26 +108,26 @@ export default function ReviewScreen({ route, navigation }) {
               }
               setEditedName(text);
             }}
-            onFocus={() => setTextIsEditing(true)}
+            onFocus={() => setEditedName(Spectrum.getName(spectrum))}
             onEndEditing={() => {
-              setTextIsEditing(false);
-              if (!renameErrorMessage) {
-                changeSpectrum(Spectrum.rename(spectrum, editedName));
-              }
+              endTextEdit();
             }}
-            value={textIsEditing ? editedName : Spectrum.getName(spectrum)}
+            value={editedName}
             style={styles.textField}
           />
           <TouchableOpacity>{waterIconButton()}</TouchableOpacity>
         </View>
-        {textIsEditing && renameErrorMessage && (
+        {renameErrorMessage && (
           <Text style={styles.renameErrorText}>{renameErrorMessage}</Text>
         )}
         <SwitchableSpectrumChart spectrum={spectrum} />
       </View>
       <TouchableOpacity
         style={{ ...styles.closeButton, backgroundColor: colors.background }}
-        onPress={() => navigation.pop()}
+        onPress={() => {
+          navigation.pop();
+          endTextEdit();
+        }}
       >
         <Ionicons name="close" size={32} color={colors.text} />
       </TouchableOpacity>
@@ -178,6 +167,7 @@ const styles = StyleSheet.create({
   },
   renameErrorText: {
     color: "red",
+    marginVertical: 4,
   },
   dismissText: {
     fontWeight: "600",

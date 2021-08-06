@@ -76,6 +76,16 @@ export const selectAllSpectrumNames = (state) => {
 };
 
 /**
+ * Returns the full object representing all recorded spectra
+ * @param {Object} state Redux store state
+ * @returns {Object<Key: Spectrum>} Recorded spectra
+ */
+export const selectAllSpectra = (state) => {
+  const spectra = state.spectra.recordedSpectra;
+  return spectra;
+};
+
+/**
  * Select the highest key used in a spectrum, to be used
  * for generating the next key.
  * @param {Object} state Redux store state
