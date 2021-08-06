@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity, SafeAreaView} from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { format } from "date-fns";
 import { Ionicons } from "@expo/vector-icons";
@@ -45,7 +45,7 @@ export default function SessionDetailScreen({ navigation, route }) {
   };
 
   return (
-    <View
+    <SafeAreaView
       style={{ ...styles.container, backgroundColor: colors.background + "ee" }}
     >
       <StackedChart style={styles.chart} spectra={spectra} />
@@ -81,7 +81,7 @@ export default function SessionDetailScreen({ navigation, route }) {
       >
         <Text>Close</Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 }
 

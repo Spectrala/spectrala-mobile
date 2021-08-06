@@ -24,8 +24,6 @@ import {
   endEditingSession
 } from "../../redux/reducers/Sessions";
 
-const CHART_INSET = 24;
-
 export default function CaptureScreen({ navigation }) {
   const { colors } = useTheme();
   const previewImage = useSelector(selectPreviewImg);

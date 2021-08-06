@@ -90,6 +90,14 @@ export default function HomeStack({ navigation }) {
         }}
       />
       <NavStack.Screen
+        name="ReviewScreen"
+        component={ReviewScreen}
+        options={{
+          headerShown: false,
+          presentation: "transparentModal",
+        }}
+      />
+      <NavStack.Screen
         name="CameraScreen"
         component={CameraScreen}
         options={{
@@ -178,7 +186,6 @@ export default function HomeStack({ navigation }) {
           ),
         }}
       />
-      <NavStack.Screen name="ReviewScreen" component={ReviewScreen} />
     </NavStack.Navigator>
   );
 }
