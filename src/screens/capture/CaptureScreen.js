@@ -21,6 +21,12 @@ import {
   endEditingSession,
 } from "../../redux/reducers/Sessions";
 
+export function exitCaptureScreen(dispatch, navigation) {
+  dispatch(setShowsOnExitToast({ value: false }));
+  dispatch(endEditingSession());
+  navigation.canGoBack() && navigation.popToTop();
+}
+
 export default function CaptureScreen({ navigation }) {
   const { colors } = useTheme();
   const previewImage = useSelector(selectPreviewImg);
@@ -82,16 +88,12 @@ export default function CaptureScreen({ navigation }) {
           <TouchableOpacity
             onPress={() => dispatch(setShowsOnExitToast({ value: false }))}
           >
-            <Text style={styles.toastButtonText}>Stay</Text>
+            <Text style={styles.toastButtonText}>Cancel</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => {
-              dispatch(setShowsOnExitToast({ value: false }));
-              dispatch(endEditingSession());
-              navigation.canGoBack() && navigation.popToTop();
-            }}
+            onPress={() => exitCaptureScreen(dispatch, navigation)}
           >
-            <Text style={styles.toastButtonText}>Exit</Text>
+            <Text style={styles.toastButtonText}>Yes</Text>
           </TouchableOpacity>
         </View>
       </Toast>
@@ -104,7 +106,7 @@ export default function CaptureScreen({ navigation }) {
       <ScrollView
         style={{ ...styles.container, opacity: showsOnExitToast ? 0.5 : 1 }}
         showsHorizontalScrollIndicator={false}
-        showsVerticalScrollIndicator={ false}
+        showsVerticalScrollIndicator={false}
         scrollEnabled={!showsOnExitToast}
       >
         <SwitchableSpectrumChart

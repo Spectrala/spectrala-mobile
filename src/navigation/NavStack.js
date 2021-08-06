@@ -1,9 +1,11 @@
 import React, { useEffect } from "react";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { createStackNavigator } from "@react-navigation/stack";
 import CameraScreen from "../screens/camera/CameraScreen";
 import CalibrationScreen from "../screens/calibration/CalibrationScreen";
-import CaptureScreen from "../screens/capture/CaptureScreen";
+import CaptureScreen, {
+  exitCaptureScreen,
+} from "../screens/capture/CaptureScreen";
 import ReviewScreen from "../screens/review/ReviewScreen";
 import HomeScreen from "../screens/home/HomeScreen";
 import SessionDetailScreen from "../screens/sessionDetail/SessionDetailScreen";
@@ -20,35 +22,35 @@ import {
   dismissRecalibrateHint,
   endEditingSession,
   setShowsOnExitToast,
+  selectShowsOnExitToast,
 } from "../redux/reducers/Sessions";
-import Hint from "react-native-ui-lib/hint";
-import { useSelector, useDispatch } from "react-redux";
+import { View, StyleSheet } from "react-native";
 
-const CALIBRATION_HINT_AUTO_HIDE_MS = 2000;
+import { useSelector, useDispatch } from "react-redux";
 
 const TextHeaderButton = ({ onPress, text }) => (
   <Item title={text} onPress={onPress} />
 );
 
-const IconHeaderButton = (props) => (
+const IoniconHeaderButton = (props) => (
   <HeaderButton IconComponent={Ionicons} iconSize={23} {...props} />
 );
 
-const NavStack = createStackNavigator();
+const MaterialCommunityHeaderButton = (props) => (
+  <HeaderButton
+    IconComponent={MaterialCommunityIcons}
+    iconSize={26}
+    {...props}
+  />
+);
 
-export default function HomeStack({ navigation }) {
+const StackNavigator = createStackNavigator();
+
+export default function NavStack({ navigation }) {
   const { colors } = useTheme();
   const dispatch = useDispatch();
   const showsRecalibrateHint = useSelector(selectShowsRecalibrateHint);
-
-  useEffect(() => {
-    if (showsRecalibrateHint) {
-      setTimeout(
-        () => dispatch(dismissRecalibrateHint()),
-        CALIBRATION_HINT_AUTO_HIDE_MS
-      );
-    }
-  }, [showsRecalibrateHint]);
+  const showsOnExitToast = useSelector(selectShowsOnExitToast);
 
   return (
     /**
@@ -60,7 +62,7 @@ export default function HomeStack({ navigation }) {
      * A con to this debug strategy is that you can't go back since previous
      * screens were not loaded to the stack.
      */
-    <NavStack.Navigator
+    <StackNavigator.Navigator
       initialRouteName="HomeScreen"
       screenOptions={{
         gestureEnabled: false,
@@ -74,14 +76,14 @@ export default function HomeStack({ navigation }) {
         gestureDirection: "horizontal",
       }}
     >
-      <NavStack.Screen
+      <StackNavigator.Screen
         name="Sessions"
         component={HomeScreen}
         options={{
           headerTitle: () => <TitleHeader title="Sessions" />,
         }}
       />
-      <NavStack.Screen
+      <StackNavigator.Screen
         name="SessionDetail"
         component={SessionDetailScreen}
         options={{
@@ -89,7 +91,7 @@ export default function HomeStack({ navigation }) {
           presentation: "transparentModal",
         }}
       />
-      <NavStack.Screen
+      <StackNavigator.Screen
         name="ReviewScreen"
         component={ReviewScreen}
         options={{
@@ -97,7 +99,7 @@ export default function HomeStack({ navigation }) {
           presentation: "transparentModal",
         }}
       />
-      <NavStack.Screen
+      <StackNavigator.Screen
         name="CameraScreen"
         component={CameraScreen}
         options={{
@@ -111,7 +113,7 @@ export default function HomeStack({ navigation }) {
             <TitleHeader title="Select Spectrum" color="white" />
           ),
           headerRight: () => (
-            <HeaderButtons HeaderButtonComponent={IconHeaderButton}>
+            <HeaderButtons HeaderButtonComponent={IoniconHeaderButton}>
               <TextHeaderButton
                 onPress={() => navigation.push("CalibrationScreen")}
                 text={"Next Step"}
@@ -120,7 +122,7 @@ export default function HomeStack({ navigation }) {
           ),
         }}
       />
-      <NavStack.Screen
+      <StackNavigator.Screen
         name="CalibrationScreen"
         component={CalibrationScreen}
         options={{
@@ -131,7 +133,7 @@ export default function HomeStack({ navigation }) {
           headerTintColor: "white",
           headerTitle: () => <TitleHeader title="Calibration" color="white" />,
           headerRight: () => (
-            <HeaderButtons HeaderButtonComponent={IconHeaderButton}>
+            <HeaderButtons HeaderButtonComponent={IoniconHeaderButton}>
               <TextHeaderButton
                 onPress={() => navigation.push("CaptureScreen")}
                 text={"Next Step"}
@@ -140,39 +142,43 @@ export default function HomeStack({ navigation }) {
           ),
         }}
       />
-      <NavStack.Screen
+      <StackNavigator.Screen
         name="CaptureScreen"
         component={CaptureScreen}
         options={{
           headerLeft: () => (
-            <HeaderButtons HeaderButtonComponent={IconHeaderButton}>
-              <Item
-                title="cancel"
-                iconName="close"
-                iconSize={34}
-                onPress={() => dispatch(setShowsOnExitToast({ value: true }))}
-              />
-              <Hint
-                visible={showsRecalibrateHint}
-                color={colors.primary}
-                message="Select to recalibrate"
-                borderRadius={16}
-                marginLeft={22}
-                offset={4}
-                opacity={0.9}
-                onPress={() => dispatch(dismissRecalibrateHint())}
+            <View style={styles.captureHeader}>
+              <HeaderButtons HeaderButtonComponent={IoniconHeaderButton}>
+                <Item
+                  title="cancel"
+                  iconName="close"
+                  iconSize={34}
+                  onPress={() => {
+                    if (showsOnExitToast) {
+                      exitCaptureScreen(dispatch, navigation);
+                    } else {
+                      dispatch(setShowsOnExitToast({ value: true }));
+                    }
+                  }}
+                />
+              </HeaderButtons>
+              <HeaderButtons
+                HeaderButtonComponent={MaterialCommunityHeaderButton}
               >
                 <Item
                   title="calibrate"
-                  iconName="beaker"
+                  iconName={
+                    showsRecalibrateHint ? "beaker-alert" : "beaker-outline"
+                  }
+                  color={showsRecalibrateHint ? "magenta" : "magenta"}
                   onPress={() => navigation.navigate("CameraScreen")}
                 />
-              </Hint>
-            </HeaderButtons>
+              </HeaderButtons>
+            </View>
           ),
           headerTitle: () => <TitleHeader title="Capture Spectra" />,
           headerRight: () => (
-            <HeaderButtons HeaderButtonComponent={IconHeaderButton}>
+            <HeaderButtons HeaderButtonComponent={IoniconHeaderButton}>
               <Item
                 title="calibrate"
                 iconName="save"
@@ -186,6 +192,12 @@ export default function HomeStack({ navigation }) {
           ),
         }}
       />
-    </NavStack.Navigator>
+    </StackNavigator.Navigator>
   );
 }
+
+const styles = StyleSheet.create({
+  captureHeader: {
+    flexDirection: "row",
+  },
+});

@@ -68,24 +68,13 @@ const buildNewSession = async (reduxState) => {
   }
 };
 
-const combineSessions = (oldSession, newSession) => {
-  return Session.construct(
-    Session.getName(oldSession),
-    Session.getCreatedDateUnix(oldSession),
-    Session.getReduxReaderBox(newSession),
-    Session.getReduxCalibration(newSession),
-    Session.getReduxSpectra(newSession),
-    Session.getKey(oldSession)
-  );
-};
-
 export const handleSaveSession = async () => {
   const reduxState = store.store.getState();
   let { sessions: allSessions, session: currentSession } =
     await buildNewSession(reduxState);
   const editingSession = selectActiveEditingSession(reduxState);
   if (editingSession) {
-    currentSession = combineSessions(editingSession, currentSession);
+    currentSession = Session.combineSessions(editingSession, currentSession);
     allSessions = allSessions.filter(
       (session) => Session.getKey(session) !== Session.getKey(editingSession)
     );

@@ -5,7 +5,6 @@ import { OverflowMenuProvider } from "react-navigation-header-buttons";
 import NotFoundScreen from "../screens/NotFoundScreen";
 import NavStack from "./NavStack";
 
-// Generate colors here: https://colors.eva.design
 const reactNavigationTheme = {
   ...DefaultTheme,
   colors: {
@@ -16,10 +15,7 @@ const reactNavigationTheme = {
     foreground: "#FBFCFF",
     text: "#161316",
     textDark: "#FFFFFF",
-    successColor: "#63ED8C",
-    infoColor: "#0790F9",
-    warningColor: "#F4C433",
-    dangerColor: "#FF6689",
+    badgeColor: "#1bf6e7",
   },
 };
 

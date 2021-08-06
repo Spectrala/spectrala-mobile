@@ -73,11 +73,3 @@ export const getKey = (spectrum) => spectrum.key;
  * @returns {Spectrum} the spectrum with a new name.
  */
 export const rename = (spectrum, newName) => ({ ...spectrum, name: newName });
-
-
-import { constructHeaderRelation } from "../util/csvUtil";
-const SPECTRUM_HEADER_RELATIONS = [
-  constructHeaderRelation("intensity","Intensity"),
-  constructHeaderRelation("absorbance","Absorbance"),
-  constructHeaderRelation("intensity","Intensity"),
-]

@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import {
   StyleSheet,
   View,
   Text,
   TouchableOpacity,
   SafeAreaView,
+  TextInput,
 } from "react-native";
-import { useTheme } from "@react-navigation/native";
+import { useFocusEffect, useTheme } from "@react-navigation/native";
 import { format } from "date-fns";
 import { Ionicons } from "@expo/vector-icons";
 import * as Session from "../../types/Session";
@@ -16,15 +17,30 @@ import { restoreCalibration } from "../../redux/reducers/Calibration";
 import { restoreBox } from "../../redux/reducers/ReaderBox";
 import { restoreSpectra } from "../../redux/reducers/RecordedSpectra";
 import { editSession } from "../../redux/reducers/Sessions";
+import * as SpectrumExport from "../../types/SpectrumExport";
 
 export default function SessionDetailScreen({ navigation, route }) {
   const { colors } = useTheme();
-  const { session } = route.params;
+  const { session: originalSession } = route.params;
+
   const dispatch = useDispatch();
 
-  const date = new Date(Session.getLastEditDateUnix(session));
-  const name = Session.getName(session);
-  const spectra = Session.getSpectraList(session);
+  const date = new Date(Session.getLastEditDateUnix(originalSession));
+  const [name, setName] = useState(Session.getName(originalSession));
+  const spectra = Session.getSpectraList(originalSession);
+
+  const session = useMemo(
+    () => Session.editName(originalSession, name),
+    [name, originalSession]
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        console.log("should save the new name");
+      };
+    }, [session])
+  );
 
   const ActionOption = ({ iconName, text, onPress }) => {
     return (
@@ -35,19 +51,22 @@ export default function SessionDetailScreen({ navigation, route }) {
     );
   };
 
-  const editSessionName = () => {
-    console.log("session name edit ");
-  };
-
   const beginEditingSession = () => {
-    dispatch(editSession({ value: session }));
-    const calibration = Session.getReduxCalibration(session);
-    const box = Session.getReduxReaderBox(session);
-    const spectra = Session.getReduxSpectra(session);
+    dispatch(editSession({ value: originalSession }));
+    const calibration = Session.getReduxCalibration(originalSession);
+    const box = Session.getReduxReaderBox(originalSession);
+    const spectra = Session.getReduxSpectra(originalSession);
     dispatch(restoreCalibration({ value: calibration }));
     dispatch(restoreBox({ value: box }));
     dispatch(restoreSpectra({ value: spectra }));
     navigation.navigate("CaptureScreen");
+  };
+
+  const exportData = () => {
+    const reference = Session.getReferenceSpectrum(originalSession);
+    const spectrum = spectra[0];
+    const exp = SpectrumExport.construct(spectrum, reference);
+    console.log(exp);
   };
 
   return (
@@ -55,11 +74,15 @@ export default function SessionDetailScreen({ navigation, route }) {
       style={{ ...styles.container, backgroundColor: colors.background + "ee" }}
     >
       <StackedChart style={styles.chart} spectra={spectra} />
-      <TouchableOpacity onPress={editSessionName}>
-        <Text style={{ ...styles.sectionTitle, color: colors.primary + "CC" }}>
-          {name}
-        </Text>
-      </TouchableOpacity>
+
+      <TextInput
+        style={{ ...styles.sectionTitle, color: colors.primary + "CC" }}
+        value={name}
+        onChangeText={(text) => {
+          setName(text);
+        }}
+      />
+
       <Text style={styles.sectionSubtitle}>
         {format(date, "h:mmaaa eeee, MMMM d, yyyy")}
       </Text>
@@ -72,13 +95,13 @@ export default function SessionDetailScreen({ navigation, route }) {
         <ActionOption
           iconName="share-outline"
           text="Export Data"
-          onPress={() => console.log("asdf")}
+          onPress={exportData}
         />
-        <ActionOption
+        {/* <ActionOption
           iconName="pencil"
           text="Rename"
           onPress={editSessionName}
-        />
+        /> */}
       </View>
       <TouchableOpacity
         style={styles.closeButton}
@@ -93,7 +116,7 @@ export default function SessionDetailScreen({ navigation, route }) {
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: "center",
+    marginTop: 60,
     alignItems: "center",
     flex: 1,
   },
