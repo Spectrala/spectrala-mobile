@@ -15,7 +15,7 @@ const reactNavigationTheme = {
     foreground: "#FBFCFF",
     text: "#161316",
     textDark: "#FFFFFF",
-    badgeColor: "#1bf6e7",
+    warning: "#1bf6e7",
   },
 };
 

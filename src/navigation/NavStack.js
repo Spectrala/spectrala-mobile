@@ -19,7 +19,6 @@ import TitleHeader from "../components/TitleHeader";
 import { handleSaveSession } from "../navigation/SessionStorage";
 import {
   selectShowsRecalibrateHint,
-  dismissRecalibrateHint,
   endEditingSession,
   setShowsOnExitToast,
   selectShowsOnExitToast,
@@ -170,7 +169,7 @@ export default function NavStack({ navigation }) {
                   iconName={
                     showsRecalibrateHint ? "beaker-alert" : "beaker-outline"
                   }
-                  color={showsRecalibrateHint ? "magenta" : "magenta"}
+                  color={showsRecalibrateHint ? colors.warning : colors.primary}
                   onPress={() => navigation.navigate("CameraScreen")}
                 />
               </HeaderButtons>

@@ -12,6 +12,11 @@ import {
   DEFAULT_SPECTRUM_SLICE_STATE,
   restoreSpectra,
 } from "../../redux/reducers/RecordedSpectra";
+
+import {
+  dismissRecalibrateHint,
+  setShowsOnExitToast,
+} from "../../redux/reducers/Sessions";
 import { useDispatch } from "react-redux";
 
 const ADD_DIAMETER = 90;
@@ -76,6 +81,8 @@ function HomeScreen({ navigation }) {
         style={styles.addButton}
         onPress={() => {
           navigation.push("CameraScreen");
+          dispatch(setShowsOnExitToast({ value: false }));
+          dispatch(dismissRecalibrateHint());
           dispatch(restoreSpectra({ value: DEFAULT_SPECTRUM_SLICE_STATE }));
         }}
       >

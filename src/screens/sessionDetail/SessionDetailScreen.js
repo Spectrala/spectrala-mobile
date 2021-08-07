@@ -16,7 +16,11 @@ import { useDispatch } from "react-redux";
 import { restoreCalibration } from "../../redux/reducers/Calibration";
 import { restoreBox } from "../../redux/reducers/ReaderBox";
 import { restoreSpectra } from "../../redux/reducers/RecordedSpectra";
-import { editSession } from "../../redux/reducers/Sessions";
+import {
+  editSession,
+  setShowsOnExitToast,
+  dismissRecalibrateHint,
+} from "../../redux/reducers/Sessions";
 import * as SpectrumExport from "../../types/SpectrumExport";
 
 export default function SessionDetailScreen({ navigation, route }) {
@@ -53,6 +57,9 @@ export default function SessionDetailScreen({ navigation, route }) {
 
   const beginEditingSession = () => {
     dispatch(editSession({ value: originalSession }));
+    dispatch(setShowsOnExitToast({ value: false }));
+    dispatch(dismissRecalibrateHint());
+
     const calibration = Session.getReduxCalibration(originalSession);
     const box = Session.getReduxReaderBox(originalSession);
     const spectra = Session.getReduxSpectra(originalSession);

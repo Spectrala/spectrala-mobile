@@ -19,10 +19,12 @@ import {
   selectShowsOnExitToast,
   setShowsOnExitToast,
   endEditingSession,
+  dismissRecalibrateHint,
 } from "../../redux/reducers/Sessions";
 
 export function exitCaptureScreen(dispatch, navigation) {
   dispatch(setShowsOnExitToast({ value: false }));
+  dispatch(dismissRecalibrateHint())
   dispatch(endEditingSession());
   navigation.canGoBack() && navigation.popToTop();
 }
