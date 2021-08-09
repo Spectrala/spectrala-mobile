@@ -1,6 +1,6 @@
 import {
   constructHeaderRelation,
-  getCSVString,
+  generateCSVString,
   sanitizeNameForFilename,
 } from "../util/csvUtil";
 import {
@@ -62,7 +62,7 @@ const getTestSpectrumAsCSVString = (testChart, referenceChart) => {
     transmittance: ChartPt.getY(transmittance[idx]),
     absorbance: ChartPt.getY(absorbance[idx]),
   }));
-  return getCSVString(headerRelations, rows);
+  return generateCSVString(headerRelations, rows);
 };
 
 /**
@@ -78,7 +78,7 @@ const getReferenceSpectrumAsCSVString = (intensityChart) => {
     wavelength: ChartPt.getWavelength(intensityPt),
     intensity: ChartPt.getY(intensityPt),
   }));
-  return getCSVString(headerRelations, rows);
+  return generateCSVString(headerRelations, rows);
 };
 
 /**
@@ -105,4 +105,12 @@ export const construct = (spectrum, referenceSpectrum) => {
     csvString = getTestSpectrumAsCSVString(testIntensities, refIntensities);
   }
   return { name, csvString };
+};
+
+export const getCSVString = (spectrumExport) => {
+  return spectrumExport.csvString;
+};
+
+export const getName = (spectrumExport) => {
+  return spectrumExport.name + ".csv";
 };

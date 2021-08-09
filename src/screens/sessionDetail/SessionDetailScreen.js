@@ -21,7 +21,8 @@ import {
   setShowsOnExitToast,
   dismissRecalibrateHint,
 } from "../../redux/reducers/Sessions";
-import * as SpectrumExport from "../../types/SpectrumExport";
+import * as SessionExport from "../../types/SessionExport";
+import { saveSessionExportLocally, shareSession } from "../../util/fileUtil";
 
 export default function SessionDetailScreen({ navigation, route }) {
   const { colors } = useTheme();
@@ -70,10 +71,13 @@ export default function SessionDetailScreen({ navigation, route }) {
   };
 
   const exportData = () => {
-    const reference = Session.getReferenceSpectrum(originalSession);
-    const spectrum = spectra[0];
-    const exp = SpectrumExport.construct(spectrum, reference);
-    console.log(exp);
+    try {
+      const exp = SessionExport.construct(name, originalSession);
+      shareSession(exp);
+
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (

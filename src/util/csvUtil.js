@@ -1,3 +1,4 @@
+
 /**
  * Constructs an object in the expected format for the headerMap in arrayToCSVString.
  * @param {String} objectDataKey
@@ -16,7 +17,7 @@ const arrToCSVRow = (arr) => `${arr.join(",")}\n`;
  * @param {Array<HeaderRelation>} headerRelations
  * @param {Array<Object>} rows
  */
-export const getCSVString = (headerRelations, rows) => {
+export const generateCSVString = (headerRelations, rows) => {
   const displayHeaders = headerRelations.map((r) => r.csvColumnHeader);
   const headerRowString = arrToCSVRow(displayHeaders);
 
@@ -33,13 +34,12 @@ export const getCSVString = (headerRelations, rows) => {
   return csvString;
 };
 
-
 /**
  * Cleans a name of a spectrum for usage as a filename.
- * Replaces all spaces in a string with underscores.
+ * Uses the sanitize filename module
  * @param {String} name a filename
  * @returns {String} the sanitized name
  */
- export const sanitizeNameForFilename = (name) => {
-  return name.replace(" ", "_");
+export const sanitizeNameForFilename = (name) => {
+  return sanitize(name);
 };

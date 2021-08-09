@@ -3,7 +3,7 @@
  *
  * {
  *  name: String,
- *  spectra: Array<SpectrumExport>,
+ *  spectrumExports: Array<SpectrumExport>,
  * }
  *
  * This represents a single session most often containing
@@ -20,16 +20,24 @@ import { sanitizeNameForFilename } from "../util/csvUtil";
  * for the session and the decoded session data from local storage.
  * @param {String} name user's name for the session
  * @param {Object} session recorded spectrala session from local storage
- * @returns {SessionExport} 
+ * @returns {SessionExport}
  */
 export const construct = (name, session) => {
   const reference = Session.getReferenceSpectrum(session);
-  const spectra = Session.getSpectraList(session).map((spectrum) =>
+  const spectrumExports = Session.getSpectraList(session).map((spectrum) =>
     SpectrumExport.construct(spectrum, reference)
   );
   const exportName = sanitizeNameForFilename(name);
   return {
     name: exportName,
-    spectra,
+    spectrumExports,
   };
+};
+
+export const getName = (sessionExport) => {
+  return sessionExport.name;
+};
+
+export const getSpectrumExports = (sessionExport) => {
+  return sessionExport.spectrumExports;
 };
