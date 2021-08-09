@@ -36,7 +36,6 @@ export const construct = (key, name, intensityChart) => ({
  */
 export const constructDefault = (intensityChart, key) => {
   const name = DEFAULT_NAME + key;
-  // const spectrum = construct(key, name, intensityChart);
   return {
     key,
     name,

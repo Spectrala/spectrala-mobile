@@ -32,3 +32,14 @@ export const getCSVString = (headerRelations, rows) => {
   const csvString = headerRowString + bodyString;
   return csvString;
 };
+
+
+/**
+ * Cleans a name of a spectrum for usage as a filename.
+ * Replaces all spaces in a string with underscores.
+ * @param {String} name a filename
+ * @returns {String} the sanitized name
+ */
+ export const sanitizeNameForFilename = (name) => {
+  return name.replace(" ", "_");
+};
