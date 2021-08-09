@@ -2,6 +2,7 @@ import * as fs from "expo-file-system";
 import * as SessionExport from "../types/SessionExport";
 import * as SpectrumExport from "../types/SpectrumExport";
 import * as Sharing from "expo-sharing";
+
 /**
  * Creates a new directory in the device's local cache under a unique
  * subdirectory created by the current time and a random number.
@@ -38,9 +39,8 @@ export const saveSessionExportLocally = async (sessionExport) => {
       const csv = SpectrumExport.getCSVString(spectrumExport);
       try {
         await fs.writeAsStringAsync(dir, csv);
-
       } catch (e) {
-        console.log(dir, csv);
+        console.log(dir);
         console.error(e);
       }
       return dir;

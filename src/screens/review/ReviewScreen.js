@@ -16,9 +16,9 @@ import {
 import SwitchableSpectrumChart from "../../components/SwitchableSpectrumChart";
 import { SafeAreaView } from "react-native";
 
-const SPECTRUM_NAME_REGEX = "[A-Z,a-z, ,-,_,0-9]+";
+const SPECTRUM_NAME_REGEX = "[A-Z,a-z,-,_,0-9]+";
 const SPECTRUM_NAME_REGEX_ERROR =
-  "Name must be non-empty and alphanumeric. Space, hyphen, and underscore are also allowed.";
+  "Name must be non-empty and alphanumeric. Hyphen and underscore are also allowed.";
 const SPECTRUM_NAME_DUPLICATE_ERROR =
   "New name must not be a duplicate of another spectrum name.";
 

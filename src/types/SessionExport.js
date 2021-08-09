@@ -13,7 +13,7 @@
 
 import * as Session from "./Session";
 import * as SpectrumExport from "./SpectrumExport";
-import { sanitizeNameForFilename } from "../util/csvUtil";
+import { sanitizeNameForFilename } from "../util/sanitizeFilename";
 
 /**
  * Creates an object representing a spectrala session based on a name

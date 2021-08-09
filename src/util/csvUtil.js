@@ -1,4 +1,3 @@
-
 /**
  * Constructs an object in the expected format for the headerMap in arrayToCSVString.
  * @param {String} objectDataKey
@@ -34,12 +33,3 @@ export const generateCSVString = (headerRelations, rows) => {
   return csvString;
 };
 
-/**
- * Cleans a name of a spectrum for usage as a filename.
- * Uses the sanitize filename module
- * @param {String} name a filename
- * @returns {String} the sanitized name
- */
-export const sanitizeNameForFilename = (name) => {
-  return sanitize(name);
-};

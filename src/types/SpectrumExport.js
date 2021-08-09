@@ -1,8 +1,5 @@
-import {
-  constructHeaderRelation,
-  generateCSVString,
-  sanitizeNameForFilename,
-} from "../util/csvUtil";
+import { constructHeaderRelation, generateCSVString } from "../util/csvUtil";
+import { sanitizeNameForFilename } from "../util/sanitizeFilename";
 import {
   computeAbsorbanceChart,
   computeTransmittanceChart,
