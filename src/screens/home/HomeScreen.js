@@ -1,7 +1,8 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { StyleSheet, View, FlatList } from "react-native";
 import { getSessions, eraseSessions } from "../../navigation/SessionStorage";
+import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import SessionCell from "./SessionCell";
 import { useTheme } from "@react-navigation/native";
@@ -15,6 +16,7 @@ import {
 
 import {
   dismissRecalibrateHint,
+  selectSessionStoreNameEditNumber,
   setShowsOnExitToast,
 } from "../../redux/reducers/Sessions";
 import { useDispatch } from "react-redux";
@@ -26,6 +28,9 @@ function HomeScreen({ navigation }) {
   const { colors } = useTheme();
   const [sessions, setSessions] = useState([]);
   const dispatch = useDispatch();
+  const sessionStoreNameEditNumber = useSelector(
+    selectSessionStoreNameEditNumber
+  );
 
   const fetchSessions = async () => {
     const savedSessions = await getSessions();
@@ -34,33 +39,39 @@ function HomeScreen({ navigation }) {
 
   useFocusEffect(
     useCallback(() => {
-      // eraseSessions();
       fetchSessions();
-    }, [])
+    }, [sessionStoreNameEditNumber])
   );
 
-  const sessionList = () => (
-    <FlatList
-      data={sessions.sort(
-        (a, b) =>
-          new Date(Session.getLastEditDateUnix(b)) -
-          new Date(Session.getLastEditDateUnix(a))
-      )}
-      renderItem={({ item: session }) => {
-        const date = Session.getLastEditDateUnix(session);
-        const name = Session.getName(session);
-        return (
-          <SessionCell
-            name={name}
-            date={date}
-            onSelect={() => navigation.navigate("SessionDetail", { session })}
-          />
-        );
-      }}
-      keyExtractor={(item) => String(item.name)}
-      showsVerticalScrollIndicator={true}
-    />
-  );
+  const sessionList = () => {
+    return (
+      <FlatList
+        data={sessions.sort(
+          (a, b) =>
+            new Date(Session.getLastEditDateUnix(b)) -
+            new Date(Session.getLastEditDateUnix(a))
+        )}
+        renderItem={({ item: session }) => {
+          const date = Session.getLastEditDateUnix(session);
+          const name = Session.getName(session);
+          return (
+            <SessionCell
+              name={name}
+              date={date}
+              onSelect={() =>
+                navigation.navigate("SessionDetail", {
+                  session,
+                  allSessions: sessions,
+                })
+              }
+            />
+          );
+        }}
+        keyExtractor={(item) => String(item.name)}
+        showsVerticalScrollIndicator={true}
+      />
+    );
+  };
 
   const noSessionsMessage = () => (
     <Text style={styles.noSessions}>

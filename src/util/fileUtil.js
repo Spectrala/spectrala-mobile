@@ -1,7 +1,20 @@
-import * as fs from "expo-file-system";
+import {
+  writeAsStringAsync as fsWriteAsStringAsync,
+  EncodingType as fsEncodingType,
+  cacheDirectory as fsCacheDirectory,
+  makeDirectoryAsync as fsMakeDirectoryAsync,
+} from "expo-file-system";
 import * as SessionExport from "../types/SessionExport";
 import * as SpectrumExport from "../types/SpectrumExport";
-import * as Sharing from "expo-sharing";
+import {
+  isAvailableAsync as sharingIsAvailableAsync,
+  shareAsync as sharingShareAsync,
+} from "expo-sharing";
+import {
+  isAvailableAsync as mailComposerIsAvailableAsync,
+  composeAsync as mailComposerComposeAsync,
+} from "expo-mail-composer";
+
 import XLSX from "xlsx";
 
 /**
@@ -21,11 +34,11 @@ const createUniqueParentDir = async (name) => {
   const MAX_RADIX = 36;
   const uniqueParentDirName =
     currentEpochTime.toString(MAX_RADIX) + randomNumber.toString(MAX_RADIX);
-  const parentDir = fs.cacheDirectory + uniqueParentDirName + "/";
+  const parentDir = fsCacheDirectory + uniqueParentDirName + "/";
 
-  await fs.makeDirectoryAsync(parentDir);
+  await fsMakeDirectoryAsync(parentDir);
   const dir = parentDir + name + "/";
-  await fs.makeDirectoryAsync(dir);
+  await fsMakeDirectoryAsync(dir);
   return dir;
 };
 
@@ -39,7 +52,7 @@ export const saveSessionCSVExportLocally = async (sessionExport) => {
       const dir = parentDir + SpectrumExport.getName(spectrumExport) + ".csv";
       const csv = SpectrumExport.getCSVString(spectrumExport);
       try {
-        await fs.writeAsStringAsync(dir, csv);
+        await fsWriteAsStringAsync(dir, csv);
       } catch (e) {
         console.log(dir);
         console.error(e);
@@ -52,8 +65,8 @@ export const saveSessionCSVExportLocally = async (sessionExport) => {
 
 export const shareSessionCSVFolder = async (sessionExport) => {
   const dir = await saveSessionCSVExportLocally(sessionExport);
-  const canShare = await Sharing.isAvailableAsync();
-  canShare && (await Sharing.shareAsync(dir));
+  const canShare = await sharingIsAvailableAsync();
+  canShare && (await sharingShareAsync(dir));
 };
 
 export const writeSessionXLSX = async (sessionExport) => {
@@ -71,8 +84,8 @@ export const writeSessionXLSX = async (sessionExport) => {
     type: "base64",
     bookType: "xlsx",
   });
-  await fs.writeAsStringAsync(dir, workbookString, {
-    encoding: fs.EncodingType.Base64,
+  await fsWriteAsStringAsync(dir, workbookString, {
+    encoding: fsEncodingType.Base64,
   });
   return dir;
 };
@@ -84,16 +97,15 @@ export const writeSessionXLSX = async (sessionExport) => {
  */
 export const shareSessionXLSX = async (sessionExport) => {
   const dir = await writeSessionXLSX(sessionExport);
-  const canShare = await Sharing.isAvailableAsync();
-  canShare && (await Sharing.shareAsync(dir));
+  const canShare = await sharingIsAvailableAsync();
+  canShare && (await sharingShareAsync(dir));
 };
-import * as MailComposer from "expo-mail-composer";
 
 export const emailSessionXLSX = async (sessionExport) => {
   const dir = await writeSessionXLSX(sessionExport);
-  const canMail = await MailComposer.isAvailableAsync();
+  const canMail = await mailComposerIsAvailableAsync();
   if (canMail) {
-    await MailComposer.composeAsync({
+    await mailComposerComposeAsync({
       subject: "Spectra from mobile phone spectrometer",
       body: "Please see attached data export from Spectrala Mobile! 📈 ",
       attachments: [dir],

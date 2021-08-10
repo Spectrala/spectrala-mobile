@@ -19,6 +19,9 @@ export const getSessions = async () => {
   }
 };
 
+/**
+ * Removes all saved sessions from local storage.
+ */
 export const eraseSessions = async () => {
   try {
     await AsyncStorage.setItem(SESSION_STORAGE_KEY, "");
@@ -42,6 +45,11 @@ const updateSessionStore = async (session, allSessions) => {
   }
 };
 
+/**
+ * Create a new session based off of the redux store.
+ * @param {Object} reduxState current redux store from store.getState()
+ * @returns {Session} the new session based off of the redux store
+ */
 const buildNewSession = async (reduxState) => {
   const time = Date.now();
   const { readerBox, calibration, spectra } = reduxState;
@@ -68,6 +76,29 @@ const buildNewSession = async (reduxState) => {
   }
 };
 
+/**
+ * Replaces the session in local storage with the same key as the provided
+ * session with the provided session. Essentially, the function removes 
+ * session instances of the same key from local storage and adds back 
+ * the updatedSession, which could have changed parameters other than key. 
+ * 
+ * If a session with the same key does not exist, it is added to the 
+ * existing list of sessions. 
+ * @param {Session} updatedSession session to update in local storage
+ */
+export const updateSessionWithSameKey = async (updatedSession) => {
+  const sessions = await getSessions();
+  const updatedSessions = sessions.filter(
+    (session) => Session.getKey(session) !== Session.getKey(updatedSession)
+  );
+  updateSessionStore(updatedSession, updatedSessions);
+};
+
+/**
+ * Extracts the current session state from the redux store, merges
+ * it with the active editing session, and updates this edited session
+ * in the device's local storage.
+ */
 export const handleSaveSession = async () => {
   const reduxState = store.store.getState();
   let { sessions: allSessions, session: currentSession } =

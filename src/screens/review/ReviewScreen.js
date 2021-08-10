@@ -1,6 +1,6 @@
-import React, { useState, useCallback, useEffect, useMemo } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { StyleSheet, Text, View, TextInput } from "react-native";
-import { useTheme, useFocusEffect } from "@react-navigation/native";
+import { useTheme } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
@@ -10,7 +10,6 @@ import {
   selectReferenceSpectrum,
   setReference,
   removeReference,
-  selectAllSpectrumNames,
   selectAllSpectra,
 } from "../../redux/reducers/RecordedSpectra";
 import SwitchableSpectrumChart from "../../components/SwitchableSpectrumChart";
@@ -32,7 +31,6 @@ export default function ReviewScreen({ route, navigation }) {
   const dispatch = useDispatch();
   const referenceSpectrum = useSelector(selectReferenceSpectrum);
   const [renameErrorMessage, setRenameErrorMessage] = useState(null);
-  const spectrumNames = useSelector(selectAllSpectrumNames);
   const [editedName, setEditedName] = useState(Spectrum.getName(spectrum));
 
   /**
@@ -41,7 +39,13 @@ export default function ReviewScreen({ route, navigation }) {
    * @returns {bool} true if there is already a spectrum named name
    */
   const nameIsDuplicate = (name) => {
-    return spectrumNames.includes(name);
+    const otherSpectra = Object.values(allSpectra).filter(
+      (s) => Spectrum.getKey(s) !== spectrumKey
+    );
+    const otherSameNameSpectra = otherSpectra.filter(
+      (s) => Spectrum.getName(s) === name
+    );
+    return otherSameNameSpectra.length > 0;
   };
 
   /**

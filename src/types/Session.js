@@ -49,6 +49,7 @@ export const getLastEditDateUnix = (session) => session.lastEdited;
 export const getReduxReaderBox = (session) => session.readerBox;
 export const getReduxCalibration = (session) => session.calibration;
 export const getReduxSpectra = (session) => session.spectra;
+export const getKey = (session) => session.key;
 
 /**
  * Return the recorded spectra from a session
@@ -76,19 +77,44 @@ export const getReferenceSpectrum = (session) => {
   }
 };
 
-export const getKey = (session) => session.key;
-
+/**
+ * If a session is updated, merges appropriate properties from 
+ * the both session versions.
+ * 
+ * Properties that are kept (x):
+ * 
+ * Property     | Old Session | New Session
+ * -----------------------------------------
+ * name         |      x      |
+ * createdDate  |      x      |
+ * readerBox    |             |     x
+ * calibration  |             |     x
+ * spectra      |             |     x
+ * key          |      x      |
+ * 
+ * @param {Session} oldSession earlier create date
+ * @param {Session} newSession later create date
+ * @returns {Session} newer session 
+ */
 export const combineSessions = (oldSession, newSession) => {
-  return Session.construct(
-    Session.getName(oldSession),
-    Session.getCreatedDateUnix(oldSession),
-    Session.getReduxReaderBox(newSession),
-    Session.getReduxCalibration(newSession),
-    Session.getReduxSpectra(newSession),
-    Session.getKey(oldSession)
+  return construct(
+    getName(oldSession),
+    getCreatedDateUnix(oldSession),
+    getReduxReaderBox(newSession),
+    getReduxCalibration(newSession),
+    getReduxSpectra(newSession),
+    getKey(oldSession)
   );
 };
 
+/**
+ * Creates a new session with the name parameter 
+ * set to the newly given name. Does not modify
+ * the original Session.
+ * @param {Session} session 
+ * @param {String} name 
+ * @returns {Session} new session with the given name
+ */
 export const editName = (session, name) => {
   return { ...session, name };
 };

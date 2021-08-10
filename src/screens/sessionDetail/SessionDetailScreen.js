@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback, useRef } from "react";
 import {
   StyleSheet,
   View,
@@ -20,22 +20,33 @@ import {
   editSession,
   setShowsOnExitToast,
   dismissRecalibrateHint,
+  updateSessionStoreNameEditNumber,
 } from "../../redux/reducers/Sessions";
 import * as SessionExport from "../../types/SessionExport";
-import {
-  emailSessionXLSX,
-  saveSessionExportLocally,
-  shareSessionXLSX,
-} from "../../util/fileUtil";
+import { emailSessionXLSX, shareSessionXLSX } from "../../util/fileUtil";
+import { updateSessionWithSameKey } from "../../navigation/SessionStorage";
+
+const SESSION_NAME_REGEX = "[A-Z,a-z,-,_,0-9]+";
+const SESSION_NAME_REGEX_ERROR =
+  "Name must be non-empty and alphanumeric. Hyphen and underscore are also allowed.";
+const SESSION_NAME_DUPLICATE_ERROR =
+  "New name must not be a duplicate of another session name.";
 
 export default function SessionDetailScreen({ navigation, route }) {
   const { colors } = useTheme();
-  const { session: originalSession } = route.params;
+  const {
+    session: originalSession,
+    allSessions,
+  } = route.params;
 
   const dispatch = useDispatch();
 
+  const renameInput = useRef(null);
+  const [renameErrorMessage, setRenameErrorMessage] = useState(null);
+  const originalName = Session.getName(originalSession);
+  const [name, setName] = useState(originalName);
+
   const date = new Date(Session.getLastEditDateUnix(originalSession));
-  const [name, setName] = useState(Session.getName(originalSession));
   const spectra = Session.getSpectraList(originalSession);
 
   const session = useMemo(
@@ -45,8 +56,11 @@ export default function SessionDetailScreen({ navigation, route }) {
 
   useFocusEffect(
     useCallback(() => {
-      return () => {
-        console.log("should save the new name");
+      return async () => {
+        if (name !== originalName && !renameErrorMessage) {
+          await updateSessionWithSameKey(session);
+          dispatch(updateSessionStoreNameEditNumber());
+        }
       };
     }, [session])
   );
@@ -92,6 +106,20 @@ export default function SessionDetailScreen({ navigation, route }) {
     }
   };
 
+  const editSessionName = () => {
+    renameInput.current.focus();
+  };
+
+  const nameIsDuplicate = (text) => {
+    const otherSessions = Object.values(allSessions).filter(
+      (s) => Session.getKey(s) !== Session.getKey(originalSession)
+    );
+    const otherSameNameSessions = otherSessions.filter(
+      (s) => Session.getName(s) === text
+    );
+    return otherSameNameSessions.length > 0;
+  };
+
   return (
     <SafeAreaView
       style={{ ...styles.container, backgroundColor: colors.background + "ee" }}
@@ -101,10 +129,21 @@ export default function SessionDetailScreen({ navigation, route }) {
       <TextInput
         style={{ ...styles.sectionTitle, color: colors.primary + "CC" }}
         value={name}
+        ref={renameInput}
         onChangeText={(text) => {
+          if (!new RegExp(SESSION_NAME_REGEX).test(text)) {
+            setRenameErrorMessage(SESSION_NAME_REGEX_ERROR);
+          } else if (nameIsDuplicate(text)) {
+            setRenameErrorMessage(SESSION_NAME_DUPLICATE_ERROR);
+          } else {
+            setRenameErrorMessage(null);
+          }
           setName(text);
         }}
       />
+      {renameErrorMessage && (
+        <Text style={styles.renameErrorText}>{renameErrorMessage}</Text>
+      )}
 
       <Text style={styles.sectionSubtitle}>
         {format(date, "h:mmaaa eeee, MMMM d, yyyy")}
@@ -125,11 +164,11 @@ export default function SessionDetailScreen({ navigation, route }) {
           text="Mail Data"
           onPress={mailData}
         />
-        {/* <ActionOption
+        <ActionOption
           iconName="pencil"
           text="Rename"
           onPress={editSessionName}
-        /> */}
+        />
       </View>
       <TouchableOpacity
         style={styles.closeButton}
@@ -152,6 +191,10 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#888",
     fontSize: 26,
+    marginBottom: 8,
+  },
+  renameErrorText: {
+    color: "red",
     marginBottom: 8,
   },
   sectionSubtitle: {
