@@ -103,13 +103,8 @@ export default function NavStack({ navigation }) {
         component={CameraScreen}
         options={{
           title: "Setup Box",
-          headerStyle: {
-            backgroundColor: "black",
-            shadowColor: "transparent",
-          },
-          headerTintColor: "white",
           headerTitle: () => (
-            <TitleHeader title="Select Spectrum" color="white" />
+            <TitleHeader title="Select Spectrum"  />
           ),
           headerRight: () => (
             <HeaderButtons HeaderButtonComponent={IoniconHeaderButton}>
@@ -125,12 +120,7 @@ export default function NavStack({ navigation }) {
         name="CalibrationScreen"
         component={CalibrationScreen}
         options={{
-          headerStyle: {
-            backgroundColor: "black",
-            shadowColor: "transparent",
-          },
-          headerTintColor: "white",
-          headerTitle: () => <TitleHeader title="Calibration" color="white" />,
+          headerTitle: () => <TitleHeader title="Calibration"  />,
           headerRight: () => (
             <HeaderButtons HeaderButtonComponent={IoniconHeaderButton}>
               <TextHeaderButton

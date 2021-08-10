@@ -137,5 +137,5 @@ export const getExcelWorksheet = (spectrumExport) => {
 };
 
 export const getName = (spectrumExport) => {
-  return spectrumExport.name + ".csv";
+  return spectrumExport.name;
 };

@@ -25,7 +25,7 @@ export default function CalibrationScreen() {
       </View>
 
       <View
-        style={{ ...styles.container, backgroundColor: colors.backgroundDark }}
+        style={{ ...styles.container, backgroundColor: colors.background }}
       >
         <Image
           style={styles.previewImage}
@@ -34,7 +34,7 @@ export default function CalibrationScreen() {
         />
         <Button
           title="Flip Image"
-          color={colors.textDark}
+          color={colors.text}
           onPress={() => {
             dispatch(toggleIsFlipped());
             dispatch(resetIntensityArrayHistory());

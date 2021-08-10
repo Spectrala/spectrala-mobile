@@ -22,7 +22,11 @@ import {
   dismissRecalibrateHint,
 } from "../../redux/reducers/Sessions";
 import * as SessionExport from "../../types/SessionExport";
-import { saveSessionExportLocally, shareSession } from "../../util/fileUtil";
+import {
+  emailSessionXLSX,
+  saveSessionExportLocally,
+  shareSessionXLSX,
+} from "../../util/fileUtil";
 
 export default function SessionDetailScreen({ navigation, route }) {
   const { colors } = useTheme();
@@ -73,8 +77,16 @@ export default function SessionDetailScreen({ navigation, route }) {
   const exportData = () => {
     try {
       const exp = SessionExport.construct(name, originalSession);
-      shareSession(exp);
+      shareSessionXLSX(exp);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
+  const mailData = () => {
+    try {
+      const exp = SessionExport.construct(name, originalSession);
+      emailSessionXLSX(exp);
     } catch (err) {
       console.error(err);
     }
@@ -107,6 +119,11 @@ export default function SessionDetailScreen({ navigation, route }) {
           iconName="share-outline"
           text="Export Data"
           onPress={exportData}
+        />
+        <ActionOption
+          iconName="mail-outline"
+          text="Mail Data"
+          onPress={mailData}
         />
         {/* <ActionOption
           iconName="pencil"
