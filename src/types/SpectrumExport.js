@@ -1,4 +1,8 @@
-import { constructHeaderRelation, generateCSVString } from "../util/csvUtil";
+import {
+  generateCSVString,
+  generateXSLXWorksheet,
+} from "../util/sheetUtil";
+import * as HeaderRelation from "./HeaderRelation";
 import { sanitizeNameForFilename } from "../util/sanitizeFilename";
 import {
   computeAbsorbanceChart,
@@ -13,7 +17,8 @@ import * as Spectrum from "./Spectrum";
  *
  * {
  *  name: String,
- *  csvString: String,
+ *  isReference: boolean,
+ *  rows: Array<Object>,
  * }
  *
  * This represents a single recorded spectrum which can be exported
@@ -24,10 +29,10 @@ import * as Spectrum from "./Spectrum";
  * Data columns for test spectra (spectrum with a reference spectrum)
  */
 const SPECTRUM_HEADER_RELATIONS_TEST = [
-  constructHeaderRelation("wavelength", "Wavelength (nm)"),
-  constructHeaderRelation("intensity", "Intensity (%)"),
-  constructHeaderRelation("transmittance", "Transmittance"),
-  constructHeaderRelation("absorbance", "Absorbance"),
+  HeaderRelation.construct("wavelength", "Wavelength (nm)"),
+  HeaderRelation.construct("intensity", "Intensity (%)"),
+  HeaderRelation.construct("transmittance", "Transmittance"),
+  HeaderRelation.construct("absorbance", "Absorbance"),
 ];
 
 /**
@@ -35,21 +40,20 @@ const SPECTRUM_HEADER_RELATIONS_TEST = [
  * reference spectrum)
  */
 const SPECTRUM_HEADER_RELATIONS_REFERENCE = [
-  constructHeaderRelation("wavelength", "Wavelength"),
-  constructHeaderRelation("intensity", "Intensity"),
+  HeaderRelation.construct("wavelength", "Wavelength"),
+  HeaderRelation.construct("intensity", "Intensity"),
 ];
 
 /**
  * Calculates the transmittance/absorbance for a test spectrum
  * based off of a reference spectrum. Results are used as data
- * for a CSV alongside the intensity/wavelength data from the
+ * for a table alongside the intensity/wavelength data from the
  * test chart. SPECTRUM_HEADER_RELATIONS_TEST are used as columns.
  * @param {Array<ChartPt>} testChart
  * @param {Array<ChartPt>} referenceChart
- * @returns {String} CSV string representing the spectrum
+ * @returns {Array<Object>} Array of objects representing rows in spreadsheet
  */
-const getTestSpectrumAsCSVString = (testChart, referenceChart) => {
-  const headerRelations = SPECTRUM_HEADER_RELATIONS_TEST;
+const getTestSpectrumRows = (testChart, referenceChart) => {
   const intensity = testChart;
   const transmittance = computeTransmittanceChart(testChart, referenceChart);
   const absorbance = computeAbsorbanceChart(testChart, referenceChart);
@@ -59,23 +63,22 @@ const getTestSpectrumAsCSVString = (testChart, referenceChart) => {
     transmittance: ChartPt.getY(transmittance[idx]),
     absorbance: ChartPt.getY(absorbance[idx]),
   }));
-  return generateCSVString(headerRelations, rows);
+  return rows;
 };
 
 /**
- * Encodes wavelength and intensity as a CSV for a reference
+ * Encodes wavelength and intensity as data rows for a reference
  * spectrum. Absorbance and transmittance are not computed.
  * SPECTRUM_HEADER_RELATIONS_REFERENCE are used as columns.
  * @param {Array<ChartPt>} intensityChart
- * @returns {String} CSV string representing the spectrum
+ * @returns {Array<Object>} Array of objects representing rows in spreadsheet
  */
-const getReferenceSpectrumAsCSVString = (intensityChart) => {
-  const headerRelations = SPECTRUM_HEADER_RELATIONS_REFERENCE;
+const getReferenceSpectrumRows = (intensityChart) => {
   const rows = intensityChart.map((intensityPt) => ({
     wavelength: ChartPt.getWavelength(intensityPt),
     intensity: ChartPt.getY(intensityPt),
   }));
-  return generateCSVString(headerRelations, rows);
+  return rows;
 };
 
 /**
@@ -91,21 +94,46 @@ export const construct = (spectrum, referenceSpectrum) => {
   const isReference =
     !referenceSpectrum ||
     Spectrum.getKey(spectrum) === Spectrum.getKey(referenceSpectrum);
-
-  let csvString = "";
+  let rows;
   if (isReference) {
     const intensities = Spectrum.getIntensityChart(spectrum);
-    csvString = getReferenceSpectrumAsCSVString(intensities);
+    rows = getReferenceSpectrumRows(intensities);
   } else {
     const testIntensities = Spectrum.getIntensityChart(spectrum);
     const refIntensities = Spectrum.getIntensityChart(referenceSpectrum);
-    csvString = getTestSpectrumAsCSVString(testIntensities, refIntensities);
+    rows = getTestSpectrumRows(testIntensities, refIntensities);
   }
-  return { name, csvString };
+  return {
+    name,
+    isReference,
+    rows,
+  };
+};
+
+export const getIsReference = (spectrumExport) => {
+  return spectrumExport.isReference;
+};
+
+export const getHeaderRelations = (spectrumExport) => {
+  return getIsReference(spectrumExport)
+    ? SPECTRUM_HEADER_RELATIONS_REFERENCE
+    : SPECTRUM_HEADER_RELATIONS_TEST;
+};
+
+export const getRows = (spectrumExport) => {
+  return spectrumExport.rows;
 };
 
 export const getCSVString = (spectrumExport) => {
-  return spectrumExport.csvString;
+  const headerRelations = getHeaderRelations(spectrumExport);
+  const rows = getRows(spectrumExport);
+  return generateCSVString(headerRelations, rows);
+};
+
+export const getExcelWorksheet = (spectrumExport) => {
+  const headerRelations = getHeaderRelations(spectrumExport);
+  const rows = getRows(spectrumExport);
+  return generateXSLXWorksheet(headerRelations, rows);
 };
 
 export const getName = (spectrumExport) => {
