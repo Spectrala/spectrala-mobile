@@ -68,7 +68,7 @@ function HomeScreen({ navigation }) {
           );
         }}
         keyExtractor={(item) => String(item.name)}
-        showsVerticalScrollIndicator={true}
+        showsVerticalScrollIndicator={false}
       />
     );
   };

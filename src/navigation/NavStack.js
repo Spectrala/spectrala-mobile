@@ -22,9 +22,9 @@ import {
   endEditingSession,
   setShowsOnExitToast,
   selectShowsOnExitToast,
+  selectActiveEditingSession,
 } from "../redux/reducers/Sessions";
 import { View, StyleSheet } from "react-native";
-
 import { useSelector, useDispatch } from "react-redux";
 import { selectCornersAreValid } from "../redux/reducers/ReaderBox";
 
@@ -57,6 +57,7 @@ export default function NavStack({ navigation }) {
   const showsRecalibrateHint = useSelector(selectShowsRecalibrateHint);
   const showsOnExitToast = useSelector(selectShowsOnExitToast);
   const cornersAreValid = useSelector(selectCornersAreValid);
+  const activeEditingSession = useSelector(selectActiveEditingSession);
 
   return (
     /**

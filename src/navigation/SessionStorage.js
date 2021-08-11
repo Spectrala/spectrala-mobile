@@ -50,7 +50,7 @@ const updateSessionStore = async (session, allSessions) => {
  * @param {Object} reduxState current redux store from store.getState()
  * @returns {Session} the new session based off of the redux store
  */
-const buildNewSession = async (reduxState) => {
+export const buildNewSession = async (reduxState) => {
   const time = Date.now();
   const { readerBox, calibration, spectra } = reduxState;
   try {
@@ -78,12 +78,12 @@ const buildNewSession = async (reduxState) => {
 
 /**
  * Replaces the session in local storage with the same key as the provided
- * session with the provided session. Essentially, the function removes 
- * session instances of the same key from local storage and adds back 
- * the updatedSession, which could have changed parameters other than key. 
- * 
- * If a session with the same key does not exist, it is added to the 
- * existing list of sessions. 
+ * session with the provided session. Essentially, the function removes
+ * session instances of the same key from local storage and adds back
+ * the updatedSession, which could have changed parameters other than key.
+ *
+ * If a session with the same key does not exist, it is added to the
+ * existing list of sessions.
  * @param {Session} updatedSession session to update in local storage
  */
 export const updateSessionWithSameKey = async (updatedSession) => {
