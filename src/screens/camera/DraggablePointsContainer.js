@@ -34,6 +34,7 @@ function DraggablePointsContainer({ width }) {
     x: lineCoords.lowX,
     y: lineCoords.lowY,
   });
+
   const [p2, setP2] = useState({
     x: lineCoords.highX,
     y: lineCoords.highY,
@@ -62,6 +63,11 @@ function DraggablePointsContainer({ width }) {
       return { x: corner.x / viewDims.width, y: corner.y / viewDims.height };
     });
 
+    const withinRange = (a) => 0 <= a && a <= 1;
+    const cornersAreValid = derivedCorners.every(
+      ({ x, y }) => withinRange(x) && withinRange(y)
+    );
+
     dispatch(
       updateReaderBoxData({
         value: {
@@ -73,6 +79,7 @@ function DraggablePointsContainer({ width }) {
           },
           corners: derivedCorners,
           angle: theta,
+          cornersAreValid,
         },
       })
     );
@@ -87,12 +94,16 @@ function DraggablePointsContainer({ width }) {
       const pan = useRef(new Animated.ValueXY()).current;
       const initial = useRef(point).current;
 
-      pan.addListener(({ x, y }) => {
-        !viewDims ||
+      pan.addListener((v) => {
+        const { x, y } = v;
+        if (viewDims) {
+          const nextX = initial.x + x / viewDims.width;
+          const nextY = initial.y + y / viewDims.height;
           setter({
-            x: initial.x + x / viewDims.width,
-            y: initial.y + y / viewDims.height,
+            x: nextX,
+            y: nextY,
           });
+        }
       });
 
       const panResponder = useMemo(
@@ -100,8 +111,8 @@ function DraggablePointsContainer({ width }) {
           PanResponder.create({
             onMoveShouldSetPanResponder: () => true,
             onPanResponderGrant: () => {
-              let dx = pan.x._value;
-              let dy = pan.y._value;
+              const dx = pan.x._value;
+              const dy = pan.y._value;
               pan.setOffset({ x: dx, y: dy });
             },
             onPanResponderMove: Animated.event(
@@ -126,7 +137,12 @@ function DraggablePointsContainer({ width }) {
               top: initial.y * viewDims.height - CIRCLE_RADIUS,
               transform: [{ translateX: pan.x }, { translateY: pan.y }],
             }}
-            hitSlop={{top: HIT_SLOP, bottom: HIT_SLOP, left: HIT_SLOP, right: HIT_SLOP}}
+            hitSlop={{
+              top: HIT_SLOP,
+              bottom: HIT_SLOP,
+              left: HIT_SLOP,
+              right: HIT_SLOP,
+            }}
             {...panResponder.panHandlers}
           >
             <View
@@ -192,7 +208,7 @@ DraggablePointsContainer.propTypes = {
  * covered by the points container.
  *
  */
- const styles = StyleSheet.create({
+const styles = StyleSheet.create({
   list: {
     width: "100%",
   },

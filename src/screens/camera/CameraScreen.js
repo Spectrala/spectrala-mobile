@@ -1,21 +1,28 @@
-import React, { useRef, useCallback, useEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React, { useRef, useCallback, useState } from "react";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { Slider } from "react-native-ui-lib";
 import DraggablePointsContainer from "./DraggablePointsContainer";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  restoreBox,
+  selectCornersAreValid,
   selectReaderWidth,
   updateReaderWidth,
+  DEFAULT_READER_BOX,
 } from "../../redux/reducers/ReaderBox";
 import BottomHelper from "../../components/BottomHelper";
 import CameraLoader from "../../components/CameraLoader";
+import Toast from "react-native-ui-lib/toast";
 
 export default function CameraScreen({ navigation }) {
   const { colors } = useTheme();
   const readerWidth = useSelector(selectReaderWidth);
   const initialWidth = useRef(readerWidth).current;
   const dispatch = useDispatch();
+  const cornersAreValid = useSelector(selectCornersAreValid);
+  const [pointsContainerHasRendered, setPointsContainerHasRendered] =
+    useState(false);
 
   const helperHeader = useCallback(
     () => (
@@ -48,6 +55,24 @@ export default function CameraScreen({ navigation }) {
         <CameraLoader capturesFrames={false} />
       </View>
       <View style={styles.container}>
+        <Toast
+          visible={!cornersAreValid}
+          position={"top"}
+          backgroundColor={colors.primary}
+          style={styles.toast}
+          showDismiss={true}
+        >
+          <Text style={styles.toastText}>
+            Corners of box must be within the screen.
+          </Text>
+          <TouchableOpacity
+            onPress={() => {
+              dispatch(restoreBox({ value: DEFAULT_READER_BOX }));
+            }}
+          >
+            <Text style={styles.toastButtonText}>Reset</Text>
+          </TouchableOpacity>
+        </Toast>
         <DraggablePointsContainer width={readerWidth} />
         <BottomHelper
           utilityComponents={helperHeader}
@@ -81,5 +106,20 @@ const styles = StyleSheet.create({
   },
   slider: {
     flex: 1,
+  },
+  toast: {
+    height: 40,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+  },
+  toastText: {
+    color: "white",
+  },
+  toastButtonText: {
+    color: "white",
+    fontWeight: "600",
+    marginLeft: 32,
   },
 });

@@ -26,9 +26,15 @@ import {
 import { View, StyleSheet } from "react-native";
 
 import { useSelector, useDispatch } from "react-redux";
+import { selectCornersAreValid } from "../redux/reducers/ReaderBox";
 
-const TextHeaderButton = ({ onPress, text }) => (
-  <Item title={text} onPress={onPress} />
+const TextHeaderButton = ({ onPress, text, disabled }) => (
+  <Item
+    title={text}
+    onPress={onPress}
+    disabled={disabled}
+    opacity={disabled ? 0.4 : 1}
+  />
 );
 
 const IoniconHeaderButton = (props) => (
@@ -50,6 +56,7 @@ export default function NavStack({ navigation }) {
   const dispatch = useDispatch();
   const showsRecalibrateHint = useSelector(selectShowsRecalibrateHint);
   const showsOnExitToast = useSelector(selectShowsOnExitToast);
+  const cornersAreValid = useSelector(selectCornersAreValid);
 
   return (
     /**
@@ -103,14 +110,13 @@ export default function NavStack({ navigation }) {
         component={CameraScreen}
         options={{
           title: "Setup Box",
-          headerTitle: () => (
-            <TitleHeader title="Select Spectrum"  />
-          ),
+          headerTitle: () => <TitleHeader title="Select Spectrum" />,
           headerRight: () => (
             <HeaderButtons HeaderButtonComponent={IoniconHeaderButton}>
               <TextHeaderButton
                 onPress={() => navigation.push("CalibrationScreen")}
                 text={"Next Step"}
+                disabled={!cornersAreValid}
               />
             </HeaderButtons>
           ),
@@ -120,7 +126,7 @@ export default function NavStack({ navigation }) {
         name="CalibrationScreen"
         component={CalibrationScreen}
         options={{
-          headerTitle: () => <TitleHeader title="Calibration"  />,
+          headerTitle: () => <TitleHeader title="Calibration" />,
           headerRight: () => (
             <HeaderButtons HeaderButtonComponent={IoniconHeaderButton}>
               <TextHeaderButton
