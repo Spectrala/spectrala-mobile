@@ -62,14 +62,14 @@ export default function NavStack({ navigation }) {
     /**
      * TODO: MARK: the initialRouteName prop in NavStack.Navigator will
      * define the first screen to load in the navigation stack.
-     * For production, make this "HomeScreen".
+     * For production, make this "Sessions".
      * In debug, use:
      *  "CameraScreen", "CalibrationScreen", or "CaptureScreen".
      * A con to this debug strategy is that you can't go back since previous
      * screens were not loaded to the stack.
      */
     <StackNavigator.Navigator
-      initialRouteName="HomeScreen"
+      initialRouteName="Sessions"
       screenOptions={{
         gestureEnabled: false,
         headerTitleAlign: "center",

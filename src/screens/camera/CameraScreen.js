@@ -68,6 +68,9 @@ export default function CameraScreen({ navigation }) {
           <TouchableOpacity
             onPress={() => {
               dispatch(restoreBox({ value: DEFAULT_READER_BOX }));
+              
+              navigation.navigate("Sessions");
+              navigation.navigate("CameraScreen");
             }}
           >
             <Text style={styles.toastButtonText}>Reset</Text>

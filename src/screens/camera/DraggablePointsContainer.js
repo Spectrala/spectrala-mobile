@@ -160,20 +160,20 @@ function DraggablePointsContainer({ width }) {
       !viewDims || (
         <Svg height="100%" width="100%">
           <Line
-            x1={p1.x * viewDims.width}
-            y1={p1.y * viewDims.height}
-            x2={p2.x * viewDims.width}
-            y2={p2.y * viewDims.height}
+            x1={lineCoords.lowX * viewDims.width}
+            y1={lineCoords.lowY * viewDims.height}
+            x2={lineCoords.highX * viewDims.width}
+            y2={lineCoords.highY * viewDims.height}
             stroke="white"
             opacity={0.05}
             strokeWidth={width}
             strokeLinecap="round"
           />
           <Line
-            x1={p1.x * viewDims.width}
-            y1={p1.y * viewDims.height}
-            x2={p2.x * viewDims.width}
-            y2={p2.y * viewDims.height}
+            x1={lineCoords.lowX * viewDims.width}
+            y1={lineCoords.lowY * viewDims.height}
+            x2={lineCoords.highX * viewDims.width}
+            y2={lineCoords.highY * viewDims.height}
             stroke="white"
             opacity={0.3}
             strokeWidth={width}
@@ -181,7 +181,7 @@ function DraggablePointsContainer({ width }) {
         </Svg>
       )
     );
-  }, [p1, p2, width, corners, viewDims]);
+  }, [lineCoords, width, corners, viewDims]);
 
   return (
     <>
