@@ -15,7 +15,8 @@ const reactNavigationTheme = {
     foreground: "#FBFCFF",
     text: "#161316",
     textDark: "#FFFFFF",
-    warning: "#1bf6e7",
+    warning: "#eada25",
+    danger: "#ff7863",
   },
 };
 

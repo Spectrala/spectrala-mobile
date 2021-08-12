@@ -24,8 +24,11 @@ import {
 } from "../../redux/reducers/Sessions";
 import * as SessionExport from "../../types/SessionExport";
 import { emailSessionXLSX, shareSessionXLSX } from "../../util/fileUtil";
-import { updateSessionWithSameKey } from "../../navigation/SessionStorage";
-// import Toast from "react-native-ui-lib/toast";
+import {
+  deleteSession,
+  updateSessionWithSameKey,
+} from "../../navigation/SessionStorage";
+import Toast from "react-native-ui-lib/toast";
 
 const SESSION_NAME_REGEX = "[A-Z,a-z,-,_,0-9]+";
 const SESSION_NAME_REGEX_ERROR =
@@ -63,10 +66,16 @@ export default function SessionDetailScreen({ navigation, route }) {
     }, [session])
   );
 
-  const ActionOption = ({ iconName, text, onPress, disabled }) => {
+  const ActionOption = ({
+    iconName,
+    text,
+    onPress,
+    disabled: disabledProp,
+  }) => {
+    const disabled = disabledProp || showsDeleteToast;
     return (
       <TouchableOpacity
-        style={{...styles.actionRow, opacity: disabled ? 0.3 : 1}}
+        style={{ ...styles.actionRow, opacity: disabled ? 0.3 : 1 }}
         onPress={onPress}
         disabled={disabled}
       >
@@ -91,21 +100,13 @@ export default function SessionDetailScreen({ navigation, route }) {
   };
 
   const exportData = () => {
-    try {
-      const exp = SessionExport.construct(name, originalSession);
-      shareSessionXLSX(exp);
-    } catch (err) {
-      console.error(err);
-    }
+    const exp = SessionExport.construct(name, originalSession);
+    shareSessionXLSX(exp);
   };
 
   const mailData = () => {
-    try {
-      const exp = SessionExport.construct(name, originalSession);
-      emailSessionXLSX(exp);
-    } catch (err) {
-      console.error(err);
-    }
+    const exp = SessionExport.construct(name, originalSession);
+    emailSessionXLSX(exp);
   };
 
   const editSessionName = () => {
@@ -127,70 +128,101 @@ export default function SessionDetailScreen({ navigation, route }) {
   const hasSpectra = useMemo(() => spectra.length > 0, [spectra]);
 
   return (
-    <SafeAreaView
-      style={{ ...styles.container, backgroundColor: colors.background + "ee" }}
-    >
-      <StackedChart style={styles.chart} spectra={spectra} />
-
-      <TextInput
-        style={{ ...styles.sectionTitle, color: colors.primary + "CC" }}
-        value={name}
-        ref={renameInput}
-        onChangeText={(text) => {
-          if (!new RegExp(SESSION_NAME_REGEX).test(text)) {
-            setRenameErrorMessage(SESSION_NAME_REGEX_ERROR);
-          } else if (nameIsDuplicate(text)) {
-            setRenameErrorMessage(SESSION_NAME_DUPLICATE_ERROR);
-          } else {
-            setRenameErrorMessage(null);
-          }
-          setName(text);
+    <>
+      <SafeAreaView
+        style={{
+          ...styles.container,
+          backgroundColor: colors.background + "ee",
         }}
-      />
-      {renameErrorMessage && (
-        <Text style={styles.renameErrorText}>{renameErrorMessage}</Text>
-      )}
-
-      <Text style={styles.sectionSubtitle}>
-        {format(date, "h:mmaaa eeee, MMMM d, yyyy")}
-      </Text>
-      <View style={styles.actionContainer}>
-        <ActionOption
-          iconName="arrow-forward"
-          text="Re-enter Session"
-          onPress={beginEditingSession}
-        />
-        <ActionOption
-          iconName="share-outline"
-          text="Export Data"
-          onPress={exportData}
-          disabled={!hasSpectra}
-        />
-        <ActionOption
-          iconName="mail-outline"
-          text="Mail Data"
-          onPress={mailData}
-          disabled={!hasSpectra}
-        />
-        <ActionOption
-          iconName="pencil"
-          text="Rename"
-          onPress={editSessionName}
-        />
-        <ActionOption
-          iconName="trash"
-          text="Delete"
-          onPress={() => setShowsDeleteToast(true)}
-        />
-      </View>
-      <TouchableOpacity
-        style={styles.closeButton}
-        onPress={() => navigation.canGoBack() && navigation.popToTop()}
-        hitSlop={{ left: 60, right: 60, top: 20, bottom: 60 }}
       >
-        <Text>Close</Text>
-      </TouchableOpacity>
-    </SafeAreaView>
+        <Toast
+          visible={showsDeleteToast}
+          position={"top"}
+          backgroundColor={colors.danger}
+          style={styles.toast}
+          showDismiss={true}
+        >
+          <Text style={styles.toastText}>Delete session?</Text>
+          <View style={styles.toastButtonContainer}>
+            <TouchableOpacity onPress={() => setShowsDeleteToast(false)}>
+              <Text style={styles.toastButtonText}>Cancel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={async () => {
+                setShowsDeleteToast(false);
+                await deleteSession(session, allSessions);
+                navigation.popToTop();
+              }}
+            >
+              <Text style={styles.toastButtonText}>Yes</Text>
+            </TouchableOpacity>
+          </View>
+        </Toast>
+        <StackedChart style={styles.chart} spectra={spectra} />
+
+        <TextInput
+          style={{ ...styles.sectionTitle, color: colors.primary + "CC" }}
+          value={name}
+          ref={renameInput}
+          onChangeText={(text) => {
+            if (!new RegExp(SESSION_NAME_REGEX).test(text)) {
+              setRenameErrorMessage(SESSION_NAME_REGEX_ERROR);
+            } else if (nameIsDuplicate(text)) {
+              setRenameErrorMessage(SESSION_NAME_DUPLICATE_ERROR);
+            } else {
+              setRenameErrorMessage(null);
+            }
+            setName(text);
+          }}
+        />
+        {renameErrorMessage && (
+          <Text style={styles.renameErrorText}>{renameErrorMessage}</Text>
+        )}
+
+        <Text style={styles.sectionSubtitle}>
+          {format(date, "h:mmaaa eeee, MMMM d, yyyy")}
+        </Text>
+        <View style={styles.actionContainer}>
+          <ActionOption
+            iconName="arrow-forward"
+            text="Re-enter Session"
+            onPress={beginEditingSession}
+          />
+          <ActionOption
+            iconName="share-outline"
+            text="Export Data"
+            onPress={exportData}
+            disabled={!hasSpectra}
+          />
+          <ActionOption
+            iconName="mail-outline"
+            text="Mail Data"
+            onPress={mailData}
+            disabled={!hasSpectra}
+          />
+          <ActionOption
+            iconName="pencil"
+            text="Rename"
+            onPress={editSessionName}
+          />
+          <ActionOption
+            iconName="trash"
+            text="Delete"
+            onPress={() => setShowsDeleteToast(true)}
+          />
+        </View>
+        <TouchableOpacity
+          style={styles.closeButton}
+          onPress={() => {
+            navigation.canGoBack() && navigation.popToTop();
+            setShowsDeleteToast(false);
+          }}
+          hitSlop={{ left: 60, right: 60, top: 20, bottom: 60 }}
+        >
+          <Text>Close</Text>
+        </TouchableOpacity>
+      </SafeAreaView>
+    </>
   );
 }
 
@@ -238,5 +270,23 @@ const styles = StyleSheet.create({
   },
   chart: {
     marginBottom: 16,
+  },
+  toast: {
+    height: 40,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+  },
+  toastText: {
+    color: "black",
+  },
+  toastButtonText: {
+    color: "black",
+    fontWeight: "600",
+    marginLeft: 32,
+  },
+  toastButtonContainer: {
+    flexDirection: "row",
   },
 });

@@ -54,6 +54,7 @@ export const deleteSession = async (session, allSessions) => {
       SESSION_STORAGE_KEY,
       JSON.stringify(allButDeleted)
     );
+    
   } catch (e) {
     console.error(e);
   }
