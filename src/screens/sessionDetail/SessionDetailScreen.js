@@ -27,7 +27,6 @@ import { emailSessionXLSX, shareSessionXLSX } from "../../util/fileUtil";
 import { updateSessionWithSameKey } from "../../navigation/SessionStorage";
 // import Toast from "react-native-ui-lib/toast";
 
-
 const SESSION_NAME_REGEX = "[A-Z,a-z,-,_,0-9]+";
 const SESSION_NAME_REGEX_ERROR =
   "Name must be non-empty and alphanumeric. Hyphen and underscore are also allowed.";
@@ -64,9 +63,13 @@ export default function SessionDetailScreen({ navigation, route }) {
     }, [session])
   );
 
-  const ActionOption = ({ iconName, text, onPress }) => {
+  const ActionOption = ({ iconName, text, onPress, disabled }) => {
     return (
-      <TouchableOpacity style={styles.actionRow} onPress={onPress}>
+      <TouchableOpacity
+        style={{...styles.actionRow, opacity: disabled ? 0.3 : 1}}
+        onPress={onPress}
+        disabled={disabled}
+      >
         <Ionicons style={styles.icon} name={iconName} size={27} />
         <Text style={styles.actionText}>{text}</Text>
       </TouchableOpacity>
@@ -121,6 +124,8 @@ export default function SessionDetailScreen({ navigation, route }) {
 
   const [showsDeleteToast, setShowsDeleteToast] = useState(false);
 
+  const hasSpectra = useMemo(() => spectra.length > 0, [spectra]);
+
   return (
     <SafeAreaView
       style={{ ...styles.container, backgroundColor: colors.background + "ee" }}
@@ -159,11 +164,13 @@ export default function SessionDetailScreen({ navigation, route }) {
           iconName="share-outline"
           text="Export Data"
           onPress={exportData}
+          disabled={!hasSpectra}
         />
         <ActionOption
           iconName="mail-outline"
           text="Mail Data"
           onPress={mailData}
+          disabled={!hasSpectra}
         />
         <ActionOption
           iconName="pencil"
