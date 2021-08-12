@@ -27,6 +27,7 @@ import {
 import { View, StyleSheet } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { selectCornersAreValid } from "../redux/reducers/ReaderBox";
+import { Platform } from "react-native";
 
 const TextHeaderButton = ({ onPress, text, disabled }) => (
   <Item
@@ -81,6 +82,7 @@ export default function NavStack({ navigation }) {
           shadowColor: "transparent",
         },
         gestureDirection: "horizontal",
+        detachPreviousScreen: true,
       }}
     >
       <StackNavigator.Screen
@@ -94,6 +96,7 @@ export default function NavStack({ navigation }) {
         name="SessionDetail"
         component={SessionDetailScreen}
         options={{
+          detachPreviousScreen: Platform.OS === "android",
           headerShown: false,
           presentation: "transparentModal",
         }}
@@ -104,6 +107,7 @@ export default function NavStack({ navigation }) {
         options={{
           headerShown: false,
           presentation: "transparentModal",
+          detachPreviousScreen: Platform.OS === "android",
         }}
       />
       <StackNavigator.Screen
@@ -111,6 +115,7 @@ export default function NavStack({ navigation }) {
         component={CameraScreen}
         options={{
           title: "Setup Box",
+
           headerTitle: () => <TitleHeader title="Select Spectrum" />,
           headerRight: () => (
             <HeaderButtons HeaderButtonComponent={IoniconHeaderButton}>

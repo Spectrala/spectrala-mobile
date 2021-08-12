@@ -9,5 +9,5 @@ const REPLACEMENT_CHAR = "";
  * @returns {String} the sanitized name
  */
 export const sanitizeNameForFilename = (name) => {
-  return name.replaceAll(BANNED_FILENAME_CHARACTER_REGEX, REPLACEMENT_CHAR);
+  return name.replace(BANNED_FILENAME_CHARACTER_REGEX, REPLACEMENT_CHAR);
 };
