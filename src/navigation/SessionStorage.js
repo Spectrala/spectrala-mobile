@@ -45,6 +45,20 @@ const updateSessionStore = async (session, allSessions) => {
   }
 };
 
+export const deleteSession = async (session, allSessions) => {
+  const allButDeleted = allSessions.filter(
+    (s) => Session.getKey(s) !== Session.getKey(session)
+  );
+  try {
+    await AsyncStorage.setItem(
+      SESSION_STORAGE_KEY,
+      JSON.stringify(allButDeleted)
+    );
+  } catch (e) {
+    console.error(e);
+  }
+};
+
 /**
  * Create a new session based off of the redux store.
  * @param {Object} reduxState current redux store from store.getState()

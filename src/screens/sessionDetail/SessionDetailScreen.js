@@ -25,6 +25,8 @@ import {
 import * as SessionExport from "../../types/SessionExport";
 import { emailSessionXLSX, shareSessionXLSX } from "../../util/fileUtil";
 import { updateSessionWithSameKey } from "../../navigation/SessionStorage";
+// import Toast from "react-native-ui-lib/toast";
+
 
 const SESSION_NAME_REGEX = "[A-Z,a-z,-,_,0-9]+";
 const SESSION_NAME_REGEX_ERROR =
@@ -34,10 +36,7 @@ const SESSION_NAME_DUPLICATE_ERROR =
 
 export default function SessionDetailScreen({ navigation, route }) {
   const { colors } = useTheme();
-  const {
-    session: originalSession,
-    allSessions,
-  } = route.params;
+  const { session: originalSession, allSessions } = route.params;
 
   const dispatch = useDispatch();
 
@@ -120,6 +119,8 @@ export default function SessionDetailScreen({ navigation, route }) {
     return otherSameNameSessions.length > 0;
   };
 
+  const [showsDeleteToast, setShowsDeleteToast] = useState(false);
+
   return (
     <SafeAreaView
       style={{ ...styles.container, backgroundColor: colors.background + "ee" }}
@@ -168,6 +169,11 @@ export default function SessionDetailScreen({ navigation, route }) {
           iconName="pencil"
           text="Rename"
           onPress={editSessionName}
+        />
+        <ActionOption
+          iconName="trash"
+          text="Delete"
+          onPress={() => setShowsDeleteToast(true)}
         />
       </View>
       <TouchableOpacity

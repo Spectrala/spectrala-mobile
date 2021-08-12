@@ -79,7 +79,7 @@ export const getReferenceSpectrum = (session) => {
 
 /**
  * If a session is updated, merges appropriate properties from 
- * the both session versions.
+ * both session versions.
  * 
  * Properties that are kept (x):
  * 

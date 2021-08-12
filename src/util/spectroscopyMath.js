@@ -111,6 +111,11 @@ export const getClosestIntensity = (testWavelength, intensityChart) => {
 /**
  * Given a test spectrum and reference spectrum (both in terms of intensity),
  * returns the transmittance spectrum.
+ *
+ * Transmittance = Test Intensity / Reference Intensity
+ *
+ * Assigns 0 to the divide by zero case.
+ *
  * @param {Array<ChartPt>} testIntensityChart intensity of test sample
  * @param {Array<ChartPt>} referenceIntensityChart intensity of reference sample
  * @returns {Array<ChartPt>} transmittance of test sample
@@ -139,6 +144,11 @@ export const computeTransmittanceChart = (
 /**
  * Given a test spectrum and reference spectrum (both in terms of intensity),
  * returns the absorbance spectrum.
+ *
+ * Absorbance = -log10(Transmittance)
+ *
+ * Assigns 0 to the log(0) case.
+ *
  * @param {Array<ChartPt>} testIntensityChart intensity of test sample
  * @param {Array<ChartPt>} referenceIntensityChart intensity of reference sample
  * @returns {Array<ChartPt>} absorbance of test sample
@@ -154,7 +164,10 @@ export const computeAbsorbanceChart = (
   const absorbanceChart = transmittanceChart.map((transmittancePoint) => {
     const wavelength = ChartPt.getWavelength(transmittancePoint);
     const transmittance = ChartPt.getY(transmittancePoint);
-    const absorbance = -Math.log10(transmittance);
+    let absorbance = 0;
+    if (transmittance !== 0) {
+      absorbance = -Math.log10(transmittance);
+    }
     const xPosition = ChartPt.getXPosition(transmittancePoint);
     return ChartPt.construct(xPosition, wavelength, absorbance);
   });
