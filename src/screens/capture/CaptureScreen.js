@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { StyleSheet, Image, View, Text, ScrollView } from "react-native";
+import React, { useMemo } from "react";
+import { StyleSheet, Image, View, Text, FlatList } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import SwitchableSpectrumChart from "../../components/SwitchableSpectrumChart";
 import { useSelector, useDispatch } from "react-redux";
@@ -8,10 +8,13 @@ import {
   selectPreviewImg,
   selectIntensityChart,
 } from "../../redux/reducers/SpectrumFeed";
-import { selectReferenceSpectrum } from "../../redux/reducers/RecordedSpectra";
+import {
+  selectReferenceSpectrum,
+  selectRecordedSpectra,
+} from "../../redux/reducers/RecordedSpectra";
 import CameraLoader from "../../components/CameraLoader";
 import { Ionicons } from "@expo/vector-icons";
-import CapturedList, { CapturedCell } from "./CapturedList";
+import { CapturedCell } from "./CapturedCell";
 import * as Spectrum from "../../types/Spectrum";
 import Toast from "react-native-ui-lib/toast";
 import { TouchableOpacity } from "react-native";
@@ -24,7 +27,7 @@ import {
 
 export function exitCaptureScreen(dispatch, navigation) {
   dispatch(setShowsOnExitToast({ value: false }));
-  dispatch(dismissRecalibrateHint())
+  dispatch(dismissRecalibrateHint());
   dispatch(endEditingSession());
   navigation.canGoBack() && navigation.popToTop();
 }
@@ -36,6 +39,20 @@ export default function CaptureScreen({ navigation }) {
   const referenceSpectrum = useSelector(selectReferenceSpectrum);
   const dispatch = useDispatch();
   const showsOnExitToast = useSelector(selectShowsOnExitToast);
+  const recordedSpectra = useSelector(selectRecordedSpectra);
+
+  const spectrumIsReference = (spectrum) => {
+    return (
+      referenceSpectrum &&
+      spectrum &&
+      Spectrum.getKey(spectrum) === Spectrum.getKey(referenceSpectrum)
+    );
+  };
+
+  const nonReferenceSpectra = useMemo(
+    () => recordedSpectra.filter((spectrum) => !spectrumIsReference(spectrum)),
+    [recordedSpectra]
+  );
 
   const waterDrop = (
     <Ionicons
@@ -105,26 +122,49 @@ export default function CaptureScreen({ navigation }) {
         fadeDuration={0}
         source={{ uri: previewImage }}
       />
-      <ScrollView
-        style={{ ...styles.container, opacity: showsOnExitToast ? 0.5 : 1 }}
-        showsHorizontalScrollIndicator={false}
-        showsVerticalScrollIndicator={false}
-        scrollEnabled={!showsOnExitToast}
-      >
-        <SwitchableSpectrumChart
-          style={styles.chart}
-          spectrum={Spectrum.construct(null, null, intensityChart)}
-        />
 
-        <View style={styles.referenceMaster}>
-          <Text style={styles.sectionText}>Reference</Text>
-          {getReferenceCell()}
-        </View>
-        <View style={styles.testMaster}>
-          <Text style={styles.sectionText}>Test</Text>
-          <CapturedList navigation={navigation} style={styles.list} />
-        </View>
-      </ScrollView>
+      <View
+        style={{
+          ...styles.container,
+          opacity: showsOnExitToast ? 0.5 : 1,
+        }}
+      >
+        <FlatList
+          data={nonReferenceSpectra}
+          renderItem={({ item: spectrum }) => (
+            <CapturedCell
+              navigation={navigation}
+              spectrum={spectrum}
+              style={styles.cell}
+              key={`sm${Spectrum.getKey(spectrum)}`}
+            />
+          )}
+          ListHeaderComponent={
+            <View
+              showsHorizontalScrollIndicator={false}
+              showsVerticalScrollIndicator={false}
+              scrollEnabled={!showsOnExitToast}
+            >
+              <SwitchableSpectrumChart
+                style={styles.chart}
+                spectrum={Spectrum.construct(null, null, intensityChart)}
+              />
+
+              <View style={styles.referenceMaster}>
+                <Text style={styles.sectionText}>Reference</Text>
+                {getReferenceCell()}
+              </View>
+
+              <View style={styles.testMaster}>
+                <Text style={styles.sectionText}>Test</Text>
+              </View>
+            </View>
+          }
+          ListFooterComponent={<View style={styles.listFooter} />}
+          keyExtractor={(item) => Spectrum.getKey(item)}
+        />
+      </View>
+
       <CaptureButton style={styles.captureButton} disabled={showsOnExitToast} />
     </>
   );
@@ -133,7 +173,7 @@ export default function CaptureScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     position: "absolute",
-    top: 80,
+    top: 60,
     paddingTop: 20,
     left: 0,
     right: 0,
@@ -143,15 +183,30 @@ const styles = StyleSheet.create({
     marginBottom: 120,
   },
   testMaster: {
-    padding: 16,
-    margin: 8,
+    paddingTop: 16,
+    paddingLeft: 16,
+    marginTop: 8,
+    marginHorizontal: 8,
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
-    height: "100%",
+    height: 52,
     backgroundColor: "white",
     shadowColor: "gray",
     shadowRadius: 10,
     shadowOpacity: 0.12,
+  },
+  cell: {
+    marginHorizontal: 8,
+    paddingHorizontal: 16,
+    backgroundColor: "white",
+  },
+  listFooter: {
+    marginHorizontal: 8,
+    borderBottomLeftRadius: 16,
+    borderBottomRightRadius: 16,
+    height: 16,
+    marginBottom: 120,
+    backgroundColor: "white",
   },
   referenceMaster: {
     padding: 16,
