@@ -26,6 +26,13 @@ export const spectrumSlice = createSlice({
       const key = Spectrum.getKey(spectrum);
       state.recordedSpectra[key] = spectrum;
     },
+    deleteSpectrum: (state, action) => {
+      const spectrum = action.payload.spectrum;
+      const key = Spectrum.getKey(spectrum);
+      // deleteProperty helper function https://stackoverflow.com/a/47227198/5160929
+      const deleteProperty = ({ [key]: _, ...newObj }, key) => newObj;
+      state.recordedSpectra = deleteProperty(state.recordedSpectra, key);
+    },
     removeReference: (state, action) => {
       state.referenceKey = null;
     },
@@ -50,6 +57,7 @@ export const {
   removeReference,
   setReference,
   restoreSpectra,
+  deleteSpectrum,
 } = spectrumSlice.actions;
 
 /**

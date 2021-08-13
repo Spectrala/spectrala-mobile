@@ -28,6 +28,7 @@ import { View, StyleSheet } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { selectCornersAreValid } from "../redux/reducers/ReaderBox";
 import { Platform } from "react-native";
+import SpectrumDetailScreen from "../screens/review/SpectrumDetailScreen";
 
 const TextHeaderButton = ({ onPress, text, disabled }) => (
   <Item
@@ -103,11 +104,9 @@ export default function NavStack({ navigation }) {
       />
       <StackNavigator.Screen
         name="ReviewScreen"
-        component={ReviewScreen}
+        component={SpectrumDetailScreen}
         options={{
           headerShown: false,
-          presentation: "transparentModal",
-          detachPreviousScreen: Platform.OS === "android",
         }}
       />
       <StackNavigator.Screen

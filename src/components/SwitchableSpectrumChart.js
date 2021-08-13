@@ -116,6 +116,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     flexDirection: "row",
     alignContent: "center",
+    width: "100%",
   },
   modeButton: {
     justifyContent: "center",

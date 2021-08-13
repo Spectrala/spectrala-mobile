@@ -36,6 +36,69 @@ const SESSION_NAME_REGEX_ERROR =
 const SESSION_NAME_DUPLICATE_ERROR =
   "New name must not be a duplicate of another session name.";
 
+export const ActionOption = ({
+  iconName,
+  text,
+  onPress,
+  disabled: disabledProp,
+  showsDeleteToast,
+}) => {
+  const disabled = disabledProp || showsDeleteToast;
+  return (
+    <TouchableOpacity
+      style={{ ...styles.actionRow, opacity: disabled ? 0.3 : 1 }}
+      onPress={onPress}
+      disabled={disabled}
+    >
+      <Ionicons style={styles.icon} name={iconName} size={27} />
+      <Text style={styles.actionText}>{text}</Text>
+    </TouchableOpacity>
+  );
+};
+
+/**
+ * Provides a toast to allow the user to confirm intention to delete something.
+ * Automatically dismisses itself using setShowsDeleteToast.
+ * 
+ * The following params are props, all actually passed as one object param. 
+ *
+ * @param {bool} showsDeleteToast toast is visible, from useState
+ * @param {function} setShowsDeleteToast set toast visible, from useState
+ * @param {color} backgroundColor Color to set the background of the toast
+ * @param {String} promptText "Are you sure" message on the toast
+ * @param {function} onDelete method to call when delete is confirmed.
+ * @returns {Toast}
+ */
+export const ConfirmDeleteToast = ({
+  showsDeleteToast,
+  setShowsDeleteToast,
+  backgroundColor,
+  promptText,
+  onDelete
+}) => (
+  <Toast
+    visible={showsDeleteToast}
+    position={"top"}
+    backgroundColor={backgroundColor}
+    style={styles.toast}
+  >
+    <Text style={styles.toastText}>{promptText}</Text>
+    <View style={styles.toastButtonContainer}>
+      <TouchableOpacity onPress={() => setShowsDeleteToast(false)}>
+        <Text style={styles.toastButtonText}>Cancel</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={async () => {
+          setShowsDeleteToast(false);
+          onDelete();
+        }}
+      >
+        <Text style={styles.toastButtonText}>Yes</Text>
+      </TouchableOpacity>
+    </View>
+  </Toast>
+);
+
 export default function SessionDetailScreen({ navigation, route }) {
   const { colors } = useTheme();
   const { session: originalSession, allSessions } = route.params;
@@ -65,25 +128,6 @@ export default function SessionDetailScreen({ navigation, route }) {
       };
     }, [session])
   );
-
-  const ActionOption = ({
-    iconName,
-    text,
-    onPress,
-    disabled: disabledProp,
-  }) => {
-    const disabled = disabledProp || showsDeleteToast;
-    return (
-      <TouchableOpacity
-        style={{ ...styles.actionRow, opacity: disabled ? 0.3 : 1 }}
-        onPress={onPress}
-        disabled={disabled}
-      >
-        <Ionicons style={styles.icon} name={iconName} size={27} />
-        <Text style={styles.actionText}>{text}</Text>
-      </TouchableOpacity>
-    );
-  };
 
   const beginEditingSession = () => {
     dispatch(editSession({ value: originalSession }));
