@@ -84,8 +84,35 @@ export default function CaptureScreen({ navigation }) {
           <CapturedCell navigation={navigation} spectrum={referenceSpectrum} />
         </View>
       );
-    } else {
+    } else if (recordedSpectra.length > 0) {
       return refPlaceholder;
+    }
+  };
+
+  const getNoCapturedSpectraCell = () => {
+    if (recordedSpectra.length === 0) {
+      return (
+        <View>
+          <Text style={styles.noRecordedSpectraText}>Press the capture button on the bottom to record a spectrum.</Text>
+        </View>
+      );
+    }
+  };
+
+  const getReferenceTestAreas = () => {
+    if (recordedSpectra.length > 0) {
+      return (
+        <>
+          <View style={styles.referenceMaster}>
+            <Text style={styles.sectionText}>Reference</Text>
+            {getReferenceCell()}
+          </View>
+
+          <View style={styles.testMaster}>
+            <Text style={styles.sectionText}>Test</Text>
+          </View>
+        </>
+      );
     }
   };
 
@@ -136,7 +163,6 @@ export default function CaptureScreen({ navigation }) {
               navigation={navigation}
               spectrum={spectrum}
               style={styles.cell}
-              key={`sm${Spectrum.getKey(spectrum)}`}
             />
           )}
           ListHeaderComponent={
@@ -150,18 +176,14 @@ export default function CaptureScreen({ navigation }) {
                 spectrum={Spectrum.construct(null, null, intensityChart)}
               />
 
-              <View style={styles.referenceMaster}>
-                <Text style={styles.sectionText}>Reference</Text>
-                {getReferenceCell()}
-              </View>
-
-              <View style={styles.testMaster}>
-                <Text style={styles.sectionText}>Test</Text>
-              </View>
+              {getNoCapturedSpectraCell()}
+              {getReferenceTestAreas()}
             </View>
           }
-          ListFooterComponent={<View style={styles.listFooter} />}
-          keyExtractor={(item) => Spectrum.getKey(item)}
+          ListFooterComponent={
+            recordedSpectra.length && (<View style={styles.listFooter} />)
+          }
+          keyExtractor={(item) => `sm${Spectrum.getKey(item)}`}
         />
       </View>
 
@@ -200,11 +222,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     backgroundColor: "white",
   },
+  noRecordedSpectraText: {
+    marginTop: 32,
+    paddingHorizontal: 32,
+    flex: 1,
+    alignSelf: "center",
+    color: "#111",
+    fontSize: 16,
+    fontWeight: "400",
+  },
   listFooter: {
     marginHorizontal: 8,
     borderBottomLeftRadius: 16,
     borderBottomRightRadius: 16,
-    height: 16,
+    height: 32,
     marginBottom: 120,
     backgroundColor: "white",
   },

@@ -21,8 +21,6 @@ export default function CameraScreen({ navigation }) {
   const initialWidth = useRef(readerWidth).current;
   const dispatch = useDispatch();
   const cornersAreValid = useSelector(selectCornersAreValid);
-  const [pointsContainerHasRendered, setPointsContainerHasRendered] =
-    useState(false);
 
   const helperHeader = useCallback(
     () => (
