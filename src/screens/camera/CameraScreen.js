@@ -49,10 +49,10 @@ export default function CameraScreen({ navigation }) {
           flex: 1,
         }}
       />
-      <View style={styles.container}>
+      <View style={{...styles.container, elevation: 1}}>
         <CameraLoader capturesFrames={false} />
       </View>
-      <View style={styles.container}>
+      <View style={{...styles.container, elevation: 3}}>
         <Toast
           visible={!cornersAreValid}
           position={"top"}
