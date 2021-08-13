@@ -32,6 +32,8 @@ export const spectrumSlice = createSlice({
       // deleteProperty helper function https://stackoverflow.com/a/47227198/5160929
       const deleteProperty = ({ [key]: _, ...newObj }, key) => newObj;
       state.recordedSpectra = deleteProperty(state.recordedSpectra, key);
+      const allOtherKeys = Object.keys(state.recordedSpectra).map((k) => parseInt(k));
+      state.highestKey = Math.max(0, ...allOtherKeys);
     },
     removeReference: (state, action) => {
       state.referenceKey = null;
