@@ -140,7 +140,7 @@ export default function SessionDetailScreen({ navigation, route }) {
     dispatch(restoreCalibration({ value: calibration }));
     dispatch(restoreBox({ value: box }));
     dispatch(restoreSpectra({ value: spectra }));
-    navigation.navigate("CaptureScreen");
+    navigation.push("CaptureScreen");
   };
 
   const exportData = () => {

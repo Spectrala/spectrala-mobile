@@ -12,7 +12,7 @@ export function CapturedCell({ navigation, spectrum, style }) {
   return (
     <View style={style}>
       <TouchableOpacity
-        onPress={() => navigation.navigate("ReviewScreen", { spectrum })}
+        onPress={() => navigation.push("ReviewScreen", { spectrum })}
       >
         <View style={styles.cellContainer}>
           <Text style={styles.name}>{Spectrum.getName(spectrum)}</Text>

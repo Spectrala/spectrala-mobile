@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { createStackNavigator } from "@react-navigation/stack";
 import CameraScreen from "../screens/camera/CameraScreen";
@@ -6,7 +6,6 @@ import CalibrationScreen from "../screens/calibration/CalibrationScreen";
 import CaptureScreen, {
   exitCaptureScreen,
 } from "../screens/capture/CaptureScreen";
-import ReviewScreen from "../screens/review/ReviewScreen";
 import HomeScreen from "../screens/home/HomeScreen";
 import SessionDetailScreen from "../screens/sessionDetail/SessionDetailScreen";
 import {
@@ -14,7 +13,7 @@ import {
   HeaderButton,
   Item,
 } from "react-navigation-header-buttons";
-import { useTheme } from "@react-navigation/native";
+import { useTheme, CommonActions } from "@react-navigation/native";
 import TitleHeader from "../components/TitleHeader";
 import { handleSaveSession } from "../navigation/SessionStorage";
 import {
@@ -22,7 +21,6 @@ import {
   endEditingSession,
   setShowsOnExitToast,
   selectShowsOnExitToast,
-  selectActiveEditingSession,
 } from "../redux/reducers/Sessions";
 import { View, StyleSheet } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
@@ -59,7 +57,6 @@ export default function NavStack({ navigation }) {
   const showsRecalibrateHint = useSelector(selectShowsRecalibrateHint);
   const showsOnExitToast = useSelector(selectShowsOnExitToast);
   const cornersAreValid = useSelector(selectCornersAreValid);
-  const activeEditingSession = useSelector(selectActiveEditingSession);
 
   return (
     /**
@@ -171,7 +168,7 @@ export default function NavStack({ navigation }) {
                     showsRecalibrateHint ? "beaker-alert" : "beaker-outline"
                   }
                   color={showsRecalibrateHint ? colors.warning : colors.primary}
-                  onPress={() => navigation.navigate("CameraScreen")}
+                  onPress={() => navigation.push("CameraScreen")}
                 />
               </HeaderButtons>
             </View>

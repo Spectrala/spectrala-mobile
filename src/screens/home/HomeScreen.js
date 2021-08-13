@@ -59,7 +59,7 @@ function HomeScreen({ navigation }) {
               name={name}
               date={date}
               onSelect={() =>
-                navigation.navigate("SessionDetail", {
+                navigation.push("SessionDetail", {
                   session,
                   allSessions: sessions,
                 })

@@ -67,7 +67,7 @@ export default function CameraScreen({ navigation }) {
             onPress={() => {
               dispatch(restoreBox({ value: DEFAULT_READER_BOX }));
               navigation.goBack();
-              navigation.navigate("CameraScreen");
+              navigation.push("CameraScreen");
             }}
           >
             <Text style={styles.toastButtonText}>Reset</Text>
