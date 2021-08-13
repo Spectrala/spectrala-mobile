@@ -43,6 +43,23 @@ function HomeScreen({ navigation }) {
     }, [sessionStoreNameEditNumber])
   );
 
+  const renderListItem = ({ item: session }) => {
+    const date = Session.getLastEditDateUnix(session);
+    const name = Session.getName(session);
+    return (
+      <SessionCell
+        name={name}
+        date={date}
+        onSelect={() =>
+          navigation.push("SessionDetail", {
+            session,
+            allSessions: sessions,
+          })
+        }
+      />
+    );
+  };
+
   const sessionList = () => {
     return (
       <FlatList
@@ -51,22 +68,7 @@ function HomeScreen({ navigation }) {
             new Date(Session.getLastEditDateUnix(b)) -
             new Date(Session.getLastEditDateUnix(a))
         )}
-        renderItem={({ item: session }) => {
-          const date = Session.getLastEditDateUnix(session);
-          const name = Session.getName(session);
-          return (
-            <SessionCell
-              name={name}
-              date={date}
-              onSelect={() =>
-                navigation.push("SessionDetail", {
-                  session,
-                  allSessions: sessions,
-                })
-              }
-            />
-          );
-        }}
+        renderItem={renderListItem}
         keyExtractor={(item) => String(item.name)}
         showsVerticalScrollIndicator={false}
       />

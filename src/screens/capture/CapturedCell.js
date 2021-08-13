@@ -7,7 +7,7 @@ import * as Spectrum from "../../types/Spectrum";
 import { useTheme } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native";
 
-export function CapturedCell({ navigation, spectrum, style }) {
+const CapturedCell = React.memo(({ navigation, spectrum, style }) => {
   const { colors } = useTheme();
   return (
     <View style={style}>
@@ -30,7 +30,7 @@ export function CapturedCell({ navigation, spectrum, style }) {
       </TouchableOpacity>
     </View>
   );
-}
+});
 
 const styles = StyleSheet.create({
   cellContainer: {
@@ -49,3 +49,5 @@ const styles = StyleSheet.create({
     flex: 2,
   },
 });
+
+export default CapturedCell;

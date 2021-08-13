@@ -14,7 +14,7 @@ import {
 } from "../../redux/reducers/RecordedSpectra";
 import CameraLoader from "../../components/CameraLoader";
 import { Ionicons } from "@expo/vector-icons";
-import { CapturedCell } from "./CapturedCell";
+import CapturedCell from "./CapturedCell";
 import * as Spectrum from "../../types/Spectrum";
 import Toast from "react-native-ui-lib/toast";
 import { TouchableOpacity } from "react-native";
@@ -93,7 +93,9 @@ export default function CaptureScreen({ navigation }) {
     if (recordedSpectra.length === 0) {
       return (
         <View>
-          <Text style={styles.noRecordedSpectraText}>Press the capture button on the bottom to record a spectrum.</Text>
+          <Text style={styles.noRecordedSpectraText}>
+            Press the capture button on the bottom to record a spectrum.
+          </Text>
         </View>
       );
     }
@@ -115,6 +117,14 @@ export default function CaptureScreen({ navigation }) {
       );
     }
   };
+
+  const renderListItem = ({ item: spectrum }) => (
+    <CapturedCell
+      navigation={navigation}
+      spectrum={spectrum}
+      style={styles.cell}
+    />
+  );
 
   return (
     <>
@@ -158,13 +168,7 @@ export default function CaptureScreen({ navigation }) {
       >
         <FlatList
           data={nonReferenceSpectra}
-          renderItem={({ item: spectrum }) => (
-            <CapturedCell
-              navigation={navigation}
-              spectrum={spectrum}
-              style={styles.cell}
-            />
-          )}
+          renderItem={renderListItem}
           ListHeaderComponent={
             <View
               showsHorizontalScrollIndicator={false}
@@ -181,9 +185,11 @@ export default function CaptureScreen({ navigation }) {
             </View>
           }
           ListFooterComponent={
-            recordedSpectra.length && (<View style={styles.listFooter} />)
+            recordedSpectra.length && <View style={styles.listFooter} />
           }
           keyExtractor={(item) => `sm${Spectrum.getKey(item)}`}
+          removeClippedSubviews
+          maxToRenderPerBatch={5}
         />
       </View>
 
