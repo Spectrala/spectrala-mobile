@@ -5,7 +5,7 @@ import Card from "react-native-ui-lib/card";
 import { AntDesign } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
 
-export default function BottomHelper({ utilityComponents, bodyText }) {
+export default function BottomHelper({ utilityComponents, bodyText, titleText }) {
   const { colors } = useTheme();
   const [helperExpanded, setExpanded] = useState(true);
 
@@ -17,7 +17,7 @@ export default function BottomHelper({ utilityComponents, bodyText }) {
     () => (
       <View>
         <View style={styles.helperHeaderRow}>
-          <Text subheading>Reader box</Text>
+          <Text subheading>{titleText}</Text>
           <AntDesign
             name={helperExpanded ? "downcircleo" : "upcircleo"}
             size={24}
@@ -27,7 +27,7 @@ export default function BottomHelper({ utilityComponents, bodyText }) {
         {utilityComponents()}
       </View>
     ),
-    [helperExpanded]
+    [helperExpanded, titleText]
   );
 
   const helperView = () => (
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     shadowRadius: 10,
     shadowOpacity: 0.2,
-    shadowColor: "white",
+    shadowColor: "black",
   },
   scrollContainer: {
     width: "100%",

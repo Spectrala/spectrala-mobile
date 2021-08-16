@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, useState } from "react";
+import React, { useRef, useCallback } from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { Slider } from "react-native-ui-lib";
@@ -88,6 +88,7 @@ this line accuratly by dragging the circles over the extreme ends of the \
 spectrum. Ensure the rectangular box encloses the red part on one side and \
 the blue part of the spectrum on the other side. "
             }
+            titleText="Set Reader Box"
           />
         )}
       </View>

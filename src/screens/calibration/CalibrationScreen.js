@@ -2,12 +2,16 @@ import React from "react";
 import { StyleSheet, Image, View, Button } from "react-native";
 import CalibrationChart from "./CalibrationChart";
 import { useSelector, useDispatch } from "react-redux";
-import { selectActivePointPlacement } from "../../redux/reducers/Calibration";
+import {
+  selectActivePointPlacement,
+  selectShowsHelp,
+} from "../../redux/reducers/Calibration";
 import { toggleIsFlipped } from "../../redux/reducers/ReaderBox";
 import {
   selectPreviewImg,
   resetIntensityArrayHistory,
 } from "../../redux/reducers/SpectrumFeed";
+import BottomHelper from "../../components/BottomHelper";
 import CameraLoader from "../../components/CameraLoader";
 import { useTheme } from "@react-navigation/native";
 const CHART_INSET = 24;
@@ -16,7 +20,10 @@ export default function CalibrationScreen() {
   const previewImage = useSelector(selectPreviewImg);
   const isActivelyPlacing = useSelector(selectActivePointPlacement);
   const dispatch = useDispatch();
+  const showsHelp = useSelector(selectShowsHelp);
   const { colors } = useTheme();
+
+  const helperHeader = () => <View style={styles.helperBody}></View>;
 
   return (
     <>
@@ -24,9 +31,7 @@ export default function CalibrationScreen() {
         <CameraLoader collectsFrames={!isActivelyPlacing} />
       </View>
 
-      <View
-        style={{ ...styles.container, backgroundColor: colors.background }}
-      >
+      <View style={{ ...styles.container, backgroundColor: colors.background }}>
         <Image
           style={styles.previewImage}
           fadeDuration={0}
@@ -42,6 +47,20 @@ export default function CalibrationScreen() {
           style={styles.flipButton}
         />
         <CalibrationChart horizontalInset={CHART_INSET} />
+        {showsHelp && (
+          <BottomHelper
+            utilityComponents={helperHeader}
+            bodyText={                                                      /***/
+              "Use the above markers to assign wavelength values to the incoming \
+spectrum. It may be necessary to use the \"Flip Image\" button to ensure the \
+order of the colors of the spectrum in the app matches the order of the colors \
+in the spectrometer itself. To assign wavelength values, first turn on the \
+specific light source used for calibration. Then, drag the markers to their \
+respective high peaks on the chart. "
+            }
+            titleText="Wavelength assignment"
+          />
+        )}
       </View>
     </>
   );

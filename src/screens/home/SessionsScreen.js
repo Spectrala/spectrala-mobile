@@ -74,6 +74,7 @@ export default function SessionsScreen({ navigation }) {
   const sessionList = () => {
     return (
       <FlatList
+        style={{ height: "100%" }}
         data={sortedSessions}
         renderItem={renderListItem}
         keyExtractor={(item) => String(item.name)}

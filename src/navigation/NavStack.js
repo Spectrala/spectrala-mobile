@@ -45,13 +45,6 @@ const IoniconHeaderButton = (props) => (
   <HeaderButton IconComponent={Ionicons} iconSize={23} {...props} />
 );
 
-const MaterialCommunityHeaderButton = (props) => (
-  <HeaderButton
-    IconComponent={MaterialCommunityIcons}
-    iconSize={26}
-    {...props}
-  />
-);
 
 const StackNavigator = createStackNavigator();
 
