@@ -14,6 +14,7 @@ import {
 import BottomHelper from "../../components/BottomHelper";
 import CameraLoader from "../../components/CameraLoader";
 import Toast from "react-native-ui-lib/toast";
+import { selectShowsHelp } from "../../redux/reducers/Calibration";
 
 export default function CameraScreen({ navigation }) {
   const { colors } = useTheme();
@@ -21,6 +22,7 @@ export default function CameraScreen({ navigation }) {
   const initialWidth = useRef(readerWidth).current;
   const dispatch = useDispatch();
   const cornersAreValid = useSelector(selectCornersAreValid);
+  const showsHelp = useSelector(selectShowsHelp);
 
   const helperHeader = useCallback(
     () => (
@@ -49,10 +51,10 @@ export default function CameraScreen({ navigation }) {
           flex: 1,
         }}
       />
-      <View style={{...styles.container, elevation: 1}}>
+      <View style={{ ...styles.container, elevation: 1 }}>
         <CameraLoader capturesFrames={false} />
       </View>
-      <View style={{...styles.container, elevation: 3}}>
+      <View style={{ ...styles.container, elevation: 3 }}>
         <Toast
           visible={!cornersAreValid}
           position={"top"}
@@ -74,18 +76,20 @@ export default function CameraScreen({ navigation }) {
           </TouchableOpacity>
         </Toast>
         <DraggablePointsContainer width={readerWidth} />
-        <BottomHelper
-          utilityComponents={helperHeader}
-          bodyText={
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur in\
-nisi maximus, vehicula nibh pulvinar, pulvinar massa. Maecenas quis\
-lectus elit. Aliquam tempus felis rutrum ex blandit, eu laoreet sapien\
-tincidunt. Nam convallis, velit at rutrum rutrum, mauris nunc\
-vestibulum velit, et mollis sapien elit eu nibh. Sed eget nulla orci.\
-Etiam a lorem rhoncus, tempus erat nec, lobortis odio. Maecenas semper\
-sagittis auctor."
-          }
-        />
+        {showsHelp && (
+          <BottomHelper
+            utilityComponents={helperHeader}
+            bodyText={
+              "To begin calibrating the spectrometer, attatch the spectrometer to your \
+device and let light through the slit. Given a quality spectrum in view of \
+the device's camera, Spectrala works by measuring the brightness of each \
+pixel across a line through the spectrum. \n\nThis screen allows you to set \
+this line accuratly by dragging the circles over the extreme ends of the \
+spectrum. Ensure the rectangular box encloses the red part on one side and \
+the blue part of the spectrum on the other side. "
+            }
+          />
+        )}
       </View>
     </>
   );

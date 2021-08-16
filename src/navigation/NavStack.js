@@ -13,7 +13,7 @@ import {
   HeaderButton,
   Item,
 } from "react-navigation-header-buttons";
-import { useTheme, CommonActions } from "@react-navigation/native";
+import { useTheme } from "@react-navigation/native";
 import TitleHeader from "../components/TitleHeader";
 import { handleSaveSession } from "../navigation/SessionStorage";
 import {
@@ -27,6 +27,10 @@ import { useSelector, useDispatch } from "react-redux";
 import { selectCornersAreValid } from "../redux/reducers/ReaderBox";
 import { Platform } from "react-native";
 import SpectrumDetailScreen from "../screens/review/SpectrumDetailScreen";
+import {
+  selectShowsHelp,
+  toggleShowsHelp,
+} from "../redux/reducers/Calibration";
 
 const TextHeaderButton = ({ onPress, text, disabled }) => (
   <Item
@@ -57,6 +61,7 @@ export default function NavStack({ navigation }) {
   const showsRecalibrateHint = useSelector(selectShowsRecalibrateHint);
   const showsOnExitToast = useSelector(selectShowsOnExitToast);
   const cornersAreValid = useSelector(selectCornersAreValid);
+  const showsHelp = useSelector(selectShowsHelp);
 
   return (
     /**
@@ -112,6 +117,32 @@ export default function NavStack({ navigation }) {
         options={{
           title: "Setup Box",
 
+          headerLeft: () => (
+            <View style={styles.row}>
+              <HeaderButtons HeaderButtonComponent={IoniconHeaderButton}>
+                <Item
+                  title="cancel"
+                  iconName="chevron-back"
+                  color="black"
+                  iconSize={30}
+                  onPress={() => navigation.goBack()}
+                />
+              </HeaderButtons>
+              <HeaderButtons HeaderButtonComponent={IoniconHeaderButton}>
+                <Item
+                  title="calibrate"
+                  iconName={
+                    showsHelp
+                      ? "information-circle"
+                      : "information-circle-outline"
+                  }
+                  color="black"
+                  onPress={() => dispatch(toggleShowsHelp())}
+                  iconSize={26}
+                />
+              </HeaderButtons>
+            </View>
+          ),
           headerTitle: () => <TitleHeader title="Select Spectrum" />,
           headerRight: () => (
             <HeaderButtons HeaderButtonComponent={IoniconHeaderButton}>
@@ -128,6 +159,33 @@ export default function NavStack({ navigation }) {
         name="CalibrationScreen"
         component={CalibrationScreen}
         options={{
+
+          headerLeft: () => (
+            <View style={styles.row}>
+              <HeaderButtons HeaderButtonComponent={IoniconHeaderButton}>
+                <Item
+                  title="cancel"
+                  iconName="chevron-back"
+                  color="black"
+                  iconSize={30}
+                  onPress={() => navigation.goBack()}
+                />
+              </HeaderButtons>
+              <HeaderButtons HeaderButtonComponent={IoniconHeaderButton}>
+                <Item
+                  title="calibrate"
+                  iconName={
+                    showsHelp
+                      ? "information-circle"
+                      : "information-circle-outline"
+                  }
+                  color="black"
+                  onPress={() => dispatch(toggleShowsHelp())}
+                  iconSize={26}
+                />
+              </HeaderButtons>
+            </View>
+          ),
           headerTitle: () => <TitleHeader title="Calibration" />,
           headerRight: () => (
             <HeaderButtons HeaderButtonComponent={IoniconHeaderButton}>
@@ -144,7 +202,7 @@ export default function NavStack({ navigation }) {
         component={CaptureScreen}
         options={{
           headerLeft: () => (
-            <View style={styles.captureHeader}>
+            <View style={styles.row}>
               <HeaderButtons HeaderButtonComponent={IoniconHeaderButton}>
                 <Item
                   title="cancel"
@@ -159,9 +217,7 @@ export default function NavStack({ navigation }) {
                   }}
                 />
               </HeaderButtons>
-              <HeaderButtons
-                HeaderButtonComponent={IoniconHeaderButton}
-              >
+              <HeaderButtons HeaderButtonComponent={IoniconHeaderButton}>
                 <Item
                   title="calibrate"
                   iconName="aperture-outline"
@@ -193,7 +249,7 @@ export default function NavStack({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  captureHeader: {
+  row: {
     flexDirection: "row",
   },
 });

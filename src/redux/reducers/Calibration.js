@@ -14,6 +14,7 @@ export const calibrationSlice = createSlice({
   initialState: {
     calibration: Calibration.fromPreset(DEFAULT_CALIBRATION),
     activePointPlacement: false,
+    showsHelp: false,
   },
   reducers: {
     setPlacement: (state, action) => {
@@ -33,11 +34,19 @@ export const calibrationSlice = createSlice({
       state.calibration = calibration;
       state.activePointPlacement = activePointPlacement;
     },
+    toggleShowsHelp: (state, action) => {
+      state.showsHelp = !state.showsHelp;
+    },
   },
 });
 
-export const { setPlacement, setPreset, setActivePointPlacement, restoreCalibration} =
-  calibrationSlice.actions;
+export const {
+  setPlacement,
+  setPreset,
+  setActivePointPlacement,
+  restoreCalibration,
+  toggleShowsHelp,
+} = calibrationSlice.actions;
 
 export const selectCalibrationPoints = (state) => {
   return state.calibration.calibration;
@@ -45,5 +54,7 @@ export const selectCalibrationPoints = (state) => {
 
 export const selectActivePointPlacement = (state) =>
   state.calibration.activePointPlacement;
+
+export const selectShowsHelp = (state) => state.calibration.showsHelp;
 
 export default calibrationSlice.reducer;

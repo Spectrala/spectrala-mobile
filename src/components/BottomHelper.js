@@ -7,7 +7,7 @@ import { useTheme } from "@react-navigation/native";
 
 export default function BottomHelper({ utilityComponents, bodyText }) {
   const { colors } = useTheme();
-  const [helperExpanded, setExpanded] = useState(false);
+  const [helperExpanded, setExpanded] = useState(true);
 
   const Divider = () => {
     return <View style={styles.divider} />;
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   },
   helperBody: {
     padding: 16,
-    paddingTop: 0,
+    paddingTop: 8,
   },
   divider: {
     height: StyleSheet.hairlineWidth,
