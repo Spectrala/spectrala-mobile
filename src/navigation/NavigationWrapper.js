@@ -14,6 +14,7 @@ const reactNavigationTheme = {
     backgroundDark: "#000000",
     foreground: "#FBFCFF",
     text: "#161316",
+    grayText: "#444444",
     textDark: "#FFFFFF",
     warning: "#eada25",
     danger: "#ff7863",

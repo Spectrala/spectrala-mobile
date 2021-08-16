@@ -55,10 +55,12 @@ export default function SessionsScreen({ navigation }) {
   const renderListItem = ({ item: session }) => {
     const date = Session.getLastEditDateUnix(session);
     const name = Session.getName(session);
+    const numSessions = Session.getSpectraList(session).length;
     return (
       <SessionCell
         name={name}
         date={date}
+        numSessions={numSessions}
         onSelect={() =>
           navigation.push("SessionDetail", {
             session,
