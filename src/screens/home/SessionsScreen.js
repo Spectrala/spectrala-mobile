@@ -1,9 +1,8 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { StyleSheet, View, FlatList } from "react-native";
 import { getSessions, eraseSessions } from "../../navigation/SessionStorage";
 import { useSelector } from "react-redux";
-import PropTypes from "prop-types";
 import SessionCell from "./SessionCell";
 import { useTheme } from "@react-navigation/native";
 import { TouchableOpacity, Text } from "react-native";
@@ -24,9 +23,19 @@ import { useDispatch } from "react-redux";
 const ADD_DIAMETER = 90;
 const ADD_ICON_WIDTH = 70;
 
-function HomeScreen({ navigation }) {
+export default function SessionsScreen({ navigation }) {
   const { colors } = useTheme();
   const [sessions, setSessions] = useState([]);
+  const sortedSessions = useMemo(
+    () =>
+      sessions.sort(
+        (a, b) =>
+          new Date(Session.getLastEditDateUnix(b)) -
+          new Date(Session.getLastEditDateUnix(a))
+      ),
+    [sessions]
+  );
+
   const dispatch = useDispatch();
   const sessionStoreNameEditNumber = useSelector(
     selectSessionStoreNameEditNumber
@@ -63,11 +72,7 @@ function HomeScreen({ navigation }) {
   const sessionList = () => {
     return (
       <FlatList
-        data={sessions.sort(
-          (a, b) =>
-            new Date(Session.getLastEditDateUnix(b)) -
-            new Date(Session.getLastEditDateUnix(a))
-        )}
+        data={sortedSessions}
         renderItem={renderListItem}
         keyExtractor={(item) => String(item.name)}
         showsVerticalScrollIndicator={false}
@@ -110,10 +115,6 @@ function HomeScreen({ navigation }) {
   );
 }
 
-HomeScreen.propTypes = {
-  navigation: PropTypes.object,
-};
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -146,5 +147,3 @@ const styles = StyleSheet.create({
     marginTop: 32,
   },
 });
-
-export default HomeScreen;

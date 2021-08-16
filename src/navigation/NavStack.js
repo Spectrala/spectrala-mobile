@@ -6,7 +6,7 @@ import CalibrationScreen from "../screens/calibration/CalibrationScreen";
 import CaptureScreen, {
   exitCaptureScreen,
 } from "../screens/capture/CaptureScreen";
-import HomeScreen from "../screens/home/HomeScreen";
+import SessionsScreen from "../screens/home/SessionsScreen";
 import SessionDetailScreen from "../screens/sessionDetail/SessionDetailScreen";
 import {
   HeaderButtons,
@@ -85,7 +85,7 @@ export default function NavStack({ navigation }) {
     >
       <StackNavigator.Screen
         name="Sessions"
-        component={HomeScreen}
+        component={SessionsScreen}
         options={{
           headerTitle: () => <TitleHeader title="Sessions" />,
         }}
@@ -160,15 +160,14 @@ export default function NavStack({ navigation }) {
                 />
               </HeaderButtons>
               <HeaderButtons
-                HeaderButtonComponent={MaterialCommunityHeaderButton}
+                HeaderButtonComponent={IoniconHeaderButton}
               >
                 <Item
                   title="calibrate"
-                  iconName={
-                    showsRecalibrateHint ? "beaker-alert" : "beaker-outline"
-                  }
+                  iconName="aperture-outline"
                   color={showsRecalibrateHint ? colors.warning : colors.primary}
                   onPress={() => navigation.push("CameraScreen")}
+                  iconSize={26}
                 />
               </HeaderButtons>
             </View>

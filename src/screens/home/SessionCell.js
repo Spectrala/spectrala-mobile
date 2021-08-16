@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { TouchableOpacity, StyleSheet, Text, View } from "react-native";
 import { format } from "date-fns";
 import { useTheme } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
 
 /**
  * React.memo helps speed up using the cell in the flatlist.
@@ -21,6 +22,12 @@ const SessionCell = React.memo(({ name, date: dateUnix, onSelect }) => {
           {format(date, "h:mmaaa eeee, MMMM d, yyyy")}
         </Text>
       </View>
+      <Ionicons
+        style={styles.chevron}
+        name="chevron-forward"
+        size={24}
+        color="gray"
+      />
     </TouchableOpacity>
   );
 });
@@ -48,6 +55,9 @@ const styles = StyleSheet.create({
     fontSize: 20,
     paddingBottom: 2,
     fontWeight: "500",
+  },
+  chevron: {
+    alignSelf: "center",
   },
 });
 
