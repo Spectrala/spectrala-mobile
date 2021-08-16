@@ -87,7 +87,7 @@ export default function ReviewScreen({ route, navigation }) {
   };
 
   const endTextEdit = () => {
-    if (!renameErrorMessage) {
+    if (spectrum && !renameErrorMessage) {
       dispatch(
         updateSpectrum({ spectrum: Spectrum.rename(spectrum, editedName) })
       );

@@ -21,7 +21,7 @@ import {
   setReference,
   removeReference,
   selectAllSpectra,
-  deleteSpectrum,
+  deleteSpectrumWithKey,
 } from "../../redux/reducers/RecordedSpectra";
 
 const SPECTRUM_NAME_REGEX = "[A-Z,a-z,-,_,0-9]+";
@@ -51,10 +51,10 @@ export default function SpectrumDetailScreen({ navigation, route }) {
    */
   const nameIsDuplicate = (name) => {
     const otherSpectra = Object.values(allSpectra).filter(
-      (s) => Spectrum.getKey(s) !== spectrumKey
+      (s) => s && Spectrum.getKey(s) !== spectrumKey
     );
     const otherSameNameSpectra = otherSpectra.filter(
-      (s) => Spectrum.getName(s) === name
+      (s) => s && Spectrum.getName(s) === name
     );
     return otherSameNameSpectra.length > 0;
   };
@@ -65,6 +65,7 @@ export default function SpectrumDetailScreen({ navigation, route }) {
   const isReference = useMemo(
     () =>
       referenceSpectrum &&
+      spectrum &&
       Spectrum.getKey(referenceSpectrum) === Spectrum.getKey(spectrum),
     [allSpectra, referenceSpectrum]
   );
@@ -75,7 +76,7 @@ export default function SpectrumDetailScreen({ navigation, route }) {
   const onToggleReference = () => {
     if (isReference) {
       dispatch(removeReference());
-    } else {
+    } else if (spectrum) {
       dispatch(setReference({ spectrum: spectrum }));
     }
   };
@@ -115,7 +116,7 @@ export default function SpectrumDetailScreen({ navigation, route }) {
           promptText="Delete spectrum?"
           onDelete={async () => {
             navigation.pop();
-            dispatch(deleteSpectrum({ spectrum }));
+            dispatch(deleteSpectrumWithKey({ key: spectrumKey }));
           }}
         />
         {spectrum && <SwitchableSpectrumChart spectrum={spectrum} />}

@@ -16,23 +16,20 @@ export const spectrumSlice = createSlice({
       state.recordedSpectra[Spectrum.getKey(spectrum)] = spectrum;
       state.highestKey = Math.max(state.highestKey, Spectrum.getKey(spectrum));
     },
-    removeSpectrum: (state, action) => {
-      const spectrum = action.payload.spectrum;
-      const key = Spectrum.getKey(spectrum);
-      delete state.recordedSpectra[key];
-    },
     updateSpectrum: (state, action) => {
       const spectrum = action.payload.spectrum;
+
       const key = Spectrum.getKey(spectrum);
       state.recordedSpectra[key] = spectrum;
     },
-    deleteSpectrum: (state, action) => {
-      const spectrum = action.payload.spectrum;
-      const key = Spectrum.getKey(spectrum);
+    deleteSpectrumWithKey: (state, action) => {
+      const key = action.payload.key;
       // deleteProperty helper function https://stackoverflow.com/a/47227198/5160929
-      const deleteProperty = ({ [key]: _, ...newObj }, key) => newObj;
+      const deleteProperty = ({ [objKey]: _, ...newObj }, objKey) => newObj;
       state.recordedSpectra = deleteProperty(state.recordedSpectra, key);
-      const allOtherKeys = Object.keys(state.recordedSpectra).map((k) => parseInt(k));
+      const allOtherKeys = Object.keys(state.recordedSpectra).map((k) =>
+        parseInt(k)
+      );
       state.highestKey = Math.max(0, ...allOtherKeys);
     },
     removeReference: (state, action) => {
@@ -54,12 +51,11 @@ export const spectrumSlice = createSlice({
 
 export const {
   recordSpectrum,
-  removeSpectrum,
   updateSpectrum,
   removeReference,
   setReference,
   restoreSpectra,
-  deleteSpectrum,
+  deleteSpectrumWithKey,
 } = spectrumSlice.actions;
 
 /**

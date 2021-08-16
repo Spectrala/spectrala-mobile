@@ -24,8 +24,6 @@ export default function CaptureButton({ style, disabled }) {
     const spectrum = Spectrum.constructDefault(intensityChart, highestKey + 1);
     if (intensityChart) {
       dispatch(recordSpectrum({ spectrum }));
-    } else {
-      console.log("no intensity chart");
     }
   };
 

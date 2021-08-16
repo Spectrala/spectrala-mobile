@@ -4,34 +4,35 @@ import { AreaChart, Grid, YAxis, XAxis } from "react-native-svg-charts";
 import { Defs } from "react-native-svg";
 import { curveBasis as d3ShapeCurveBasis } from "d3-shape";
 import * as ChartPt from "../types/ChartPoint";
+import * as Range from "../types/Range";
 import SpectrumGradientProvider from "./SpectrumGradientProvider";
 
 const CHART_HEIGHT = 160;
 const X_AXIS_HEIGHT = 10;
-const SHOWS_Y = false;
+const SHOWS_Y = true;
 const AXES_FONT_SIZE = 10;
 const INSET_TOP = SHOWS_Y ? 10 : 0;
 const INSET_BOTTOM = 5;
 const GRADIENT_ID = "grad";
 
-function SpectrumChart({ intensities, yRange = [0, 100], style }) {
+function SpectrumChart({ intensities, yRange, showsYAxis, style }) {
 
-  const xRange = [
+  const xRange = Range.construct(
     ChartPt.getWavelength(intensities[0]),
-    ChartPt.getWavelength(intensities[intensities.length - 1]),
-  ];
+    ChartPt.getWavelength(intensities[intensities.length - 1])
+  );
 
   return (
     <View style={{ ...styles.master, ...style }}>
-      {SHOWS_Y && (
+      {showsYAxis && (
         <YAxis
           data={intensities.map((p) => ChartPt.getY(p))}
           style={styles.yAxis}
           contentInset={{ top: INSET_TOP, bottom: INSET_BOTTOM }}
           svg={{ fontSize: AXES_FONT_SIZE, fill: "grey" }}
           numberOfTicks={5}
-          min={yRange[0]}
-          max={yRange[1]}
+          min={yRange && Range.getMin(yRange)}
+          max={yRange && Range.getMax(yRange)}
         />
       )}
       <View style={styles.innerView}>
@@ -40,10 +41,10 @@ function SpectrumChart({ intensities, yRange = [0, 100], style }) {
           data={intensities}
           yAccessor={({ item }) => ChartPt.getY(item)}
           xAccessor={({ item }) => ChartPt.getWavelength(item)}
-          yMin={yRange[0]}
-          yMax={yRange[1]}
-          min={xRange[0]}
-          max={xRange[1]}
+          yMin={yRange ? Range.getMin(yRange) : undefined}
+          yMax={yRange ? Range.getMax(yRange) : undefined}
+          min={Range.getMin(xRange)}
+          max={Range.getMax(xRange)}
           contentInset={{
             top: INSET_TOP,
             bottom: INSET_BOTTOM,
@@ -63,11 +64,11 @@ function SpectrumChart({ intensities, yRange = [0, 100], style }) {
         <XAxis
           style={{ marginHorizontal: -10, height: X_AXIS_HEIGHT }}
           data={intensities.map((p) => ChartPt.getWavelength(p))}
-          formatLabel={(value, index) => value}
+          formatLabel={(value) => value}
           numberOfTicks={5}
           svg={{ fontSize: AXES_FONT_SIZE, fill: "grey" }}
-          min={xRange[0]}
-          max={xRange[1]}
+          min={Range.getMin(xRange)}
+          max={Range.getMax(xRange)}
         />
       </View>
     </View>

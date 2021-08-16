@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, ActivityIndicator } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import SpectrumChart from "./SpectrumChart";
@@ -10,6 +10,9 @@ import {
   computeTransmittanceChart,
 } from "../util/spectroscopyMath";
 import { useTheme } from "@react-navigation/native";
+import * as ChartPt from "../types/ChartPoint";
+import * as Range from "../types/Range";
+
 const CHART_HEIGHT = 160;
 const MODE_BUTTON_HEIGHT = 24;
 
@@ -25,16 +28,53 @@ const viewOptions = [
   SPECTRUM_VIEW_OPTION_NAMES.ABSORBANCE,
 ];
 
+const DEFAULT_INTENSITY_Y_RANGE = Range.construct(0, 100);
+const DEFAULT_TRANSMITTANCE_Y_RANGE = Range.construct(0, 1);
+const DEFAULT_ABSORBANCE_Y_RANGE = Range.construct(0, 1);
+
 export default function SwitchableSpectrumChart({ spectrum, style }) {
   const { colors } = useTheme();
 
   const intensities = Spectrum.getIntensityChart(spectrum);
   const reference = useSelector(selectReferenceSpectrum);
+
   const [selectedOption, setSelectedOption] = useState(
     SPECTRUM_VIEW_OPTION_NAMES.INTENSITY
   );
 
+  const [transmittanceRange, setTransmittanceRange] = useState(
+    DEFAULT_TRANSMITTANCE_Y_RANGE
+  );
+  const [absorbanceRange, setAbsorbanceRange] = useState(
+    DEFAULT_ABSORBANCE_Y_RANGE
+  );
 
+  /**
+   * Returns the appropriate y range for the given chart.
+   * @param {SPECTRUM_VIEW_OPTION_NAMES} viewOption current chart selection
+   * @returns {Range} range of the y-axis for the given chart.
+   */
+  const getYRange = (viewOption) => {
+    switch (viewOption) {
+      case SPECTRUM_VIEW_OPTION_NAMES.INTENSITY:
+        return DEFAULT_INTENSITY_Y_RANGE;
+      case SPECTRUM_VIEW_OPTION_NAMES.ABSORBANCE:
+        return absorbanceRange;
+      case SPECTRUM_VIEW_OPTION_NAMES.TRANSMITTANCE:
+        return transmittanceRange;
+      default:
+        console.error(`Unexpected chart type ${selectedOption}`);
+    }
+  };
+
+  /**
+   * Returns true if a reference spectrum is present and the
+   * reference spectrum is not also the test spectrum. If the
+   * reference spectrum and the test spectrum are the same, the
+   * user is likely viewing the reference spectrum, so transmittance
+   * and absorbance calculations would be meaningless.
+   * @returns {bool} whether or not the reference spectrum is valid
+   */
   const hasValidReference = () => {
     if (!reference) return false;
     const key = Spectrum.getKey(spectrum);
@@ -43,24 +83,74 @@ export default function SwitchableSpectrumChart({ spectrum, style }) {
     return !isReference;
   };
 
-  const getChartData = useCallback(() => {
+  /**
+   * Upon a change in the reference spectrum,
+   *  - Reset the axes ranges to default values
+   *  - Ensure transmittance/absorbance are only
+   *    selected with a valid reference spectrum.
+   */
+  useEffect(() => {
+    setAbsorbanceRange(DEFAULT_ABSORBANCE_Y_RANGE);
+    setTransmittanceRange(DEFAULT_TRANSMITTANCE_Y_RANGE);
+
+    if (
+      !hasValidReference() &&
+      selectedOption != SPECTRUM_VIEW_OPTION_NAMES.INTENSITY
+    ) {
+      setSelectedOption(SPECTRUM_VIEW_OPTION_NAMES.INTENSITY);
+    }
+  }, [reference]);
+
+  /**
+   * Computes an expanded chart range to fit the current data and sets the
+   * chart range if any expanding was done to the chart range.
+   * @param {Range} currentRange currently set chart range
+   * @param {function} maxRangeSetter useState setter for currentRange
+   * @param {Array<ChartPt>} newChart chart data for the current tick
+   */
+  const expandRangeIfNecessary = (currentRange, maxRangeSetter, newChart) => {
+    const yVals = newChart.map((pt) => ChartPt.getY(pt));
+    const yRangeChart = Range.construct(Math.min(...yVals), Math.max(...yVals));
+    const maximumRange = Range.union(currentRange, yRangeChart);
+    if (!Range.rangesAreEqual(currentRange, maximumRange)) {
+      maxRangeSetter(maximumRange);
+    }
+  };
+
+  /**
+   * Returns chart data for currently selected chart.
+   * @returns {Array<ChartPt>} current chart data
+   */
+  const getChartData = () => {
     switch (selectedOption) {
       case SPECTRUM_VIEW_OPTION_NAMES.INTENSITY:
         return intensities;
       case SPECTRUM_VIEW_OPTION_NAMES.TRANSMITTANCE:
-        return computeTransmittanceChart(
+        const transmittanceChart = computeTransmittanceChart(
           intensities,
           Spectrum.getIntensityChart(reference)
         );
+        expandRangeIfNecessary(
+          transmittanceRange,
+          setTransmittanceRange,
+          transmittanceChart
+        );
+        return transmittanceChart;
       case SPECTRUM_VIEW_OPTION_NAMES.ABSORBANCE:
-        return computeAbsorbanceChart(
+        const absorbanceChart = computeAbsorbanceChart(
           intensities,
           Spectrum.getIntensityChart(reference)
         );
+        expandRangeIfNecessary(
+          absorbanceRange,
+          setAbsorbanceRange,
+          absorbanceChart
+        );
+        return absorbanceChart;
       default:
         console.error(`Unexpected chart type ${selectedOption}`);
     }
-  }, [selectedOption, intensities, reference]);
+  };
 
   const modeSwitcher = () => {
     return (
@@ -98,7 +188,12 @@ export default function SwitchableSpectrumChart({ spectrum, style }) {
   }
   return (
     <>
-      <SpectrumChart intensities={getChartData()} style={style} />
+      <SpectrumChart
+        intensities={getChartData()}
+        yRange={getYRange(selectedOption)}
+        showsYAxis={selectedOption !== SPECTRUM_VIEW_OPTION_NAMES.INTENSITY}
+        style={style}
+      />
       {modeSwitcher()}
     </>
   );
