@@ -42,12 +42,17 @@ const createUniqueParentDir = async (name) => {
   return dir;
 };
 
+/**
+ * Writes a folder of csv files, each csv representing one spectrum.
+ * @param {SessionExport} sessionExport session to export data from 
+ * @returns {String} the path to the folder containing all csvs.
+ */
 export const saveSessionCSVExportLocally = async (sessionExport) => {
   const name = SessionExport.getName(sessionExport);
   const parentDir = await createUniqueParentDir(name);
   const spectrumExports = SessionExport.getSpectrumExports(sessionExport);
 
-  const dirs = await Promise.all(
+  await Promise.all(
     spectrumExports.map(async (spectrumExport) => {
       const dir = parentDir + SpectrumExport.getName(spectrumExport) + ".csv";
       const csv = SpectrumExport.getCSVString(spectrumExport);
@@ -63,12 +68,27 @@ export const saveSessionCSVExportLocally = async (sessionExport) => {
   return parentDir;
 };
 
+
+/**
+ * Prompts the native device social share menu to share a folder
+ * of csv files representing recorded spectra. The fallback here is that
+ * most endpoints do not allow sharing a directory, yet the native 
+ * flow displays them as options anyway. Should only be used once 
+ * zipping a file can be done with expo. 
+ * @param {SessionExport} sessionExport session to export data from 
+ */
 export const shareSessionCSVFolder = async (sessionExport) => {
   const dir = await saveSessionCSVExportLocally(sessionExport);
   const canShare = await sharingIsAvailableAsync();
   canShare && (await sharingShareAsync(dir));
 };
 
+/**
+ * Writes a new excel workbook based on a SessionExport to the local file system.
+ * XLSX calls best documented here: https://stackoverflow.com/a/60926972
+ * @param {SessionExport} sessionExport session to export data from 
+ * @returns {String} the path to the new xslx file
+ */
 export const writeSessionXLSX = async (sessionExport) => {
   const name = SessionExport.getName(sessionExport);
   const parentDir = await createUniqueParentDir(name);
@@ -91,9 +111,8 @@ export const writeSessionXLSX = async (sessionExport) => {
 };
 
 /**
- *
- * XLSX calls best documented here: https://stackoverflow.com/a/60926972
- * @param {*} sessionExport
+ * Prompts the native device social share menu to share an excel workbook.
+ * @param {SessionExport} sessionExport session to export data from 
  */
 export const shareSessionXLSX = async (sessionExport) => {
   const dir = await writeSessionXLSX(sessionExport);
@@ -101,12 +120,17 @@ export const shareSessionXLSX = async (sessionExport) => {
   canShare && (await sharingShareAsync(dir));
 };
 
+/**
+ * Composes an email in the native mail app with spectrala data as an 
+ * attachment in XSLX. 
+ * @param {SessionExport} sessionExport session to export data from 
+ */
 export const emailSessionXLSX = async (sessionExport) => {
   const dir = await writeSessionXLSX(sessionExport);
   const canMail = await mailComposerIsAvailableAsync();
   if (canMail) {
     await mailComposerComposeAsync({
-      subject: "Spectra from mobile phone spectrometer",
+      subject: "Spectroscopic data from Spectrala Mobile",
       body: "Please see attached data export from Spectrala Mobile! 📈 ",
       attachments: [dir],
     });
