@@ -79,12 +79,12 @@ export default function CameraLoader({ collectsFrames }) {
   const updateLineData = async (imgTensor, readerBox) => {
     if (!imgTensor) return;
     if (collectsFrames) {
-      const { intensities, previewUri, numRows} = await getLineData(
+      const { intensities, previewUri} = await getLineData(
         imgTensor,
         readerBox
       );
       if (intensities && Math.max(...intensities) > 0) {
-        dispatch(updateFeed({ intensities, previewUri, numRows }));
+        dispatch(updateFeed({ intensities, previewUri }));
       }
     }
   };

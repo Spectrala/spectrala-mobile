@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { StyleSheet, Image, View, Pressable } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
-import { selectRowPct, setRowPct } from "../redux/reducers/SpectrumFeed";
+import { selectRowPct, setRowPct } from "../redux/reducers/ReaderBox";
 import { selectPreviewImg } from "../redux/reducers/SpectrumFeed";
 
 const INDICATOR_HEIGHT = 2;

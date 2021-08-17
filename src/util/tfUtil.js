@@ -167,26 +167,16 @@ const convertHSVArrayAsync = async (imgTrimmed) => {
 
 /**
  * Function to map a 2d reader box to a 1d reader line.
- * This is done by finding the most saturated horizontal line in the direction
- * of the reader line. The saturation of each pixel in each line is simply added.
+ * This is done by selecting the specific horizontal designated by the user
+ * by tapping on the screen.
  *
  * @param {Array<Array<hsv>>} hsv2d 2d array of pixels from convertHSVArrayAsync
- * @returns {Array<hsv>} single row of colors (most saturated)
+ * @param {Number} rowPct percentage from the top of the box (0 is top) 
+ * @returns {Array<hsv>} single row of colors selected by user
  */
-const getBestHorizontal = (hsv2d) => {
-  const saturations = hsv2d.map(
-    (row) => row.reduce((hsvA, hsvB) => hsvA.s + hsvB.s),
-    0
-  );
-  const saturatedIdx = saturations.reduce(
-    (bestIndexSoFar, currentlyTestedValue, currentlyTestedIndex, array) =>
-      currentlyTestedValue > array[bestIndexSoFar]
-        ? currentlyTestedIndex
-        : bestIndexSoFar,
-    0
-  );
-
-  return hsv2d[Math.floor(hsv2d.length / 2)];
+const getSelectedHorizontal = (hsv2d, rowPct) => {
+  const selectedIdx = Math.floor(rowPct * hsv2d.length);
+  return hsv2d[selectedIdx];
 };
 
 /**
@@ -194,7 +184,7 @@ const getBestHorizontal = (hsv2d) => {
  * as the value component of the hsv color and is in the range [0-100].
  *
  * @param {Array<hsv>} hsvRow array of pixels from getBestHorizontal
- * @returns {object} Object containing 
+ * @returns {object} Object containing
  *  intensities: {Array<Number>} array of intensities ready for calibration math
  *  previewUri: {String} path to saved image in local temp storage
  *  numRows: {Number} number of pixel rows in 2d image
@@ -202,7 +192,7 @@ const getBestHorizontal = (hsv2d) => {
 const getIntensitiesFromHorizontal = (hsvRow) => hsvRow.map((hsv) => hsv.v);
 
 export const getLineData = async (tensor, readerBox) => {
-  const { corners, angle, isFlipped } = readerBox;
+  const { corners, angle, isFlipped, rowPct } = readerBox;
   const rotated = tfTidy(() => {
     const crude = flagAndCrop(tensor, corners);
     const padded = padTensor(crude);
@@ -214,8 +204,8 @@ export const getLineData = async (tensor, readerBox) => {
   // const transposed = trimmed.transpose([1, 0, 2]);
   const hsv2d = await convertHSVArrayAsync(trimmed);
   tfEngine().endScope(); // Tensorflow operations are over; clean up.
-  const bestHorizontal = getBestHorizontal(hsv2d);
+  const horizontal = getSelectedHorizontal(hsv2d, rowPct);
   const numRows = hsv2d.length;
-  const intensities1d = getIntensitiesFromHorizontal(bestHorizontal);
+  const intensities1d = getIntensitiesFromHorizontal(horizontal);
   return { intensities: intensities1d, previewUri, numRows };
 };
