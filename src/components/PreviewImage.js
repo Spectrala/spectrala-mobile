@@ -36,7 +36,7 @@ export default function PreviewImage({ height = 100 }) {
       <View
         style={{
           ...styles.indicator,
-          top: indicatorTop,
+          top: indicatorTop || 0,
           backgroundColor: colors.primary,
         }}
       />

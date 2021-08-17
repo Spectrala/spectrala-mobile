@@ -171,11 +171,11 @@ const convertHSVArrayAsync = async (imgTrimmed) => {
  * by tapping on the screen.
  *
  * @param {Array<Array<hsv>>} hsv2d 2d array of pixels from convertHSVArrayAsync
- * @param {Number} rowPct percentage from the top of the box (0 is top) 
+ * @param {Number} rowPct percentage from the top of the box (0 is top)
  * @returns {Array<hsv>} single row of colors selected by user
  */
 const getSelectedHorizontal = (hsv2d, rowPct) => {
-  const selectedIdx = Math.floor(rowPct * hsv2d.length);
+  const selectedIdx = Math.floor(rowPct * hsv2d.length) || 0;
   return hsv2d[selectedIdx];
 };
 
