@@ -8,16 +8,15 @@ import {
 } from "../../redux/reducers/Calibration";
 import { toggleIsFlipped } from "../../redux/reducers/ReaderBox";
 import {
-  selectPreviewImg,
   resetIntensityArrayHistory,
 } from "../../redux/reducers/SpectrumFeed";
 import BottomHelper from "../../components/BottomHelper";
 import CameraLoader from "../../components/CameraLoader";
 import { useTheme } from "@react-navigation/native";
+import PreviewImage from "../../components/PreviewImage";
 const CHART_INSET = 24;
 
 export default function CalibrationScreen() {
-  const previewImage = useSelector(selectPreviewImg);
   const isActivelyPlacing = useSelector(selectActivePointPlacement);
   const dispatch = useDispatch();
   const showsHelp = useSelector(selectShowsHelp);
@@ -32,11 +31,7 @@ export default function CalibrationScreen() {
       </View>
 
       <View style={{ ...styles.container, backgroundColor: colors.background }}>
-        <Image
-          style={styles.previewImage}
-          fadeDuration={0}
-          source={{ uri: previewImage }}
-        />
+        <PreviewImage />
         <Button
           title="Flip Image"
           color={colors.text}
@@ -50,13 +45,14 @@ export default function CalibrationScreen() {
         {showsHelp && (
           <BottomHelper
             utilityComponents={helperHeader}
-            bodyText={                                                      /***/
-              "Use the above markers to assign wavelength values to the incoming \
-spectrum. It may be necessary to use the \"Flip Image\" button to ensure the \
+            bodyText={
+              /***/
+              'Use the above markers to assign wavelength values to the incoming \
+spectrum. It may be necessary to use the "Flip Image" button to ensure the \
 order of the colors of the spectrum in the app matches the order of the colors \
 in the spectrometer itself. To assign wavelength values, first turn on the \
 specific light source used for calibration. Then, drag the markers to their \
-respective high peaks on the chart. "
+respective high peaks on the chart. '
             }
             titleText="Wavelength assignment"
           />

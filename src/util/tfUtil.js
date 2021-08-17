@@ -194,7 +194,10 @@ const getBestHorizontal = (hsv2d) => {
  * as the value component of the hsv color and is in the range [0-100].
  *
  * @param {Array<hsv>} hsvRow array of pixels from getBestHorizontal
- * @returns {Array<number>} array of intensities ready for calibration math
+ * @returns {object} Object containing 
+ *  intensities: {Array<Number>} array of intensities ready for calibration math
+ *  previewUri: {String} path to saved image in local temp storage
+ *  numRows: {Number} number of pixel rows in 2d image
  */
 const getIntensitiesFromHorizontal = (hsvRow) => hsvRow.map((hsv) => hsv.v);
 
@@ -212,6 +215,7 @@ export const getLineData = async (tensor, readerBox) => {
   const hsv2d = await convertHSVArrayAsync(trimmed);
   tfEngine().endScope(); // Tensorflow operations are over; clean up.
   const bestHorizontal = getBestHorizontal(hsv2d);
+  const numRows = hsv2d.length;
   const intensities1d = getIntensitiesFromHorizontal(bestHorizontal);
-  return { intensities: intensities1d, previewUri };
+  return { intensities: intensities1d, previewUri, numRows };
 };

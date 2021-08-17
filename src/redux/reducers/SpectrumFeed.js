@@ -23,11 +23,13 @@ export const spectrumFeedSlice = createSlice({
     previewImage: undefined,
     intensityArrayHistory: [],
     uncalibratedIntensities: undefined,
+    numRows: undefined,
+    rowPct: 0.5,
   },
   reducers: {
     updateFeed: (state, action) => {
-      const previewImage = action.payload.previewUri;
-      state.previewImage = previewImage;
+      state.numRows = action.payload.numRows;
+      state.previewImage = action.payload.previewUri;
       const newLine = action.payload.intensities;
       let lineHist = state.intensityArrayHistory;
 
@@ -58,10 +60,13 @@ export const spectrumFeedSlice = createSlice({
     resetIntensityArrayHistory: (state, action) => {
       state.intensityArrayHistory = [];
     },
+    setRowPct: (state, action) => {
+      state.rowPct = action.payload.value;
+    },
   },
 });
 
-export const { updateFeed, setPreviewImage, resetIntensityArrayHistory } =
+export const { updateFeed, setPreviewImage, resetIntensityArrayHistory, setRowPct } =
   spectrumFeedSlice.actions;
 
 export const selectPreviewImg = (state) => state.spectrumFeed.previewImage;
@@ -77,6 +82,10 @@ export const selectIntensityChart = (state) => {
     return null;
   }
   return computeIntensityChart(uncalibratedIntensities, calibration);
+};
+
+export const selectRowPct = (state) => {
+  return state.spectrumFeed.rowPct;
 };
 
 export default spectrumFeedSlice.reducer;

@@ -4,10 +4,7 @@ import { useTheme } from "@react-navigation/native";
 import SwitchableSpectrumChart from "../../components/SwitchableSpectrumChart";
 import { useSelector, useDispatch } from "react-redux";
 import CaptureButton from "./CaptureButton";
-import {
-  selectPreviewImg,
-  selectIntensityChart,
-} from "../../redux/reducers/SpectrumFeed";
+import { selectIntensityChart } from "../../redux/reducers/SpectrumFeed";
 import {
   selectReferenceSpectrum,
   selectRecordedSpectra,
@@ -24,6 +21,10 @@ import {
   endEditingSession,
   dismissRecalibrateHint,
 } from "../../redux/reducers/Sessions";
+import PreviewImage from "../../components/PreviewImage";
+
+
+const PREVIEW_IMAGE_HEIGHT = 100;
 
 export function exitCaptureScreen(dispatch, navigation) {
   dispatch(setShowsOnExitToast({ value: false }));
@@ -34,7 +35,6 @@ export function exitCaptureScreen(dispatch, navigation) {
 
 export default function CaptureScreen({ navigation }) {
   const { colors } = useTheme();
-  const previewImage = useSelector(selectPreviewImg);
   const intensityChart = useSelector(selectIntensityChart);
   const referenceSpectrum = useSelector(selectReferenceSpectrum);
   const dispatch = useDispatch();
@@ -154,11 +154,7 @@ export default function CaptureScreen({ navigation }) {
         </View>
       </Toast>
 
-      <Image
-        style={styles.previewImage}
-        fadeDuration={0}
-        source={{ uri: previewImage }}
-      />
+      <PreviewImage height={PREVIEW_IMAGE_HEIGHT} />
 
       <View
         style={{
@@ -201,8 +197,7 @@ export default function CaptureScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     position: "absolute",
-    top: 60,
-    paddingTop: 20,
+    top: PREVIEW_IMAGE_HEIGHT,
     left: 0,
     right: 0,
     bottom: 0,
@@ -266,13 +261,6 @@ const styles = StyleSheet.create({
   refText: {
     alignSelf: "center",
     textAlignVertical: "center",
-  },
-  previewImage: {
-    position: "absolute",
-    width: "100%",
-    height: 80,
-    top: 0,
-    resizeMode: "stretch",
   },
   captureButton: {
     position: "absolute",
